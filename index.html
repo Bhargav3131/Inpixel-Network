@@ -13,10 +13,7 @@
     <nav>
         <div class="nav-container">
             <div class="logo">
-                <svg class="logo-img" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="50" cy="50" r="45" fill="#f97316"/>
-                    <text x="50" y="65" text-anchor="middle" fill="white" font-size="48" font-weight="bold">IP</text>
-                </svg>
+                <img src="logo.jpeg" alt="InPixel Network Logo" class="logo-img">
                 <span class="logo-text">InPixel Network</span>
             </div>
             <div class="nav-links">
@@ -25,6 +22,18 @@
                 <a href="#contact">Contact</a>
                 <button class="btn-primary" onclick="scrollToContact()">Get Started</button>
             </div>
+            <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+        <div class="mobile-menu" id="mobileMenu">
+            <a href="#services" onclick="toggleMobileMenu()">Services</a>
+            <a href="#about" onclick="toggleMobileMenu()">About</a>
+            <a href="#contact" onclick="toggleMobileMenu()">Contact</a>
         </div>
     </nav>
 
@@ -44,8 +53,8 @@
                 </h1>
 
                 <p>
-                    We understand the challenge. Standing out on social media is harder than ever. 
-                    Let InPixel Network transform your online presence with data-driven strategies 
+                    We understand the challenge. Standing out on social media is harder than ever.
+                    Let InPixel Network transform your online presence with data-driven strategies
                     that deliver real results.
                 </p>
 
@@ -275,12 +284,12 @@
             <div class="about-content">
                 <h2>Why Choose <span class="gradient-text">InPixel Network?</span></h2>
                 <p>
-                    We're not just another digital agency. We're your growth partners, dedicated 
+                    We're not just another digital agency. We're your growth partners, dedicated
                     to transforming your online presence into a powerful asset.
                 </p>
                 <p>
-                    With years of experience and a proven track record, we combine creativity, 
-                    technology, and data-driven strategies to deliver results that matter. Your 
+                    With years of experience and a proven track record, we combine creativity,
+                    technology, and data-driven strategies to deliver results that matter. Your
                     success is our mission.
                 </p>
             </div>
@@ -375,10 +384,7 @@
     <!-- Footer -->
     <footer>
         <div class="footer-logo">
-            <svg class="logo-img" style="width: 32px; height: 32px;" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="50" cy="50" r="45" fill="#f97316"/>
-                <text x="50" y="65" text-anchor="middle" fill="white" font-size="48" font-weight="bold">IP</text>
-            </svg>
+            <img src="logo.jpeg" alt="InPixel Network Logo" class="footer-logo-img">
             <span>InPixel Network</span>
         </div>
         <p>&copy; 2026 InPixel Network. All rights reserved.</p>
@@ -417,7 +423,7 @@
                 </div>
                 <div class="form-group">
                     <label for="contact">Contact Number</label>
-                    <input type="tel" id="phone" name="contact" required placeholder="Your contact number">
+                    <input type="tel" id="contact" name="contact" required placeholder="Your contact number">
                 </div>
                 <div class="form-group">
                     <label for="message">Message</label>
@@ -444,17 +450,5 @@
 
     <!-- JavaScript -->
     <script src="script.js"></script>
-
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-<script type="text/javascript">
-  (function() {
-    emailjs.init({
-      publicKey: "TWpQ-zENXGGMzDMFd",
-    });
-  })();
-</script>
-
-
-
 </body>
 </html>

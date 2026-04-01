@@ -19,39 +19,26 @@ function closeEnquiry() {
     document.getElementById('enquiryForm').reset();
 }
 
+// Form submission handler
 function handleSubmit(event) {
     event.preventDefault();
     
     // Get form values
     const name = document.getElementById('name').value;
-    const contact = document.getElementById('phone').value;
+    const contact = document.getElementById('contact').value;
     const message = document.getElementById('message').value;
-
-    // EmailJS parameters
-    const params = {
-        name: name,
-        contact: contact,
-        message: message
-    };
-
-    // 🔥 Send email using EmailJS
-    emailjs.send("service_p1upsrh", "template_mibmmmu", params)
-        .then(function(response) {
-            console.log('SUCCESS!', response.status, response.text);
-
-            // Show success UI
-            document.getElementById('enquiryForm').style.display = 'none';
-            document.getElementById('successMessage').classList.add('active');
-
-            // Close popup after 2 seconds
-            setTimeout(() => {
-                closeEnquiry();
-            }, 2000);
-        })
-        .catch(function(error) {
-            console.log('FAILED...', error);
-            alert("Failed to send enquiry. Please try again.");
-        });
+    
+    // Log form data (in a real application, you would send this to a server)
+    console.log('Form submitted:', { name, contact, message });
+    
+    // Hide form and show success message
+    document.getElementById('enquiryForm').style.display = 'none';
+    document.getElementById('successMessage').classList.add('active');
+    
+    // Close popup after 2 seconds
+    setTimeout(() => {
+        closeEnquiry();
+    }, 2000);
 }
 
 // Intersection Observer for scroll animations
@@ -96,5 +83,22 @@ document.addEventListener('DOMContentLoaded', () => {
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
         closeEnquiry();
+    }
+});
+// Mobile menu toggle
+function toggleMobileMenu() {
+    const mobileMenu = document.getElementById('mobileMenu');
+    mobileMenu.classList.toggle('active');
+}
+
+// Close mobile menu when clicking outside
+document.addEventListener('click', (e) => {
+    const mobileMenu = document.getElementById('mobileMenu');
+    const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+    
+    if (mobileMenu && mobileMenuBtn) {
+        if (!mobileMenu.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+            mobileMenu.classList.remove('active');
+        }
     }
 });

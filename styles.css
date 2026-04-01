@@ -850,3 +850,275 @@ footer {
         left: 1rem;
     }
 }
+
+/* Logo Image Styling */
+.logo-img {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+    filter: brightness(1.1);
+}
+
+.footer-logo-img {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+}
+
+/* Mobile Menu Button */
+.mobile-menu-btn {
+    display: none;
+    background: transparent;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 0.5rem;
+}
+
+.mobile-menu {
+    display: none;
+    background: rgba(0, 0, 0, 0.95);
+    backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(249, 115, 22, 0.3);
+}
+
+.mobile-menu.active {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem 1.5rem;
+}
+
+.mobile-menu a {
+    color: #ffffff;
+    text-decoration: none;
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(249, 115, 22, 0.2);
+    transition: color 0.3s;
+}
+
+.mobile-menu a:hover {
+    color: #fb923c;
+}
+
+/* Enhanced Mobile Responsiveness */
+@media (max-width: 1024px) {
+    .hero-container {
+        gap: 2rem;
+    }
+
+    .services-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .service-card:nth-child(3) {
+        grid-column: 1 / -1;
+        max-width: 50%;
+        margin: 0 auto;
+    }
+}
+
+@media (max-width: 768px) {
+    /* Navigation improvements */
+    .mobile-menu-btn {
+        display: block;
+    }
+
+    .nav-links {
+        display: none;
+    }
+
+    /* Hero Section */
+    .hero {
+        padding: 6rem 1rem 3rem;
+    }
+
+    .hero h1 {
+        font-size: 2rem;
+        line-height: 1.3;
+    }
+
+    .hero p {
+        font-size: 1rem;
+    }
+
+    .badge {
+        font-size: 0.75rem;
+        padding: 0.4rem 0.8rem;
+    }
+
+    .features {
+        justify-content: center;
+    }
+
+    .feature-tag {
+        font-size: 0.875rem;
+        padding: 0.4rem 0.8rem;
+    }
+
+    .cta-buttons {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .cta-buttons button {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* Stats */
+    .stats-container {
+        padding: 1.5rem;
+    }
+
+    .stats-grid {
+        gap: 0.75rem;
+    }
+
+    .stat-card {
+        padding: 1rem;
+    }
+
+    .stat-number {
+        font-size: 1.5rem;
+    }
+
+    .stat-label {
+        font-size: 0.75rem;
+    }
+
+    .stat-icon {
+        width: 32px;
+        height: 32px;
+    }
+
+    /* Services */
+    .services {
+        padding: 3rem 1rem;
+    }
+
+    .services-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .service-card:nth-child(3) {
+        max-width: 100%;
+    }
+
+    .section-header {
+        margin-bottom: 2rem;
+    }
+
+    .section-header h2 {
+        font-size: 1.75rem;
+    }
+
+    .section-header p {
+        font-size: 1rem;
+    }
+
+    /* About */
+    .about {
+        padding: 3rem 1rem;
+    }
+
+    .about-content h2 {
+        font-size: 1.75rem;
+    }
+
+    .about-content p {
+        font-size: 1rem;
+    }
+
+    /* Contact */
+    .contact {
+        padding: 3rem 1rem;
+    }
+
+    .contact-card {
+        padding: 2rem 1.5rem;
+    }
+
+    .contact-item {
+        padding: 1rem;
+    }
+
+    .contact-info .value {
+        font-size: 0.875rem;
+    }
+
+    /* Footer */
+    footer {
+        padding: 1.5rem 1rem;
+        font-size: 0.875rem;
+    }
+
+    /* Popup */
+    .enquiry-popup {
+        left: 0.75rem;
+        right: 0.75rem;
+        max-width: calc(100% - 1.5rem);
+    }
+
+    .floating-btn {
+        left: 1rem;
+        bottom: 1rem;
+        padding: 0.875rem;
+    }
+}
+
+@media (max-width: 480px) {
+    /* Extra small screens */
+    .hero h1 {
+        font-size: 1.75rem;
+    }
+
+    .section-header h2,
+    .about-content h2 {
+        font-size: 1.5rem;
+    }
+
+    .btn-large {
+        padding: 0.875rem 1.5rem;
+        font-size: 1rem;
+    }
+
+    .service-card {
+        padding: 1.5rem;
+    }
+
+    .service-card h3 {
+        font-size: 1.25rem;
+    }
+
+    .contact-grid {
+        gap: 1rem;
+    }
+
+    .popup-body {
+        padding: 1.25rem;
+    }
+
+    .logo-text {
+        font-size: 1rem;
+    }
+
+    .logo-img {
+        width: 32px;
+        height: 32px;
+    }
+}
+
+/* Landscape orientation for mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+    .hero {
+        padding: 5rem 1rem 2rem;
+    }
+
+    .hero-container {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
