@@ -27,18 +27,32 @@ function handleSubmit(event) {
     const name = document.getElementById('name').value;
     const contact = document.getElementById('contact').value;
     const message = document.getElementById('message').value;
-    
-    // Log form data (in a real application, you would send this to a server)
-    console.log('Form submitted:', { name, contact, message });
-    
-    // Hide form and show success message
-    document.getElementById('enquiryForm').style.display = 'none';
-    document.getElementById('successMessage').classList.add('active');
-    
-    // Close popup after 2 seconds
-    setTimeout(() => {
-        closeEnquiry();
-    }, 2000);
+
+    // EmailJS parameters
+    const params = {
+        name: name,
+        contact: contact,
+        message: message
+    };
+
+    // Send email using EmailJS
+    emailjs.send("service_p1upsrh", "template_mibmmmu", params)
+        .then(function(response) {
+            console.log('SUCCESS!', response.status, response.text);
+
+            // Show success UI
+            document.getElementById('enquiryForm').style.display = 'none';
+            document.getElementById('successMessage').classList.add('active');
+
+            // Close popup after 2 seconds
+            setTimeout(() => {
+                closeEnquiry();
+            }, 2000);
+        })
+        .catch(function(error) {
+            console.log('FAILED...', error);
+            alert("Failed to send enquiry. Please try again.");
+        });
 }
 
 // Intersection Observer for scroll animations
