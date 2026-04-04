@@ -1,466 +1,553 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="InPixel Network - Transform your digital presence with professional social media management, website development, and Shopify store building services.">
-    <meta name="keywords" content="social media management, website development, shopify store, digital marketing, inpixel network">
-    <title>InPixel Network - Transform Your Digital Presence</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Inpixel Network — Transform your digital presence with social media management, website development, and Shopify store building.">
+  <meta name="keywords" content="social media management, website development, shopify store, digital marketing, inpixel network">
+  <title>Inpixel Network — Digital Dominance</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- Navigation -->
-    <nav>
-        <div class="nav-container">
-            <div class="logo">
-                <img src="logo.jpeg" alt="InPixel Network Logo" class="logo-img">
-                <span class="logo-text">InPixel Network</span>
-            </div>
-            <div class="nav-links">
-                <a href="#services">Services</a>
-                <a href="#about">About</a>
-                <a href="#contact">Contact</a>
-                <button class="btn-primary" onclick="scrollToContact()">Get Started</button>
-            </div>
-            <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
-                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <line x1="3" y1="12" x2="21" y2="12"></line>
-                    <line x1="3" y1="6" x2="21" y2="6"></line>
-                    <line x1="3" y1="18" x2="21" y2="18"></line>
-                </svg>
-            </button>
-        </div>
-        <div class="mobile-menu" id="mobileMenu">
-            <a href="#services" onclick="toggleMobileMenu()">Services</a>
-            <a href="#about" onclick="toggleMobileMenu()">About</a>
-            <a href="#contact" onclick="toggleMobileMenu()">Contact</a>
-        </div>
-    </nav>
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="hero-container">
-            <div class="hero-content">
-                <div class="badge">
-                    <svg class="icon" viewBox="0 0 24 24">
-                        <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
-                    </svg>
-                    <span>Transform Your Digital Presence</span>
-                </div>
+  <!-- Background grid -->
+  <div class="grid-bg"></div>
 
-                <h1>
-                    Struggling to <span class="gradient-text">Boost Your</span> Social Media?
-                </h1>
 
-                <p>
-                    We understand the challenge. Standing out on social media is harder than ever.
-                    Let InPixel Network transform your online presence with data-driven strategies
-                    that deliver real results.
-                </p>
-
-                <div class="features">
-                    <div class="feature-tag">
-                        <svg class="icon" viewBox="0 0 24 24">
-                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                        </svg>
-                        <span>Proven Strategies</span>
-                    </div>
-                    <div class="feature-tag">
-                        <svg class="icon" viewBox="0 0 24 24">
-                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                        </svg>
-                        <span>Expert Team</span>
-                    </div>
-                    <div class="feature-tag">
-                        <svg class="icon" viewBox="0 0 24 24">
-                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                        </svg>
-                        <span>Measurable Growth</span>
-                    </div>
-                </div>
-
-                <div class="cta-buttons">
-                    <button class="btn-primary btn-large" onclick="openEnquiry()">
-                        <svg class="icon" viewBox="0 0 24 24">
-                            <line x1="22" y1="2" x2="11" y2="13"></line>
-                            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-                        </svg>
-                        Start Growing Today
-                    </button>
-                    <button class="btn-secondary" onclick="scrollToContact()">Learn More</button>
-                </div>
-            </div>
-
-            <div class="hero-stats">
-                <div class="stats-container">
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <svg class="stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                                <circle cx="9" cy="7" r="4"></circle>
-                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                            </svg>
-                            <div class="stat-number">150+</div>
-                            <div class="stat-label">Happy Clients</div>
-                        </div>
-                        <div class="stat-card">
-                            <svg class="stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <line x1="12" y1="20" x2="12" y2="10"></line>
-                                <line x1="18" y1="20" x2="18" y2="4"></line>
-                                <line x1="6" y1="20" x2="6" y2="16"></line>
-                            </svg>
-                            <div class="stat-number">300%</div>
-                            <div class="stat-label">Avg. Growth</div>
-                        </div>
-                        <div class="stat-card">
-                            <svg class="stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
-                                <polyline points="17 6 23 6 23 12"></polyline>
-                            </svg>
-                            <div class="stat-number">5M+</div>
-                            <div class="stat-label">Reach Generated</div>
-                        </div>
-                        <div class="stat-card">
-                            <svg class="stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
-                            </svg>
-                            <div class="stat-number">24/7</div>
-                            <div class="stat-label">Support</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Services Section -->
-    <section id="services" class="services">
-        <div class="section-header">
-            <h2>Our <span class="gradient-text">Services</span></h2>
-            <p>Comprehensive digital solutions tailored to elevate your brand</p>
-        </div>
-
-        <div class="services-grid">
-            <!-- Social Media Management -->
-            <div class="service-card">
-                <div class="service-icon">
-                    <svg class="icon-lg" viewBox="0 0 24 24" fill="none" stroke="#fb923c" stroke-width="2">
-                        <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
-                        <polyline points="17 6 23 6 23 12"></polyline>
-                    </svg>
-                </div>
-                <h3>Social Media Management</h3>
-                <p>Strategic content creation, audience engagement, and analytics-driven growth to build your brand's social media presence across all platforms.</p>
-                <ul class="service-features">
-                    <li>
-                        <svg class="icon" viewBox="0 0 24 24" style="color: #fb923c;">
-                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                        </svg>
-                        Content Strategy & Planning
-                    </li>
-                    <li>
-                        <svg class="icon" viewBox="0 0 24 24" style="color: #fb923c;">
-                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                        </svg>
-                        Community Engagement
-                    </li>
-                    <li>
-                        <svg class="icon" viewBox="0 0 24 24" style="color: #fb923c;">
-                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                        </svg>
-                        Performance Analytics
-                    </li>
-                    <li>
-                        <svg class="icon" viewBox="0 0 24 24" style="color: #fb923c;">
-                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                        </svg>
-                        Paid Ad Campaigns
-                    </li>
-                </ul>
-                <button onclick="openEnquiry()">Get Started</button>
-            </div>
-
-            <!-- Website Development -->
-            <div class="service-card">
-                <div class="service-icon">
-                    <svg class="icon-lg" viewBox="0 0 24 24" fill="none" stroke="#fb923c" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <line x1="2" y1="12" x2="22" y2="12"></line>
-                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-                    </svg>
-                </div>
-                <h3>Website Development</h3>
-                <p>Custom, responsive websites built with modern technologies. From landing pages to complex web applications, we bring your vision to life.</p>
-                <ul class="service-features">
-                    <li>
-                        <svg class="icon" viewBox="0 0 24 24" style="color: #fb923c;">
-                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                        </svg>
-                        Custom Design & Development
-                    </li>
-                    <li>
-                        <svg class="icon" viewBox="0 0 24 24" style="color: #fb923c;">
-                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                        </svg>
-                        Responsive & Mobile-First
-                    </li>
-                    <li>
-                        <svg class="icon" viewBox="0 0 24 24" style="color: #fb923c;">
-                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                        </svg>
-                        SEO Optimized
-                    </li>
-                    <li>
-                        <svg class="icon" viewBox="0 0 24 24" style="color: #fb923c;">
-                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                        </svg>
-                        Fast & Secure
-                    </li>
-                </ul>
-                <button onclick="openEnquiry()">Get Started</button>
-            </div>
-
-            <!-- Shopify Store Building -->
-            <div class="service-card">
-                <div class="service-icon">
-                    <svg class="icon-lg" viewBox="0 0 24 24" fill="none" stroke="#fb923c" stroke-width="2">
-                        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
-                        <line x1="3" y1="6" x2="21" y2="6"></line>
-                        <path d="M16 10a4 4 0 0 1-8 0"></path>
-                    </svg>
-                </div>
-                <h3>Shopify Store Building</h3>
-                <p>Launch your e-commerce empire with a professionally designed Shopify store. From setup to optimization, we handle everything.</p>
-                <ul class="service-features">
-                    <li>
-                        <svg class="icon" viewBox="0 0 24 24" style="color: #fb923c;">
-                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                        </svg>
-                        Complete Store Setup
-                    </li>
-                    <li>
-                        <svg class="icon" viewBox="0 0 24 24" style="color: #fb923c;">
-                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                        </svg>
-                        Custom Theme Design
-                    </li>
-                    <li>
-                        <svg class="icon" viewBox="0 0 24 24" style="color: #fb923c;">
-                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                        </svg>
-                        Product Management
-                    </li>
-                    <li>
-                        <svg class="icon" viewBox="0 0 24 24" style="color: #fb923c;">
-                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                        </svg>
-                        Payment Integration
-                    </li>
-                </ul>
-                <button onclick="openEnquiry()">Get Started</button>
-            </div>
-        </div>
-    </section>
-
-    <!-- About Section -->
-    <section id="about" class="about">
-        <div class="about-container">
-            <div class="about-content">
-                <h2>Why Choose <span class="gradient-text">InPixel Network?</span></h2>
-                <p>
-                    We're not just another digital agency. We're your growth partners, dedicated
-                    to transforming your online presence into a powerful asset.
-                </p>
-                <p>
-                    With years of experience and a proven track record, we combine creativity,
-                    technology, and data-driven strategies to deliver results that matter. Your
-                    success is our mission.
-                </p>
-            </div>
-
-            <div class="why-cards">
-                <div class="why-card">
-                    <h3>
-                        <svg class="icon" viewBox="0 0 24 24">
-                            <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
-                        </svg>
-                        Creative Excellence
-                    </h3>
-                    <p>Stunning designs that capture attention and drive engagement.</p>
-                </div>
-                <div class="why-card">
-                    <h3>
-                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <line x1="12" y1="20" x2="12" y2="10"></line>
-                            <line x1="18" y1="20" x2="18" y2="4"></line>
-                            <line x1="6" y1="20" x2="6" y2="16"></line>
-                        </svg>
-                        Data-Driven Results
-                    </h3>
-                    <p>Every decision backed by analytics and measurable outcomes.</p>
-                </div>
-                <div class="why-card">
-                    <h3>
-                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                            <circle cx="9" cy="7" r="4"></circle>
-                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                        </svg>
-                        Dedicated Support
-                    </h3>
-                    <p>24/7 assistance from a team that genuinely cares about your success.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section id="contact" class="contact">
-        <div class="contact-container">
-            <div class="section-header">
-                <h2>Let's <span class="gradient-text">Connect</span></h2>
-                <p>Ready to transform your digital presence? Get in touch with us today.</p>
-            </div>
-
-            <div class="contact-card">
-                <div class="contact-grid">
-                    <a href="https://instagram.com/inpixel_network" target="_blank" rel="noopener noreferrer" class="contact-item">
-                        <div class="contact-icon">
-                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-                                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-                                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-                            </svg>
-                        </div>
-                        <div class="contact-info">
-                            <div class="label">Follow us on</div>
-                            <div class="value">@inpixel_network</div>
-                        </div>
-                    </a>
-
-                    <a href="mailto:supportinpixelnetwork@gmail.com" class="contact-item">
-                        <div class="contact-icon">
-                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                                <polyline points="22,6 12,13 2,6"></polyline>
-                            </svg>
-                        </div>
-                        <div class="contact-info">
-                            <div class="label">Email us at</div>
-                            <div class="value" style="font-size: 0.875rem;">supportinpixelnetwork@gmail.com</div>
-                        </div>
-                    </a>
-                </div>
-
-                <div class="contact-cta">
-                    <button class="btn-primary btn-large" onclick="openEnquiry()">
-                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                        </svg>
-                        Send Quick Enquiry
-                    </button>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer>
-        <div class="footer-logo">
-            <img src="logo.jpeg" alt="InPixel Network Logo" class="footer-logo-img">
-            <span>InPixel Network</span>
-        </div>
-        <p>&copy; 2026 InPixel Network. All rights reserved.</p>
-        <p style="margin-top: 0.5rem; font-size: 0.875rem;">Transforming Digital Presence, One Pixel at a Time</p>
-    </footer>
-
-    <!-- Floating Enquiry Button -->
-    <button class="floating-btn" id="floatingBtn" onclick="openEnquiry()">
-        <svg class="icon-lg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
-            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-        </svg>
-    </button>
-
-    <!-- Enquiry Popup -->
-    <div class="popup-overlay" id="popupOverlay" onclick="closeEnquiry()"></div>
-    <div class="enquiry-popup" id="enquiryPopup">
-        <div class="popup-header">
-            <div class="popup-title">
-                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                </svg>
-                Quick Enquiry
-            </div>
-            <button class="close-btn" onclick="closeEnquiry()">
-                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                </svg>
-            </button>
-        </div>
-        <div class="popup-body">
-            <form id="enquiryForm" onsubmit="handleSubmit(event)">
-                <div class="form-group">
-                    <label for="name">Name</label>
-                    <input type="text" id="name" name="name" required placeholder="Your name">
-                </div>
-                <div class="form-group">
-                    <label for="contact">Contact Number</label>
-                    <input type="tel" id="contact" name="contact" required placeholder="Your contact number">
-                </div>
-                <div class="form-group">
-                    <label for="message">Message</label>
-                    <textarea id="message" name="message" rows="4" required placeholder="Tell us about your project..."></textarea>
-                </div>
-                <button type="submit" class="submit-btn">
-                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <line x1="22" y1="2" x2="11" y2="13"></line>
-                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-                    </svg>
-                    Send Enquiry
-                </button>
-            </form>
-            <div class="success-message" id="successMessage">
-                <svg class="success-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                </svg>
-                <h4>Thank You!</h4>
-                <p>We'll get back to you soon.</p>
-            </div>
-        </div>
+  <!-- ══════════════════════════════════════
+       NAV
+  ══════════════════════════════════════ -->
+  <nav id="nav">
+    <a class="nav-logo" href="#">
+      <img src="logo.jpeg" alt="Inpixel Network">
+      <span>Inpixel Network</span>
+    </a>
+    <div class="nav-links">
+      <a href="#services">Services</a>
+      <a href="#about">About</a>
+      <a href="#process">Process</a>
+      <a href="#contact">Contact</a>
+      <button class="btn-nav" onclick="openPopup()">Get Started</button>
     </div>
+  </nav>
 
-    <!-- JavaScript -->
-    <script src="script.js"></script>
+  <!-- ══════════════════════════════════════
+       HERO
+  ══════════════════════════════════════ -->
+  <section class="hero">
+    <div class="hero-orb hero-orb-1"></div>
+    <div class="hero-orb hero-orb-2"></div>
 
+    <div class="hero-inner max-w">
 
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-<script>
-(function() {
-  emailjs.init({
-    publicKey: "TWpQ-zENXGGMzDMFd",
-  });
-})();
-</script>
+      <!-- Left copy -->
+      <div class="hero-left">
+        <p class="hero-eyebrow">Digital Growth Agency</p>
+        <h1 class="hero-h1">
+          <span class="line">We Build</span>
+          <span class="line gold">Digital</span>
+          <span class="line outline">Empires.</span>
+        </h1>
+        <p class="hero-sub">
+          Inpixel Network turns your brand into a movement — with precision-crafted social media strategies,
+          stunning web experiences, and Shopify stores built to convert.
+        </p>
+        <div class="hero-ctas">
+          <button class="btn-primary" onclick="openPopup()">
+            <span class="shine"></span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:16px">
+              <line x1="22" y1="2" x2="11" y2="13"/>
+              <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+            </svg>
+            Start Growing
+          </button>
+          <button class="btn-ghost" onclick="document.getElementById('services').scrollIntoView({behavior:'smooth'})">
+            Explore Services
+          </button>
+        </div>
+      </div>
 
-    
+      <!-- Right: 3D tilt card -->
+      <div class="hero-right">
+        <div class="tilt-scene" id="tiltScene">
+          <div class="tilt-card" id="tiltCard">
+            <div class="card-grid"></div>
+            <div class="tilt-card-inner">
+              <div class="card-logo-wrap">
+                <img src="logo.jpeg" alt="Inpixel">
+              </div>
+              <div class="card-name">Inpixel Network</div>
+              <div class="card-tagline">One Pixel at a Time</div>
+              <div class="card-stats">
+                <div class="card-stat"><span class="card-stat-num">150+</span><span class="card-stat-label">Clients</span></div>
+                <div class="card-stat"><span class="card-stat-num">300%</span><span class="card-stat-label">Avg Growth</span></div>
+                <div class="card-stat"><span class="card-stat-num">5M+</span><span class="card-stat-label">Reach</span></div>
+                <div class="card-stat"><span class="card-stat-num">24/7</span><span class="card-stat-label">Support</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="float-badge float-badge-1"><div class="dot"></div>Active clients growing</div>
+          <div class="float-badge float-badge-2"><div class="dot"></div>Campaign live now</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       MARQUEE STRIP
+  ══════════════════════════════════════ -->
+  <div class="marquee-strip">
+    <div class="marquee-track">
+      <div class="marquee-item"><span>✦</span> Social Media</div>
+      <div class="marquee-item"><span>✦</span> Web Development</div>
+      <div class="marquee-item"><span>✦</span> Shopify Stores</div>
+      <div class="marquee-item"><span>✦</span> Brand Strategy</div>
+      <div class="marquee-item"><span>✦</span> Content Creation</div>
+      <div class="marquee-item"><span>✦</span> Analytics & Growth</div>
+      <div class="marquee-item"><span>✦</span> Digital Marketing</div>
+      <div class="marquee-item"><span>✦</span> 150+ Happy Clients</div>
+      <!-- duplicate for seamless loop -->
+      <div class="marquee-item"><span>✦</span> Social Media</div>
+      <div class="marquee-item"><span>✦</span> Web Development</div>
+      <div class="marquee-item"><span>✦</span> Shopify Stores</div>
+      <div class="marquee-item"><span>✦</span> Brand Strategy</div>
+      <div class="marquee-item"><span>✦</span> Content Creation</div>
+      <div class="marquee-item"><span>✦</span> Analytics & Growth</div>
+      <div class="marquee-item"><span>✦</span> Digital Marketing</div>
+      <div class="marquee-item"><span>✦</span> 150+ Happy Clients</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       SERVICES
+  ══════════════════════════════════════ -->
+  <section id="services">
+    <div class="max-w">
+      <div class="services-header">
+        <div>
+          <p class="section-label reveal">What We Do</p>
+          <h2 class="section-h2 reveal">Our <span class="gold">Services</span></h2>
+        </div>
+        <p class="section-sub reveal">
+          End-to-end digital solutions, meticulously crafted to elevate your brand from invisible to undeniable.
+        </p>
+      </div>
+
+      <div class="services-grid reveal">
+
+        <!-- Social Media Management -->
+        <div class="svc-card">
+          <div class="svc-number">01</div>
+          <div class="svc-icon-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8">
+              <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
+              <polyline points="17 6 23 6 23 12"/>
+            </svg>
+          </div>
+          <h3 class="svc-title">Social Media Management</h3>
+          <p class="svc-desc">Strategic content creation, community engagement, and analytics-driven campaigns that build unstoppable brand momentum.</p>
+          <div class="svc-tags">
+            <span class="svc-tag">Content Strategy</span>
+            <span class="svc-tag">Reels & Stories</span>
+            <span class="svc-tag">Analytics</span>
+            <span class="svc-tag">Community</span>
+          </div>
+          <div class="svc-arrow">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <line x1="5" y1="12" x2="19" y2="12"/>
+              <polyline points="12 5 19 12 12 19"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Website Development -->
+        <div class="svc-card">
+          <div class="svc-number">02</div>
+          <div class="svc-icon-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8">
+              <rect x="2" y="3" width="20" height="14" rx="2"/>
+              <line x1="8" y1="21" x2="16" y2="21"/>
+              <line x1="12" y1="17" x2="12" y2="21"/>
+            </svg>
+          </div>
+          <h3 class="svc-title">Website Development</h3>
+          <p class="svc-desc">Fast, conversion-optimised websites built with modern tech that look extraordinary and perform even better.</p>
+          <div class="svc-tags">
+            <span class="svc-tag">UI/UX Design</span>
+            <span class="svc-tag">SEO-Ready</span>
+            <span class="svc-tag">Mobile First</span>
+            <span class="svc-tag">Performance</span>
+          </div>
+          <div class="svc-arrow">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <line x1="5" y1="12" x2="19" y2="12"/>
+              <polyline points="12 5 19 12 12 19"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Shopify Store Building -->
+        <div class="svc-card">
+          <div class="svc-number">03</div>
+          <div class="svc-icon-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8">
+              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+              <line x1="3" y1="6" x2="21" y2="6"/>
+              <path d="M16 10a4 4 0 0 1-8 0"/>
+            </svg>
+          </div>
+          <h3 class="svc-title">Shopify Store Building</h3>
+          <p class="svc-desc">Revenue-generating Shopify stores designed to convert browsers into buyers with every single visit.</p>
+          <div class="svc-tags">
+            <span class="svc-tag">Store Setup</span>
+            <span class="svc-tag">CRO</span>
+            <span class="svc-tag">Custom Themes</span>
+            <span class="svc-tag">Apps</span>
+          </div>
+          <div class="svc-arrow">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <line x1="5" y1="12" x2="19" y2="12"/>
+              <polyline points="12 5 19 12 12 19"/>
+            </svg>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       ABOUT / WHY US
+  ══════════════════════════════════════ -->
+  <section id="about">
+    <div class="max-w">
+      <div class="about-inner">
+
+        <div class="about-left">
+          <p class="section-label reveal">Why Inpixel</p>
+          <h2 class="section-h2 reveal">Built for <span class="gold">Results,</span><br>Not Just Looks.</h2>
+          <p class="section-sub reveal">
+            We combine design obsession with data discipline — because a beautiful brand that doesn't grow is just decoration.
+          </p>
+          <div class="metrics-row reveal">
+            <div class="metric-block">
+              <span class="metric-num">150+</span>
+              <span class="metric-label">Happy Clients Served</span>
+            </div>
+            <div class="metric-block">
+              <span class="metric-num">300%</span>
+              <span class="metric-label">Average Growth Rate</span>
+            </div>
+            <div class="metric-block">
+              <span class="metric-num">5M+</span>
+              <span class="metric-label">Total Reach Generated</span>
+            </div>
+            <div class="metric-block">
+              <span class="metric-num">24/7</span>
+              <span class="metric-label">Dedicated Support</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="about-right reveal">
+          <div class="pillar">
+            <div class="pillar-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+              </svg>
+            </div>
+            <div>
+              <h4>Creative Excellence</h4>
+              <p>Stunning, scroll-stopping designs that capture attention in a feed filled with noise. Every pixel is intentional.</p>
+            </div>
+          </div>
+          <div class="pillar">
+            <div class="pillar-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8">
+                <line x1="12" y1="20" x2="12" y2="10"/>
+                <line x1="18" y1="20" x2="18" y2="4"/>
+                <line x1="6" y1="20" x2="6" y2="16"/>
+              </svg>
+            </div>
+            <div>
+              <h4>Data-Driven Strategies</h4>
+              <p>Every campaign decision is backed by real analytics. We measure what matters and optimise relentlessly.</p>
+            </div>
+          </div>
+          <div class="pillar">
+            <div class="pillar-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+              </svg>
+            </div>
+            <div>
+              <h4>Dedicated Partnership</h4>
+              <p>You're not a ticket number. We're your growth partners — reachable, accountable, and invested in your success.</p>
+            </div>
+          </div>
+          <div class="pillar">
+            <div class="pillar-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+              </svg>
+            </div>
+            <div>
+              <h4>Speed & Agility</h4>
+              <p>Trends move fast. We move faster — adapting your strategy in real time so you always stay ahead of the curve.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       PROCESS
+  ══════════════════════════════════════ -->
+  <section id="process">
+    <div class="max-w">
+      <p class="section-label reveal">How It Works</p>
+      <h2 class="section-h2 reveal">Our <span class="gold">4-Step</span> Process</h2>
+
+      <div class="process-grid reveal">
+
+        <div class="process-step">
+          <div class="step-num">01</div>
+          <div class="step-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8">
+              <circle cx="11" cy="11" r="8"/>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+          </div>
+          <h4 class="step-title">Discovery & Audit</h4>
+          <p class="step-desc">We deep-dive into your brand, audience, and competitors to uncover the gaps and opportunities others miss.</p>
+          <div class="step-connector">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5">
+              <line x1="5" y1="12" x2="19" y2="12"/>
+              <polyline points="12 5 19 12 12 19"/>
+            </svg>
+          </div>
+        </div>
+
+        <div class="process-step">
+          <div class="step-num">02</div>
+          <div class="step-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8">
+              <path d="M12 20h9"/>
+              <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+            </svg>
+          </div>
+          <h4 class="step-title">Strategy & Blueprint</h4>
+          <p class="step-desc">A custom growth roadmap — content calendars, campaign structures, and conversion funnels built for your goals.</p>
+          <div class="step-connector">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5">
+              <line x1="5" y1="12" x2="19" y2="12"/>
+              <polyline points="12 5 19 12 12 19"/>
+            </svg>
+          </div>
+        </div>
+
+        <div class="process-step">
+          <div class="step-num">03</div>
+          <div class="step-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8">
+              <polygon points="5 3 19 12 5 21 5 3"/>
+            </svg>
+          </div>
+          <h4 class="step-title">Execute & Launch</h4>
+          <p class="step-desc">Our creative and technical team brings the strategy to life — with precision, quality, and attention to every pixel.</p>
+          <div class="step-connector">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5">
+              <line x1="5" y1="12" x2="19" y2="12"/>
+              <polyline points="12 5 19 12 12 19"/>
+            </svg>
+          </div>
+        </div>
+
+        <div class="process-step">
+          <div class="step-num">04</div>
+          <div class="step-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8">
+              <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
+              <polyline points="17 6 23 6 23 12"/>
+            </svg>
+          </div>
+          <h4 class="step-title">Measure & Scale</h4>
+          <p class="step-desc">We track every metric, optimise continuously, and scale what's working — turning results into exponential growth.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       CONTACT
+  ══════════════════════════════════════ -->
+  <section id="contact">
+    <div class="max-w">
+      <div class="contact-inner">
+
+        <div class="contact-left">
+          <p class="section-label reveal">Let's Talk</p>
+          <h2 class="section-h2 reveal">Ready to <span class="gold">Dominate</span><br>Your Space?</h2>
+          <p class="section-sub reveal">Drop us a message and a strategist will be in touch within 24 hours.</p>
+
+          <div class="contact-channels reveal">
+            <a href="https://instagram.com/inpixel_network" target="_blank" rel="noopener noreferrer" class="channel-link">
+              <div class="channel-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8">
+                  <rect x="2" y="2" width="20" height="20" rx="5"/>
+                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+                  <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+                </svg>
+              </div>
+              <div>
+                <div class="channel-label">Instagram</div>
+                <div class="channel-value">@inpixel_network</div>
+              </div>
+            </a>
+            <a href="mailto:hello@inpixelnetwork.com" class="channel-link">
+              <div class="channel-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                  <polyline points="22,6 12,13 2,6"/>
+                </svg>
+              </div>
+              <div>
+                <div class="channel-label">Email</div>
+                <div class="channel-value">supportinpixelnetwork@gmail.com</div>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <div class="contact-right reveal">
+          <form id="mainForm" onsubmit="handleMainSubmit(event)">
+            <h3 style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.3rem;margin-bottom:28px;">Send an Enquiry</h3>
+            <div class="form-row">
+              <label>Your Name</label>
+              <input type="text" id="m-name" required placeholder="Raj Verma">
+            </div>
+            <div class="form-row">
+              <label>Phone Number</label>
+              <input type="tel" id="m-phone" required placeholder="+91 98765 43210">
+            </div>
+            <div class="form-row">
+              <label>Message</label>
+              <textarea id="m-message" rows="4" required placeholder="Tell us about your project..."></textarea>
+            </div>
+            <button type="submit" class="form-submit">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:16px">
+                <line x1="22" y1="2" x2="11" y2="13"/>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+              </svg>
+              Send Message
+            </button>
+          </form>
+          <div class="success-panel" id="mainSuccess">
+            <div class="success-circle">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                <polyline points="22 4 12 14.01 9 11.01"/>
+              </svg>
+            </div>
+            <h3 style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.4rem;margin-bottom:10px;">Message Sent!</h3>
+            <p style="color:var(--text-muted)">We'll get back to you within 24 hours.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       FOOTER
+  ══════════════════════════════════════ -->
+  <footer>
+    <div class="footer-logo">
+      <img src="logo.jpeg" alt="Inpixel Network">
+      <span>Inpixel Network</span>
+    </div>
+    <div class="footer-center">© 2026 Inpixel Network. All rights reserved.</div>
+    <div class="footer-tagline">Transforming Digital Presence, One Pixel at a Time</div>
+  </footer>
+
+  <!-- ══════════════════════════════════════
+       FLOATING CTA
+  ══════════════════════════════════════ -->
+  <div class="floating-cta" id="floatingCta">
+    <button class="float-pill" onclick="openPopup()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+      </svg>
+      Quick Enquiry
+    </button>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       POPUP OVERLAY + MODAL
+  ══════════════════════════════════════ -->
+  <div class="overlay" id="overlay" onclick="closePopup()"></div>
+
+  <div class="popup" id="popup">
+    <div class="popup-header">
+      <h3 class="popup-title">Quick Enquiry</h3>
+      <button class="popup-close" onclick="closePopup()">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+    <form id="popupForm" onsubmit="handlePopupSubmit(event)">
+      <div class="form-row">
+        <label>Name</label>
+        <input type="text" id="p-name" required placeholder="Your name">
+      </div>
+      <div class="form-row">
+        <label>Contact Number</label>
+        <input type="tel" id="p-phone" required placeholder="Your phone number">
+      </div>
+      <div class="form-row">
+        <label>Message</label>
+        <textarea id="p-message" rows="3" required placeholder="Tell us about your project..."></textarea>
+      </div>
+      <button type="submit" class="form-submit">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:16px">
+          <line x1="22" y1="2" x2="11" y2="13"/>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+        </svg>
+        Send Enquiry
+      </button>
+    </form>
+    <div class="success-panel" id="popupSuccess">
+      <div class="success-circle">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+          <polyline points="22 4 12 14.01 9 11.01"/>
+        </svg>
+      </div>
+      <h3 style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.3rem;margin-bottom:10px;color:white">Thank You!</h3>
+      <p style="color:var(--text-muted)">We'll reach out to you soon.</p>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       SCRIPTS
+  ══════════════════════════════════════ -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script src="script.js"></script>
+
 </body>
 </html>
