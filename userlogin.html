@@ -668,15 +668,82 @@
     }
 
     // Step 2 — Submit
-    function handleReqSubmit(e) {
-      e.preventDefault();
-      if (!document.getElementById('termsCheck').checked) {
-        const lbl = document.getElementById('termsLabel');
-        lbl.style.borderColor = '#ff4444';
-        lbl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        setTimeout(() => lbl.style.borderColor = '', 2500);
-        return;
-      }
+    async function handleReqSubmit(e) {
+  e.preventDefault();
+
+  if (!document.getElementById('termsCheck').checked) {
+    const lbl = document.getElementById('termsLabel');
+    lbl.style.borderColor = '#ff4444';
+    lbl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    setTimeout(() => lbl.style.borderColor = '', 2500);
+    return;
+  }
+
+  const user = JSON.parse(sessionStorage.getItem('inpixel_user') || '{}');
+
+  const getChecked = n =>
+    [...document.querySelectorAll(`input[name="${n}"]:checked`)].map(i => i.value);
+
+  const getRadio = n => {
+    const el = document.querySelector(`input[name="${n}"]:checked`);
+    return el ? el.value : '';
+  };
+
+  // ✅ Prepare data for DB
+  const data = {
+    name: user.name,
+    email: user.email,
+    phone: user.phone,
+
+    services: getChecked('websiteType'), // main services
+
+    budget: "", // you can add later if needed
+    timeline: "",
+
+    business: document.getElementById('r-business').value,
+
+    message: JSON.stringify({
+      industry: document.getElementById('r-industry').value,
+      location: document.getElementById('r-location').value,
+      description: document.getElementById('r-desc').value,
+      features: getChecked('features'),
+      designStyle: getRadio('designStyle'),
+      colors: document.getElementById('r-colors').value,
+      hasLogo: getRadio('hasLogo'),
+      references: document.getElementById('r-refs').value,
+      pages: document.getElementById('r-pages').value,
+      content: getRadio('contentProvided'),
+      domain: getRadio('hasDomain'),
+      hosting: getRadio('hasHosting'),
+      domainName: document.getElementById('r-domain').value,
+      extra: document.getElementById('r-extra').value,
+      source: document.getElementById('r-source').value
+    })
+  };
+
+  try {
+    // 🔥 SEND TO DATABASE
+    const res = await fetch('/api/save-user', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+
+    const result = await res.json();
+    console.log(result);
+
+    // ✅ Success UI
+    document.getElementById('reqForm').style.display = 'none';
+    document.getElementById('userGreeting').style.display = 'none';
+    document.getElementById('reqSuccess').classList.add('show');
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  } catch (err) {
+    console.error(err);
+    alert("Error saving data");
+  }
+}
 
       const user = JSON.parse(sessionStorage.getItem('inpixel_user') || '{}');
       const getChecked = n => [...document.querySelectorAll(`input[name="${n}"]:checked`)].map(i => i.value);

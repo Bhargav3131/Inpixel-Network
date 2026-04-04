@@ -855,5 +855,38 @@
     // Seed demo data only if localStorage is empty (remove this call in production)
     seedDemoData();
   </script>
+  <script>
+  fetch('/api/get-users')
+    .then(res => res.json())
+    .then(data => {
+      console.log(data);
+
+      const container = document.querySelector('.cards-grid');
+
+      data.forEach(user => {
+        const details = JSON.parse(user.message || "{}");
+
+        const card = document.createElement('div');
+        card.className = 'sub-card';
+
+        card.innerHTML = `
+          <div class="card-name">${user.name}</div>
+          <div class="card-contact">
+            <span>${user.email}</span>
+            <span>${user.phone}</span>
+          </div>
+          <div class="card-chips">
+            ${(user.services || []).map(s => `<span class="chip">${s}</span>`).join('')}
+          </div>
+          <div class="card-business">
+            <strong>${user.business}</strong>
+          </div>
+        `;
+
+        container.appendChild(card);
+      });
+    })
+    .catch(err => console.error(err));
+</script>
 </body>
 </html>
