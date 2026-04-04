@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inpixel Network — Admin Panel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png" href="logo1.jpeg">
+  <style>
+    :root {
+      --gold: #F0A500;
+      --gold-light: #FFD166;
+      --gold-dim: #8B6100;
+      --black: #060608;
+      --black2: #0D0D10;
+      --surface: #111116;
+      --surface2: #18181F;
+      --border: rgba(240,165,0,0.12);
+      --border-bright: rgba(240,165,0,0.35);
+      --text: #E8E8F0;
+      --text-muted: #6B6B80;
+      --white: #FFFFFF;
+      --radius: 2px;
+      --glow: 0 0 40px rgba(240,165,0,0.15);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--black);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      overflow-x: hidden; min-height: 100vh;
+    }
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.028; pointer-events: none; z-index: 9998;
+    }
+    .grid-bg {
+      position: fixed; inset: 0;
+      background-image:
+        linear-gradient(rgba(240,165,0,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(240,165,0,0.03) 1px, transparent 1px);
+      background-size: 60px 60px; pointer-events: none; z-index: 0;
+    }
+
+    /* NAV */
+    nav {
+      position: sticky; top: 0;
+      z-index: 100;
+      padding: 16px 48px;
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(6,6,8,0.95);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 12px;
+      font-family: 'Syne', sans-serif;
+      font-weight: 800; font-size: 1.1rem;
+      color: var(--white); text-decoration: none;
+    }
+    .nav-logo img { width: 34px; height: 34px; object-fit: cover; border-radius: 6px; }
+    .nav-badge {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.68rem; letter-spacing: 0.1em;
+      background: rgba(240,165,0,0.15);
+      border: 1px solid var(--border-bright);
+      color: var(--gold); padding: 4px 10px;
+    }
+    .nav-right { display: flex; align-items: center; gap: 16px; }
+    .nav-back {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.75rem; color: var(--text-muted);
+      text-decoration: none; letter-spacing: 0.04em;
+      display: flex; align-items: center; gap: 6px;
+      transition: color 0.3s;
+    }
+    .nav-back:hover { color: var(--gold); }
+    .nav-back svg { width: 14px; stroke: currentColor; }
+
+    /* ADMIN LOGIN GATE */
+    #adminGate {
+      position: fixed; inset: 0; z-index: 200;
+      background: var(--black);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .gate-card {
+      background: var(--surface);
+      border: 1px solid var(--border-bright);
+      padding: 48px 40px; max-width: 400px; width: 90%;
+      position: relative; text-align: center;
+    }
+    .gate-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    }
+    .gate-icon {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: rgba(240,165,0,0.1);
+      border: 1px solid var(--border-bright);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 20px;
+    }
+    .gate-icon svg { width: 24px; stroke: var(--gold); }
+    .gate-card h2 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800; font-size: 1.5rem; color: var(--white);
+      margin-bottom: 6px;
+    }
+    .gate-card p { color: var(--text-muted); font-size: 0.88rem; margin-bottom: 24px; }
+    .gate-input {
+      width: 100%; background: var(--black2);
+      border: 1px solid var(--border); color: var(--white);
+      font-family: 'DM Sans', sans-serif; font-size: 1rem;
+      padding: 14px 16px; outline: none; text-align: center;
+      letter-spacing: 0.2em; margin-bottom: 14px;
+      transition: border-color 0.3s;
+    }
+    .gate-input:focus { border-color: var(--gold); }
+    .gate-btn {
+      width: 100%; background: var(--gold); color: var(--black);
+      font-family: 'Syne', sans-serif; font-weight: 700;
+      font-size: 0.95rem; border: none; padding: 14px;
+      cursor: pointer; transition: all 0.3s;
+    }
+    .gate-btn:hover { background: var(--gold-light); box-shadow: 0 0 30px rgba(240,165,0,0.4); }
+    .gate-error {
+      color: #ff4444; font-size: 0.82rem; margin-top: 10px;
+      display: none;
+    }
+
+    /* MAIN */
+    main {
+      max-width: 1200px; margin: 0 auto;
+      padding: 40px 32px 80px;
+      position: relative; z-index: 1;
+    }
+
+    /* HEADER ROW */
+    .page-header {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      margin-bottom: 36px; flex-wrap: wrap; gap: 20px;
+    }
+    .page-header-left p {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 6px;
+    }
+    .page-header-left h1 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800; font-size: 2rem; color: var(--white);
+    }
+    .stats-row {
+      display: flex; gap: 16px; flex-wrap: wrap;
+    }
+    .stat-chip {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 12px 20px; text-align: center;
+    }
+    .stat-chip-num {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800; font-size: 1.6rem; color: var(--gold);
+    }
+    .stat-chip-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.68rem; color: var(--text-muted);
+      letter-spacing: 0.08em; text-transform: uppercase; margin-top: 2px;
+    }
+
+    /* TOOLBAR */
+    .toolbar {
+      display: flex; align-items: center; gap: 12px;
+      margin-bottom: 24px; flex-wrap: wrap;
+    }
+    .search-box {
+      flex: 1; min-width: 200px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 14px;
+    }
+    .search-box svg { width: 16px; stroke: var(--text-muted); flex-shrink: 0; }
+    .search-box input {
+      background: none; border: none; outline: none;
+      color: var(--text); font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem; width: 100%;
+    }
+    .search-box input::placeholder { color: var(--text-muted); }
+    .filter-btn {
+      background: var(--surface); border: 1px solid var(--border);
+      color: var(--text-muted);
+      font-family: 'Space Mono', monospace; font-size: 0.72rem;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      padding: 10px 16px; cursor: pointer; transition: all 0.2s;
+    }
+    .filter-btn:hover, .filter-btn.active {
+      border-color: var(--gold); color: var(--gold);
+      background: rgba(240,165,0,0.05);
+    }
+    .clear-btn {
+      background: transparent; border: 1px solid rgba(255,68,68,0.3);
+      color: #ff6666;
+      font-family: 'Space Mono', monospace; font-size: 0.7rem;
+      padding: 10px 14px; cursor: pointer; transition: all 0.2s;
+    }
+    .clear-btn:hover { border-color: #ff4444; }
+
+    /* EMPTY STATE */
+    .empty-state {
+      text-align: center; padding: 80px 20px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+    }
+    .empty-state svg { width: 48px; stroke: var(--text-muted); margin-bottom: 16px; }
+    .empty-state h3 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700; font-size: 1.3rem; color: var(--text);
+      margin-bottom: 8px;
+    }
+    .empty-state p { color: var(--text-muted); font-size: 0.88rem; }
+    .empty-state a {
+      display: inline-block; margin-top: 20px;
+      background: var(--gold); color: var(--black);
+      font-family: 'Syne', sans-serif; font-weight: 700;
+      padding: 12px 24px; text-decoration: none;
+      font-size: 0.9rem; transition: all 0.3s;
+    }
+    .empty-state a:hover { background: var(--gold-light); }
+
+    /* CARDS GRID */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 16px;
+    }
+
+    .sub-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 24px;
+      cursor: pointer;
+      transition: border-color 0.3s, transform 0.2s, box-shadow 0.3s;
+      position: relative; overflow: hidden;
+      animation: fadeUp 0.4s ease both;
+    }
+    .sub-card:hover {
+      border-color: var(--border-bright);
+      transform: translateY(-2px);
+      box-shadow: var(--glow);
+    }
+    .sub-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(240,165,0,0.4), transparent);
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .sub-card:hover::before { opacity: 1; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .card-top {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .card-avatar {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold-dim), var(--gold));
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Syne', sans-serif; font-weight: 800;
+      font-size: 1.1rem; color: var(--black); flex-shrink: 0;
+    }
+    .card-date {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.68rem; color: var(--text-muted);
+      letter-spacing: 0.05em;
+    }
+
+    .card-name {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700; font-size: 1.1rem; color: var(--white);
+      margin-bottom: 4px;
+    }
+    .card-contact {
+      font-size: 0.82rem; color: var(--text-muted);
+      margin-bottom: 14px; line-height: 1.5;
+    }
+    .card-contact span { display: block; }
+
+    .card-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+    .chip {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem; letter-spacing: 0.06em;
+      padding: 3px 8px;
+      background: rgba(240,165,0,0.1);
+      border: 1px solid rgba(240,165,0,0.2);
+      color: var(--gold); text-transform: uppercase;
+    }
+    .chip.grey {
+      background: rgba(107,107,128,0.1);
+      border-color: rgba(107,107,128,0.2);
+      color: var(--text-muted);
+    }
+
+    .card-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      padding-top: 14px; border-top: 1px solid var(--border);
+    }
+    .card-business {
+      font-size: 0.82rem; color: var(--text-muted);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .card-business strong { color: var(--text); }
+    .view-btn {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.68rem; color: var(--gold);
+      display: flex; align-items: center; gap: 4px;
+      flex-shrink: 0;
+    }
+    .view-btn svg { width: 12px; stroke: currentColor; }
+
+    /* ── MODAL / DETAIL POPUP ── */
+    .overlay {
+      position: fixed; inset: 0; z-index: 300;
+      background: rgba(6,6,8,0.85);
+      backdrop-filter: blur(8px);
+      opacity: 0; pointer-events: none; transition: opacity 0.3s;
+    }
+    .overlay.show { opacity: 1; pointer-events: all; }
+
+    .detail-modal {
+      position: fixed; z-index: 400;
+      top: 50%; left: 50%; transform: translate(-50%, -48%) scale(0.96);
+      width: 90%; max-width: 760px; max-height: 88vh;
+      overflow-y: auto;
+      background: var(--surface);
+      border: 1px solid var(--border-bright);
+      opacity: 0; pointer-events: none;
+      transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .detail-modal.show {
+      opacity: 1; pointer-events: all;
+      transform: translate(-50%, -50%) scale(1);
+    }
+    .detail-modal::before {
+      content: '';
+      position: sticky; top: 0; display: block;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    }
+
+    .modal-header {
+      position: sticky; top: 2px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 20px 28px;
+      display: flex; align-items: center; justify-content: space-between;
+      z-index: 10;
+    }
+    .modal-header-left { display: flex; align-items: center; gap: 14px; }
+    .modal-avatar {
+      width: 48px; height: 48px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold-dim), var(--gold));
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Syne', sans-serif; font-weight: 800;
+      font-size: 1.2rem; color: var(--black); flex-shrink: 0;
+    }
+    .modal-name {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800; font-size: 1.2rem; color: var(--white);
+    }
+    .modal-sub { font-size: 0.82rem; color: var(--text-muted); margin-top: 2px; }
+    .modal-close {
+      background: var(--black2); border: 1px solid var(--border);
+      width: 36px; height: 36px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: border-color 0.2s;
+    }
+    .modal-close:hover { border-color: var(--gold); }
+    .modal-close svg { width: 16px; stroke: var(--text-muted); }
+
+    .modal-body { padding: 28px; }
+
+    .detail-section { margin-bottom: 28px; }
+    .detail-section-title {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 14px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    .detail-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+    }
+    @media (max-width: 500px) { .detail-grid { grid-template-columns: 1fr; } }
+
+    .detail-field label {
+      display: block;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--text-muted); margin-bottom: 4px;
+    }
+    .detail-field p {
+      font-size: 0.88rem; color: var(--text); line-height: 1.5;
+    }
+    .detail-field p.empty { color: var(--text-muted); font-style: italic; }
+    .detail-field.full { grid-column: 1 / -1; }
+
+    .tag-list { display: flex; flex-wrap: wrap; gap: 6px; }
+    .tag {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.66rem; letter-spacing: 0.05em;
+      padding: 4px 10px;
+      background: rgba(240,165,0,0.1);
+      border: 1px solid rgba(240,165,0,0.2);
+      color: var(--gold);
+    }
+    .tag.neutral {
+      background: rgba(107,107,128,0.1);
+      border-color: rgba(107,107,128,0.2);
+      color: var(--text-muted);
+    }
+
+    .modal-footer {
+      padding: 16px 28px;
+      border-top: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      background: var(--surface);
+    }
+    .modal-timestamp {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem; color: var(--text-muted);
+    }
+    .delete-btn {
+      background: transparent; border: 1px solid rgba(255,68,68,0.3);
+      color: #ff6666;
+      font-family: 'Space Mono', monospace; font-size: 0.7rem;
+      padding: 8px 14px; cursor: pointer; transition: all 0.2s;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .delete-btn:hover { border-color: #ff4444; background: rgba(255,68,68,0.08); }
+    .delete-btn svg { width: 13px; stroke: currentColor; }
+
+    @media (max-width: 600px) {
+      nav { padding: 14px 20px; }
+      main { padding: 24px 16px 60px; }
+      .page-header { flex-direction: column; }
+      .modal-body { padding: 20px 16px; }
+      .modal-header { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="grid-bg"></div>
+
+  <!-- ADMIN GATE -->
+  <div id="adminGate">
+    <div class="gate-card">
+      <div class="gate-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      </div>
+      <h2>Admin Access</h2>
+      <p>Enter the admin passcode to access the client submissions panel.</p>
+      <input class="gate-input" type="password" id="gateInput" placeholder="••••••••" maxlength="20">
+      <button class="gate-btn" onclick="checkGate()">Enter Panel</button>
+      <p class="gate-error" id="gateError">Incorrect passcode. Try again.</p>
+    </div>
+  </div>
+
+  <nav>
+    <div style="display:flex;align-items:center;gap:14px;">
+      <a class="nav-logo" href="index.html">
+        <img src="logo.jpeg" alt="Inpixel Network">
+        <span>Inpixel Network</span>
+      </a>
+      <span class="nav-badge">Admin Panel</span>
+    </div>
+    <div class="nav-right">
+      <a class="nav-back" href="index.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Back to Site
+      </a>
+    </div>
+  </nav>
+
+  <main>
+    <div class="page-header">
+      <div class="page-header-left">
+        <p>Dashboard</p>
+        <h1>Client Submissions</h1>
+      </div>
+      <div class="stats-row" id="statsRow">
+        <div class="stat-chip">
+          <div class="stat-chip-num" id="statTotal">0</div>
+          <div class="stat-chip-label">Total</div>
+        </div>
+        <div class="stat-chip">
+          <div class="stat-chip-num" id="statToday">0</div>
+          <div class="stat-chip-label">Today</div>
+        </div>
+        <div class="stat-chip">
+          <div class="stat-chip-num" id="statWeek">0</div>
+          <div class="stat-chip-label">This Week</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <div class="search-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="searchInput" placeholder="Search by name, email, business..." oninput="filterCards()">
+      </div>
+      <button class="filter-btn active" onclick="setFilter('all', this)">All</button>
+      <button class="filter-btn" onclick="setFilter('today', this)">Today</button>
+      <button class="filter-btn" onclick="setFilter('week', this)">This Week</button>
+      <button class="clear-btn" onclick="confirmClearAll()">Clear All</button>
+    </div>
+
+    <div id="cardsContainer"></div>
+  </main>
+
+  <!-- OVERLAY -->
+  <div class="overlay" id="overlay" onclick="closeModal()"></div>
+
+  <!-- DETAIL MODAL -->
+  <div class="detail-modal" id="detailModal">
+    <div class="modal-header">
+      <div class="modal-header-left">
+        <div class="modal-avatar" id="mAvatar"></div>
+        <div>
+          <div class="modal-name" id="mName"></div>
+          <div class="modal-sub" id="mSub"></div>
+        </div>
+      </div>
+      <button class="modal-close" onclick="closeModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <div class="modal-body" id="mBody"></div>
+
+    <div class="modal-footer">
+      <div class="modal-timestamp" id="mTimestamp"></div>
+      <button class="delete-btn" id="mDeleteBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+        Delete Entry
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // ── ADMIN GATE ──
+    const ADMIN_PASS = 'inpixel2026'; // Change this passcode
+
+    document.getElementById('gateInput').addEventListener('keydown', e => {
+      if (e.key === 'Enter') checkGate();
+    });
+
+    function checkGate() {
+      const val = document.getElementById('gateInput').value;
+      if (val === ADMIN_PASS) {
+        document.getElementById('adminGate').style.display = 'none';
+        loadSubmissions();
+      } else {
+        document.getElementById('gateError').style.display = 'block';
+        document.getElementById('gateInput').value = '';
+        document.getElementById('gateInput').focus();
+      }
+    }
+
+    // ── DATA ──
+    let allSubmissions = [];
+    let currentFilter = 'all';
+    let currentSearch = '';
+    let currentOpenId = null;
+
+    function loadSubmissions() {
+      allSubmissions = JSON.parse(localStorage.getItem('inpixel_submissions') || '[]');
+      // newest first
+      allSubmissions.sort((a,b) => new Date(b.submittedAt) - new Date(a.submittedAt));
+      updateStats();
+      renderCards();
+    }
+
+    function updateStats() {
+      const now = new Date();
+      const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const weekStart  = new Date(now); weekStart.setDate(now.getDate() - 7);
+
+      document.getElementById('statTotal').textContent = allSubmissions.length;
+      document.getElementById('statToday').textContent = allSubmissions.filter(s => new Date(s.submittedAt) >= todayStart).length;
+      document.getElementById('statWeek').textContent  = allSubmissions.filter(s => new Date(s.submittedAt) >= weekStart).length;
+    }
+
+    function getFiltered() {
+      const now = new Date();
+      const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const weekStart  = new Date(now); weekStart.setDate(now.getDate() - 7);
+
+      let list = allSubmissions;
+      if (currentFilter === 'today') list = list.filter(s => new Date(s.submittedAt) >= todayStart);
+      if (currentFilter === 'week')  list = list.filter(s => new Date(s.submittedAt) >= weekStart);
+
+      if (currentSearch) {
+        const q = currentSearch.toLowerCase();
+        list = list.filter(s =>
+          (s.user?.name||'').toLowerCase().includes(q) ||
+          (s.user?.email||'').toLowerCase().includes(q) ||
+          (s.user?.phone||'').toLowerCase().includes(q) ||
+          (s.businessName||'').toLowerCase().includes(q) ||
+          (s.industry||'').toLowerCase().includes(q)
+        );
+      }
+      return list;
+    }
+
+    function renderCards() {
+      const container = document.getElementById('cardsContainer');
+      const list = getFiltered();
+
+      if (list.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            <h3>No Submissions Yet</h3>
+            <p>Once clients fill the requirement form, their entries will appear here.</p>
+            <a href="userlogin.html" target="_blank">Open Client Form →</a>
+          </div>`;
+        return;
+      }
+
+      container.innerHTML = `<div class="cards-grid">${list.map((s, i) => cardHTML(s, i)).join('')}</div>`;
+    }
+
+    function initials(name) {
+      if (!name) return '?';
+      return name.trim().split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
+    }
+
+    function formatDate(iso) {
+      const d = new Date(iso);
+      return d.toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' });
+    }
+
+    function cardHTML(s, idx) {
+      const chips = [];
+      if (s.websiteTypes?.length) chips.push(...s.websiteTypes.slice(0,2).map(t => `<span class="chip">${t}</span>`));
+      if (s.budget) chips.push(`<span class="chip grey">${s.budget}</span>`);
+
+      return `
+        <div class="sub-card" onclick="openModal('${s.id}')" style="animation-delay:${idx * 0.05}s">
+          <div class="card-top">
+            <div class="card-avatar">${initials(s.user?.name)}</div>
+            <div class="card-date">${formatDate(s.submittedAt)}</div>
+          </div>
+          <div class="card-name">${s.user?.name || '—'}</div>
+          <div class="card-contact">
+            <span>${s.user?.email || '—'}</span>
+            <span>${s.user?.phone || '—'}</span>
+          </div>
+          <div class="card-chips">${chips.join('') || '<span class="chip grey">No type selected</span>'}</div>
+          <div class="card-footer">
+            <div class="card-business"><strong>${s.businessName || 'No business name'}</strong> · ${s.industry || '—'}</div>
+            <div class="view-btn">View <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+          </div>
+        </div>`;
+    }
+
+    // ── MODAL ──
+    function openModal(id) {
+      const s = allSubmissions.find(x => x.id === id);
+      if (!s) return;
+      currentOpenId = id;
+
+      document.getElementById('mAvatar').textContent = initials(s.user?.name);
+      document.getElementById('mName').textContent   = s.user?.name || '—';
+      document.getElementById('mSub').textContent    = (s.user?.email || '') + ' · ' + (s.user?.phone || '');
+      document.getElementById('mTimestamp').textContent = 'Submitted: ' + new Date(s.submittedAt).toLocaleString('en-IN');
+
+      const tagList = arr => arr?.length
+        ? `<div class="tag-list">${arr.map(t => `<span class="tag">${t}</span>`).join('')}</div>`
+        : `<p class="empty">None selected</p>`;
+
+      const val = v => v ? `<p>${v}</p>` : `<p class="empty">Not provided</p>`;
+
+      document.getElementById('mBody').innerHTML = `
+        <div class="detail-section">
+          <div class="detail-section-title">Contact Information</div>
+          <div class="detail-grid">
+            <div class="detail-field"><label>Name</label>${val(s.user?.name)}</div>
+            <div class="detail-field"><label>Phone</label>${val(s.user?.phone)}</div>
+            <div class="detail-field full"><label>Email</label>${val(s.user?.email)}</div>
+          </div>
+        </div>
+
+        <div class="detail-section">
+          <div class="detail-section-title">Business Information</div>
+          <div class="detail-grid">
+            <div class="detail-field"><label>Business Name</label>${val(s.businessName)}</div>
+            <div class="detail-field"><label>Industry</label>${val(s.industry)}</div>
+            <div class="detail-field"><label>Location</label>${val(s.location)}</div>
+            <div class="detail-field"><label>How Heard About Us</label>${val(s.hearAboutUs)}</div>
+            <div class="detail-field full"><label>Business Description</label>${val(s.businessDesc)}</div>
+          </div>
+        </div>
+
+        <div class="detail-section">
+          <div class="detail-section-title">Website Requirements</div>
+          <div class="detail-grid">
+            <div class="detail-field full"><label>Website Types</label>${tagList(s.websiteTypes)}</div>
+            <div class="detail-field full"><label>Required Features</label>${tagList(s.features)}</div>
+            <div class="detail-field full"><label>Pages Requested</label>${val(s.pages)}</div>
+          </div>
+        </div>
+
+        <div class="detail-section">
+          <div class="detail-section-title">Design Preferences</div>
+          <div class="detail-grid">
+            <div class="detail-field"><label>Design Style</label>${val(s.designStyle)}</div>
+            <div class="detail-field"><label>Color Theme</label>${val(s.colorTheme)}</div>
+            <div class="detail-field"><label>Has Logo?</label>${val(s.hasLogo)}</div>
+            <div class="detail-field"><label>Content Provided?</label>${val(s.contentProvided)}</div>
+            <div class="detail-field full"><label>Reference Websites</label>${val(s.referenceWebsites)}</div>
+          </div>
+        </div>
+
+        <div class="detail-section">
+          <div class="detail-section-title">Technical & Budget</div>
+          <div class="detail-grid">
+            <div class="detail-field"><label>Has Domain?</label>${val(s.hasDomain)}</div>
+            <div class="detail-field"><label>Domain Name</label>${val(s.domainName)}</div>
+            <div class="detail-field"><label>Has Hosting?</label>${val(s.hasHosting)}</div>
+            <div class="detail-field"><label>Budget Range</label>${val(s.budget)}</div>
+            <div class="detail-field"><label>Timeline</label>${val(s.timeline)}</div>
+          </div>
+        </div>
+
+        ${s.extraNotes ? `
+        <div class="detail-section">
+          <div class="detail-section-title">Additional Notes</div>
+          <div class="detail-field"><p>${s.extraNotes}</p></div>
+        </div>` : ''}
+      `;
+
+      document.getElementById('mDeleteBtn').onclick = () => deleteEntry(id);
+      document.getElementById('overlay').classList.add('show');
+      document.getElementById('detailModal').classList.add('show');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      document.getElementById('overlay').classList.remove('show');
+      document.getElementById('detailModal').classList.remove('show');
+      document.body.style.overflow = '';
+      currentOpenId = null;
+    }
+
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+    // ── DELETE ──
+    function deleteEntry(id) {
+      if (!confirm('Delete this submission? This cannot be undone.')) return;
+      allSubmissions = allSubmissions.filter(s => s.id !== id);
+      localStorage.setItem('inpixel_submissions', JSON.stringify(allSubmissions));
+      closeModal();
+      updateStats();
+      renderCards();
+    }
+
+    function confirmClearAll() {
+      if (!confirm('Delete ALL submissions? This cannot be undone.')) return;
+      localStorage.removeItem('inpixel_submissions');
+      allSubmissions = [];
+      updateStats();
+      renderCards();
+    }
+
+    // ── FILTER / SEARCH ──
+    function setFilter(f, btn) {
+      currentFilter = f;
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderCards();
+    }
+
+    function filterCards() {
+      currentSearch = document.getElementById('searchInput').value;
+      renderCards();
+    }
+
+    // ── DEMO DATA (remove in production) ──
+    function seedDemoData() {
+      const existing = JSON.parse(localStorage.getItem('inpixel_submissions') || '[]');
+      if (existing.length > 0) return; // Don't overwrite real data
+
+      const demos = [
+        {
+          id: Date.now().toString() + '1',
+          submittedAt: new Date(Date.now() - 1000*60*60*2).toISOString(),
+          user: { name: 'Priya Sharma', email: 'priya@example.com', phone: '+91 98765 11111' },
+          businessName: 'Priya Boutique', industry: 'Fashion', location: 'Mumbai',
+          businessDesc: 'Online women\'s clothing boutique specializing in ethnic wear.',
+          websiteTypes: ['E-Commerce Store', 'Shopify Store'],
+          features: ['WhatsApp Chat Button', 'Online Payment Gateway', 'Product Catalogue', 'SEO Optimisation'],
+          colorTheme: 'Rose Gold and White', designStyle: 'Luxury / Premium',
+          referenceWebsites: 'www.fabindia.com', hasLogo: 'Yes, I have a logo',
+          pages: 'Home, Shop, About, Collections, Contact', contentProvided: 'Partial content provided',
+          hasDomain: 'Yes', domainName: 'priyaboutique.in', hasHosting: 'No',
+          budget: '₹25,000 – ₹50,000', timeline: '2–4 Weeks',
+          extraNotes: 'Need Instagram shop integration too.', hearAboutUs: 'Instagram',
+        },
+        {
+          id: Date.now().toString() + '2',
+          submittedAt: new Date(Date.now() - 1000*60*60*26).toISOString(),
+          user: { name: 'Rahul Mehta', email: 'rahul@techsol.in', phone: '+91 91234 56789' },
+          businessName: 'TechSol India', industry: 'IT / Technology', location: 'Pune',
+          businessDesc: 'B2B software solutions provider for small businesses.',
+          websiteTypes: ['Business / Portfolio Website'],
+          features: ['Contact Form', 'Blog / News Section', 'SEO Optimisation', 'Client / Testimonial Section'],
+          colorTheme: 'Dark Blue and White', designStyle: 'Corporate / Professional',
+          referenceWebsites: '', hasLogo: 'Have but need redesign',
+          pages: 'Home, Services, Case Studies, Blog, About, Contact',
+          contentProvided: 'Yes, I will provide all content',
+          hasDomain: 'Yes', domainName: 'techsolindia.com', hasHosting: 'Yes',
+          budget: '₹10,000 – ₹25,000', timeline: '1–2 Months',
+          extraNotes: '', hearAboutUs: 'Google Search',
+        },
+        {
+          id: Date.now().toString() + '3',
+          submittedAt: new Date().toISOString(),
+          user: { name: 'Anita Joshi', email: 'anita@wellnessby.in', phone: '+91 88888 99999' },
+          businessName: 'Wellness By Anita', industry: 'Health & Wellness', location: 'Bangalore',
+          businessDesc: 'Yoga and wellness coaching studio with online and offline sessions.',
+          websiteTypes: ['Booking / Appointment Website', 'Landing Page'],
+          features: ['Contact Form', 'WhatsApp Chat Button', 'Photo / Video Gallery', 'Google Maps / Location'],
+          colorTheme: 'Earthy greens and cream', designStyle: 'Minimal & Clean',
+          referenceWebsites: 'www.gaia.com', hasLogo: 'No, need logo design',
+          pages: 'Home, About, Classes, Booking, Gallery, Contact',
+          contentProvided: 'No, need content writing too',
+          hasDomain: 'No', domainName: '', hasHosting: 'No',
+          budget: '₹10,000 – ₹25,000', timeline: '2–4 Weeks',
+          extraNotes: 'Would love a calming, nature-inspired design.', hearAboutUs: 'Referral from a friend',
+        }
+      ];
+
+      localStorage.setItem('inpixel_submissions', JSON.stringify(demos));
+    }
+
+    // Seed demo data only if localStorage is empty (remove this call in production)
+    seedDemoData();
+  </script>
+</body>
+</html>
