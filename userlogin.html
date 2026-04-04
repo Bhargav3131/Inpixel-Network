@@ -744,44 +744,6 @@
     alert("Error saving data");
   }
 }
-
-      const user = JSON.parse(sessionStorage.getItem('inpixel_user') || '{}');
-      const getChecked = n => [...document.querySelectorAll(`input[name="${n}"]:checked`)].map(i => i.value);
-      const getRadio   = n => { const el = document.querySelector(`input[name="${n}"]:checked`); return el ? el.value : ''; };
-
-      const submission = {
-        id: Date.now().toString(),
-        submittedAt: new Date().toISOString(),
-        user: { name: user.name, email: user.email, phone: user.phone },
-        businessName:    document.getElementById('r-business').value,
-        industry:        document.getElementById('r-industry').value,
-        location:        document.getElementById('r-location').value,
-        businessDesc:    document.getElementById('r-desc').value,
-        websiteTypes:    getChecked('websiteType'),
-        features:        getChecked('features'),
-        designStyle:     getRadio('designStyle'),
-        colorTheme:      document.getElementById('r-colors').value,
-        hasLogo:         getRadio('hasLogo'),
-        refWebsites:     document.getElementById('r-refs').value,
-        pages:           document.getElementById('r-pages').value,
-        contentProvided: getRadio('contentProvided'),
-        hasDomain:       getRadio('hasDomain'),
-        hasHosting:      getRadio('hasHosting'),
-        domainName:      document.getElementById('r-domain').value,
-        extraNotes:      document.getElementById('r-extra').value,
-        hearAboutUs:     document.getElementById('r-source').value,
-        agreedToTerms:   true,
-      };
-
-      const existing = JSON.parse(localStorage.getItem('inpixel_submissions') || '[]');
-      existing.push(submission);
-      localStorage.setItem('inpixel_submissions', JSON.stringify(existing));
-
-      document.getElementById('reqForm').style.display = 'none';
-      document.getElementById('userGreeting').style.display = 'none';
-      document.getElementById('reqSuccess').classList.add('show');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
   </script>
 </body>
 </html>
