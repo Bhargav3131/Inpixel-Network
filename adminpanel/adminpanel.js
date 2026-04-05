@@ -355,8 +355,8 @@ function renderClientsList() {
   `).join('');
 }
 
-// Activate a new client — write to Google Sheet
-async function activateClient() {
+// Activate a new client — write to Google Sheet via JSONP
+function activateClient() {
   const nameEl  = document.getElementById('newClientName');
   const phoneEl = document.getElementById('newClientPhone');
   const errEl   = document.getElementById('clientAddError');
@@ -382,42 +382,63 @@ async function activateClient() {
   }
 
   // Check duplicate locally
-  const exists = allClients.some(c => c.phone.replace(/[\s\-\(\)]/g, '') === phone);
+  const exists = allClients.some(c => String(c.phone).replace(/[\s\-\(\)]/g, '') === phone);
   if (exists) {
     errEl.textContent = 'This number is already activated.';
     errEl.style.display = 'block';
     return;
   }
 
-  btn.textContent = 'Activating...';
+  btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px;animation:spin 0.8s linear infinite"><path d="M12 2a10 10 0 1 0 10 10" stroke-linecap="round"/></svg> Activating...';
   btn.disabled = true;
 
-  try {
-    await fetch(CLIENT_SHEET_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'addClient', name, phone })
-    });
+  // Use JSONP — the only method that works with Google Apps Script from the browser
+  const callbackName = '_activateCallback_' + Date.now();
+  const script = document.createElement('script');
 
-    // Optimistically add to local list
-    allClients.unshift({ name, phone, addedAt: new Date().toISOString() });
-    nameEl.value  = '';
-    phoneEl.value = '';
-
-    sucEl.textContent = `✓ ${name} (${phone}) has been activated!`;
-    sucEl.style.display = 'block';
-    renderClientsList();
-
-    setTimeout(() => { sucEl.style.display = 'none'; }, 3000);
-
-  } catch (err) {
-    errEl.textContent = 'Failed to save. Please check your connection.';
+  const timeout = setTimeout(() => {
+    delete window[callbackName];
+    script.remove();
+    errEl.textContent = 'Request timed out. Please try again.';
     errEl.style.display = 'block';
-  } finally {
-    btn.textContent = 'Activate Account';
+    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px"><polyline points="20 6 9 17 4 12"/></svg> Activate Account';
     btn.disabled = false;
-  }
+  }, 10000);
+
+  window[callbackName] = function(response) {
+    clearTimeout(timeout);
+    delete window[callbackName];
+    script.remove();
+
+    if (response && response.success) {
+      // Add to local list and re-render
+      allClients.unshift({ name, phone, addedAt: new Date().toISOString() });
+      nameEl.value  = '';
+      phoneEl.value = '';
+      sucEl.textContent = `✓ ${name} (${phone}) has been activated!`;
+      sucEl.style.display = 'block';
+      renderClientsList();
+      setTimeout(() => { sucEl.style.display = 'none'; }, 3000);
+    } else {
+      errEl.textContent = (response && response.error) ? response.error : 'Failed to save. Please try again.';
+      errEl.style.display = 'block';
+    }
+
+    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px"><polyline points="20 6 9 17 4 12"/></svg> Activate Account';
+    btn.disabled = false;
+  };
+
+  script.onerror = function() {
+    clearTimeout(timeout);
+    delete window[callbackName];
+    errEl.textContent = 'Network error. Please check your connection.';
+    errEl.style.display = 'block';
+    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px"><polyline points="20 6 9 17 4 12"/></svg> Activate Account';
+    btn.disabled = false;
+  };
+
+  script.src = `${CLIENT_SHEET_URL}?action=addClient&name=${encodeURIComponent(name)}&phone=${encodeURIComponent(phone)}&callback=${callbackName}&t=${Date.now()}`;
+  document.body.appendChild(script);
 }
 
 // Allow Enter key in phone field to submit
