@@ -172,7 +172,7 @@ nav {
 .form-row > label {
   display: block; font-family: 'Space Mono', monospace;
   font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase;
-  color: var(--text-muted); margin-bottom: 7px;
+  color: var(--white); margin-bottom: 7px;
 }
 .form-row input,
 .form-row textarea,
