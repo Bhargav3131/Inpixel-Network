@@ -21,7 +21,7 @@
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; overflow-x: hidden; }
 
 body {
   background: var(--black);
@@ -730,4 +730,16 @@ footer {
   .hero { padding: 120px 24px 80px; }
   .process-grid { grid-template-columns: 1fr; }
   footer { padding: 32px 24px; }
+}
+
+/* ── MOBILE FIXES ── */
+@media (max-width: 768px) {
+  .metric-num { font-size: clamp(1.6rem, 8vw, 2.8rem); }
+  .metrics-row { gap: 12px; }
+  .metric-block { padding: 20px 16px; }
+  section, .max-w, .hero-inner, .about-inner,
+  .contact-inner, .services-grid, .process-grid {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
 }
