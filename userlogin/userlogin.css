@@ -246,7 +246,7 @@ nav {
 /* Section titles */
 .form-section-title {
   font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.98rem;
-  color: var(--white);
+  color: var(--gold);
   margin: 28px 0 14px;
   padding-bottom: 8px; border-bottom: 1px solid var(--border-bright);
 }
