@@ -8,6 +8,41 @@
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
   <link rel="icon" type="image/png" href="logo1.jpeg">
   <link rel="stylesheet" href="/userlogin/userlogin.css">
+  <style>
+    /* ── Spinner ── */
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spin { animation: spin 0.8s linear infinite; display: inline-block; }
+
+    /* ── Login Error Box ── */
+    .login-error {
+      display: none;
+      align-items: flex-start;
+      gap: 14px;
+      background: rgba(255, 68, 68, 0.06);
+      border: 1px solid rgba(255, 68, 68, 0.35);
+      padding: 16px 18px;
+      margin-bottom: 20px;
+      animation: fadeUp 0.3s ease;
+    }
+    .login-error-icon {
+      width: 36px; height: 36px; flex-shrink: 0;
+      border-radius: 50%;
+      background: rgba(255, 68, 68, 0.12);
+      border: 1px solid rgba(255, 68, 68, 0.3);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .login-error-icon svg { width: 16px; stroke: #ff6666; fill: none; stroke-width: 2.5; }
+    .login-error-body {}
+    .login-error-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700; font-size: 0.88rem;
+      color: #ff6666; margin-bottom: 3px;
+    }
+    .login-error span {
+      font-size: 0.82rem; color: var(--text-muted); line-height: 1.55;
+    }
+    .login-error strong { color: var(--gold); }
+  </style>
 </head>
 <body>
   <div class="grid-bg"></div>
@@ -56,7 +91,19 @@
         <div class="login-card">
           <p class="login-eyebrow">Client Portal</p>
           <h1 class="login-title">Welcome</h1>
-          <p class="login-sub">Enter your details to access the website requirement form. No password needed.</p>
+          <p class="login-sub">Enter your details to access the website requirement form. Your phone number must be activated by our team.</p>
+
+          <!-- Error message (shown when number not found) -->
+          <div class="login-error" id="loginError">
+            <div class="login-error-icon">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            </div>
+            <div class="login-error-body">
+              <div class="login-error-title">Account Not Activated</div>
+              <span>Your number is not in our system. Please contact <strong>Inpixel Network</strong> to activate your account before logging in.</span>
+            </div>
+          </div>
+
           <form id="loginForm" onsubmit="handleLogin(event)">
             <div class="form-row">
               <label>Your Name</label>
@@ -67,11 +114,14 @@
               <input type="email" id="l-email" required placeholder="Your email address">
             </div>
             <div class="form-row">
-              <label>Contact Number</label>
-              <input type="tel" id="l-phone" required placeholder="Your phone number">
+              <label>Contact Number <span style="color:var(--gold);font-size:0.7rem;font-family:'Space Mono',monospace;"></span></label>
+              <input type="tel" id="l-phone" required placeholder="e.g. +91 98765 43210"
+                oninput="document.getElementById('loginError').style.display='none'">
             </div>
-            <button type="submit" class="btn-submit">
-              <svg viewBox="0 0 24 24" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            <button type="submit" class="btn-submit" id="loginBtn">
+              <svg viewBox="0 0 24 24" stroke-width="2.5" style="fill:none;stroke:currentColor">
+                <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+              </svg>
               Continue to Form
             </button>
           </form>
@@ -274,7 +324,9 @@
             </label>
 
             <button type="submit" class="btn-submit" id="reqSubmitBtn">
-              <svg viewBox="0 0 24 24" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:16px">
+                <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+              </svg>
               Submit Requirement
             </button>
           </form>

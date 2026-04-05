@@ -8,6 +8,176 @@
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
   <link rel="icon" type="image/png" href="logo1.jpeg">
   <link rel="stylesheet" href="/adminpanel/adminpanel.css">
+  <style>
+    /* ── Manage Clients Button ── */
+    .manage-clients-btn {
+      background: transparent;
+      border: 1px solid var(--border-bright);
+      color: var(--gold);
+      font-family: 'Space Mono', monospace;
+      font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 10px 18px;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .manage-clients-btn:hover {
+      background: rgba(240,165,0,0.08);
+      box-shadow: 0 0 20px rgba(240,165,0,0.2);
+    }
+    .manage-clients-btn svg { width: 14px; stroke: currentColor; fill: none; stroke-width: 2; }
+    .manage-clients-btn .dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #22c55e; box-shadow: 0 0 6px #22c55e;
+      animation: blink 1.5s ease infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+    /* ── Clients Modal ── */
+    .clients-modal {
+      position: fixed; z-index: 2100;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -48%) scale(0.96);
+      width: 92%; max-width: 560px;
+      max-height: 88vh; overflow-y: auto;
+      background: var(--surface);
+      border: 1px solid var(--border-bright);
+      opacity: 0; pointer-events: none;
+      transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .clients-modal::before {
+      content: '';
+      position: sticky; top: 0; display: block;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    }
+    .clients-modal.show {
+      opacity: 1; pointer-events: all;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    .clients-modal-header {
+      position: sticky; top: 2px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 20px 28px;
+      display: flex; align-items: center; justify-content: space-between;
+      z-index: 10;
+    }
+    .clients-modal-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800; font-size: 1.15rem; color: var(--white);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .clients-modal-title .badge {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.62rem; letter-spacing: 0.08em;
+      background: rgba(34,197,94,0.12);
+      border: 1px solid rgba(34,197,94,0.3);
+      color: #22c55e; padding: 3px 9px;
+    }
+
+    .clients-modal-body { padding: 24px 28px; }
+
+    /* Add client form */
+    .add-client-form {
+      background: var(--black2);
+      border: 1px solid var(--border);
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+    .add-client-form-title {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 14px;
+    }
+    .add-client-fields {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+      margin-bottom: 12px;
+    }
+    @media (max-width: 480px) { .add-client-fields { grid-template-columns: 1fr; } }
+
+    .add-client-input {
+      width: 100%; background: var(--black);
+      border: 1px solid var(--border);
+      color: var(--text); font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem; padding: 11px 14px; outline: none;
+      transition: border-color 0.3s;
+    }
+    .add-client-input:focus { border-color: var(--gold); }
+    .add-client-input::placeholder { color: var(--text-muted); }
+
+    .activate-btn {
+      width: 100%; background: var(--gold); color: var(--black);
+      font-family: 'Syne', sans-serif; font-weight: 700;
+      font-size: 0.88rem; letter-spacing: 0.04em;
+      border: none; padding: 13px;
+      cursor: pointer; transition: all 0.3s;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .activate-btn:hover { background: var(--gold-light); box-shadow: 0 0 24px rgba(240,165,0,0.35); }
+    .activate-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .activate-btn svg { width: 14px; stroke: currentColor; fill: none; stroke-width: 2.5; }
+
+    .client-add-error {
+      display: none;
+      font-size: 0.78rem; color: #ff6666;
+      margin-top: 8px; font-family: 'Space Mono', monospace;
+    }
+    .client-add-success {
+      display: none;
+      font-size: 0.78rem; color: #22c55e;
+      margin-top: 8px; font-family: 'Space Mono', monospace;
+    }
+
+    /* Clients list */
+    .clients-list-title {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--text-muted); margin-bottom: 12px;
+    }
+    #clientsList { display: flex; flex-direction: column; gap: 8px; }
+
+    .client-row {
+      display: flex; align-items: center; gap: 14px;
+      background: var(--black2);
+      border: 1px solid var(--border);
+      padding: 14px 16px;
+      animation: fadeUp 0.3s ease both;
+      transition: border-color 0.3s;
+    }
+    .client-row:hover { border-color: var(--border-bright); }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .client-avatar {
+      width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0;
+      background: linear-gradient(135deg, var(--gold-dim), var(--gold));
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Syne', sans-serif; font-weight: 800;
+      font-size: 0.95rem; color: var(--black);
+    }
+    .client-info { flex: 1; min-width: 0; }
+    .client-name {
+      font-family: 'Syne', sans-serif; font-weight: 700;
+      font-size: 0.92rem; color: var(--white);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .client-phone {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem; color: var(--text-muted); margin-top: 2px;
+    }
+    .client-added {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem; color: var(--text-muted); flex-shrink: 0;
+    }
+    .client-status-dot {
+      width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0;
+      background: #22c55e; box-shadow: 0 0 6px #22c55e;
+    }
+  </style>
 </head>
 <body>
   <div class="grid-bg"></div>
@@ -35,6 +205,12 @@
       <span class="nav-badge">Admin Panel</span>
     </div>
     <div class="nav-right">
+      <!-- ── MANAGE CLIENTS BUTTON ── -->
+      <button class="manage-clients-btn" onclick="openClientsModal()">
+        <div class="dot"></div>
+        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Manage Clients
+      </button>
       <a class="nav-back" href="index.html">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
         Back to Site
@@ -78,10 +254,10 @@
     <div id="cardsContainer"></div>
   </main>
 
-  <!-- OVERLAY -->
+  <!-- SUBMISSION DETAIL OVERLAY -->
   <div class="overlay" id="overlay" onclick="closeModal()"></div>
 
-  <!-- DETAIL MODAL -->
+  <!-- SUBMISSION DETAIL MODAL -->
   <div class="detail-modal" id="detailModal">
     <div class="modal-header">
       <div class="modal-header-left">
@@ -95,15 +271,66 @@
         <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
     </div>
-
     <div class="modal-body" id="mBody"></div>
-
     <div class="modal-footer">
       <div class="modal-timestamp" id="mTimestamp"></div>
       <button class="delete-btn" id="mDeleteBtn">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
         Delete Entry
       </button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       MANAGE CLIENTS OVERLAY + MODAL
+  ══════════════════════════════════════ -->
+  <div class="overlay" id="clientsOverlay" style="z-index:2000;" onclick="closeClientsModal()"></div>
+
+  <div class="clients-modal" id="clientsModal">
+    <!-- Gold top bar rendered via ::before -->
+    <div class="clients-modal-header">
+      <div class="clients-modal-title">
+        Manage Clients
+        <span class="badge">Activated</span>
+      </div>
+      <button class="modal-close" onclick="closeClientsModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <div class="clients-modal-body">
+
+      <!-- Add new client -->
+      <div class="add-client-form">
+        <div class="add-client-form-title">Activate New Client</div>
+        <div class="add-client-fields">
+          <input
+            class="add-client-input"
+            type="text"
+            id="newClientName"
+            placeholder="Client name"
+            autocomplete="off"
+          >
+          <input
+            class="add-client-input"
+            type="tel"
+            id="newClientPhone"
+            placeholder="Phone (e.g. +91 98765 43210)"
+            autocomplete="off"
+          >
+        </div>
+        <button class="activate-btn" id="activateBtn" onclick="activateClient()">
+          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+          Activate Account
+        </button>
+        <div class="client-add-error" id="clientAddError"></div>
+        <div class="client-add-success" id="clientAddSuccess"></div>
+      </div>
+
+      <!-- Existing clients list -->
+      <div class="clients-list-title">All Activated Clients</div>
+      <div id="clientsList"></div>
+
     </div>
   </div>
 

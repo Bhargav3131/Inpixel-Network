@@ -1,5 +1,13 @@
+// ============================================================
+//   INPIXEL NETWORK — adminpanel.js
+//   With "Manage Clients" — add approved numbers to Sheet
+// ============================================================
+
+// ── REPLACE THIS with your new Apps Script URL ──
+const CLIENT_SHEET_URL = 'https://script.google.com/macros/s/AKfycbzBjJN_VQMS5QRG6J1d2RwrEC13XhSEeUTCv0tObV9UkrReiAKmgr1DgQaWo3cczhi9MA/exec';
+
 // ── ADMIN GATE ──
-const ADMIN_PASS = 'inpixel2026'; // Change this passcode
+const ADMIN_PASS = 'inpixel2026';
 
 document.getElementById('gateInput').addEventListener('keydown', e => {
   if (e.key === 'Enter') checkGate();
@@ -10,6 +18,7 @@ function checkGate() {
   if (val === ADMIN_PASS) {
     document.getElementById('adminGate').style.display = 'none';
     loadSubmissions();
+    loadClients();
   } else {
     document.getElementById('gateError').style.display = 'block';
     document.getElementById('gateInput').value = '';
@@ -19,11 +28,16 @@ function checkGate() {
 
 // ── DATA ──
 let allSubmissions = [];
-let currentFilter = 'all';
-let currentSearch = '';
-let currentOpenId = null;
+let allClients     = [];
+let currentFilter  = 'all';
+let currentSearch  = '';
+let currentOpenId  = null;
 
 const SHEET_URL = 'https://script.google.com/macros/s/AKfycbyVtBf_GzWpbauRxqcsXX7eOS05PS3DcCpOYYyghNCQXpiwjw09rmithNxOC3lmJ5nx/exec';
+
+// ══════════════════════════════════════════════════════════
+//   SUBMISSIONS (existing logic, unchanged)
+// ══════════════════════════════════════════════════════════
 
 function loadSubmissions() {
   document.getElementById('cardsContainer').innerHTML = `
@@ -80,7 +94,7 @@ function loadSubmissions() {
 }
 
 function updateStats() {
-  const now = new Date();
+  const now        = new Date();
   const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const weekStart  = new Date(now); weekStart.setDate(now.getDate() - 7);
 
@@ -90,7 +104,7 @@ function updateStats() {
 }
 
 function getFiltered() {
-  const now = new Date();
+  const now        = new Date();
   const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const weekStart  = new Date(now); weekStart.setDate(now.getDate() - 7);
 
@@ -189,7 +203,6 @@ function openModal(id) {
         <div class="detail-field full"><label>Email</label>${val(s.user?.email)}</div>
       </div>
     </div>
-
     <div class="detail-section">
       <div class="detail-section-title">Business Information</div>
       <div class="detail-grid">
@@ -197,10 +210,9 @@ function openModal(id) {
         <div class="detail-field"><label>Industry</label>${val(s.industry)}</div>
         <div class="detail-field"><label>Location</label>${val(s.location)}</div>
         <div class="detail-field"><label>How Heard About Us</label>${val(s.hearAboutUs)}</div>
-        <div class="detail-field full"><label>Business Description</label>${val(s.businessDesc)}</div>
+        <div class="detail-field full"><label>Business Description</label>${val(s.description)}</div>
       </div>
     </div>
-
     <div class="detail-section">
       <div class="detail-section-title">Website Requirements</div>
       <div class="detail-grid">
@@ -209,7 +221,6 @@ function openModal(id) {
         <div class="detail-field full"><label>Pages Requested</label>${val(s.pages)}</div>
       </div>
     </div>
-
     <div class="detail-section">
       <div class="detail-section-title">Design Preferences</div>
       <div class="detail-grid">
@@ -220,7 +231,6 @@ function openModal(id) {
         <div class="detail-field full"><label>Reference Websites</label>${val(s.referenceWebsites)}</div>
       </div>
     </div>
-
     <div class="detail-section">
       <div class="detail-section-title">Technical & Budget</div>
       <div class="detail-grid">
@@ -231,7 +241,6 @@ function openModal(id) {
         <div class="detail-field"><label>Timeline</label>${val(s.timeline)}</div>
       </div>
     </div>
-
     ${s.extraNotes ? `
     <div class="detail-section">
       <div class="detail-section-title">Additional Notes</div>
@@ -252,13 +261,17 @@ function closeModal() {
   currentOpenId = null;
 }
 
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    closeModal();
+    closeClientsModal();
+  }
+});
 
 // ── DELETE ──
 function deleteEntry(id) {
   if (!confirm('Delete this submission? This cannot be undone.')) return;
   allSubmissions = allSubmissions.filter(s => s.id !== id);
-  localStorage.setItem('inpixel_submissions', JSON.stringify(allSubmissions));
   closeModal();
   updateStats();
   renderCards();
@@ -266,7 +279,6 @@ function deleteEntry(id) {
 
 function confirmClearAll() {
   if (!confirm('Delete ALL submissions? This cannot be undone.')) return;
-  localStorage.removeItem('inpixel_submissions');
   allSubmissions = [];
   updateStats();
   renderCards();
@@ -285,63 +297,135 @@ function filterCards() {
   renderCards();
 }
 
-// ── DEMO DATA (remove in production) ──
-function seedDemoData() {
-  const existing = JSON.parse(localStorage.getItem('inpixel_submissions') || '[]');
-  if (existing.length > 0) return; // Don't overwrite real data
+// ══════════════════════════════════════════════════════════
+//   MANAGE CLIENTS — new feature
+// ══════════════════════════════════════════════════════════
 
-  const demos = [
-    {
-      id: Date.now().toString() + '1',
-      submittedAt: new Date(Date.now() - 1000*60*60*2).toISOString(),
-      user: { name: 'Priya Sharma', email: 'priya@example.com', phone: '+91 98765 11111' },
-      businessName: 'Priya Boutique', industry: 'Fashion', location: 'Mumbai',
-      businessDesc: 'Online women\'s clothing boutique specializing in ethnic wear.',
-      websiteTypes: ['E-Commerce Store', 'Shopify Store'],
-      features: ['WhatsApp Chat Button', 'Online Payment Gateway', 'Product Catalogue', 'SEO Optimisation'],
-      colorTheme: 'Rose Gold and White', designStyle: 'Luxury / Premium',
-      referenceWebsites: 'www.fabindia.com', hasLogo: 'Yes, I have a logo',
-      pages: 'Home, Shop, About, Collections, Contact', contentProvided: 'Partial content provided',
-      hasDomain: 'Yes', domainName: 'priyaboutique.in', hasHosting: 'No',
-      budget: '₹25,000 – ₹50,000', timeline: '2–4 Weeks',
-      extraNotes: 'Need Instagram shop integration too.', hearAboutUs: 'Instagram',
-    },
-    {
-      id: Date.now().toString() + '2',
-      submittedAt: new Date(Date.now() - 1000*60*60*26).toISOString(),
-      user: { name: 'Rahul Mehta', email: 'rahul@techsol.in', phone: '+91 91234 56789' },
-      businessName: 'TechSol India', industry: 'IT / Technology', location: 'Pune',
-      businessDesc: 'B2B software solutions provider for small businesses.',
-      websiteTypes: ['Business / Portfolio Website'],
-      features: ['Contact Form', 'Blog / News Section', 'SEO Optimisation', 'Client / Testimonial Section'],
-      colorTheme: 'Dark Blue and White', designStyle: 'Corporate / Professional',
-      referenceWebsites: '', hasLogo: 'Have but need redesign',
-      pages: 'Home, Services, Case Studies, Blog, About, Contact',
-      contentProvided: 'Yes, I will provide all content',
-      hasDomain: 'Yes', domainName: 'techsolindia.com', hasHosting: 'Yes',
-      budget: '₹10,000 – ₹25,000', timeline: '1–2 Months',
-      extraNotes: '', hearAboutUs: 'Google Search',
-    },
-    {
-      id: Date.now().toString() + '3',
-      submittedAt: new Date().toISOString(),
-      user: { name: 'Anita Joshi', email: 'anita@wellnessby.in', phone: '+91 88888 99999' },
-      businessName: 'Wellness By Anita', industry: 'Health & Wellness', location: 'Bangalore',
-      businessDesc: 'Yoga and wellness coaching studio with online and offline sessions.',
-      websiteTypes: ['Booking / Appointment Website', 'Landing Page'],
-      features: ['Contact Form', 'WhatsApp Chat Button', 'Photo / Video Gallery', 'Google Maps / Location'],
-      colorTheme: 'Earthy greens and cream', designStyle: 'Minimal & Clean',
-      referenceWebsites: 'www.gaia.com', hasLogo: 'No, need logo design',
-      pages: 'Home, About, Classes, Booking, Gallery, Contact',
-      contentProvided: 'No, need content writing too',
-      hasDomain: 'No', domainName: '', hasHosting: 'No',
-      budget: '₹10,000 – ₹25,000', timeline: '2–4 Weeks',
-      extraNotes: 'Would love a calming, nature-inspired design.', hearAboutUs: 'Referral from a friend',
-    }
-  ];
-
-  localStorage.setItem('inpixel_submissions', JSON.stringify(demos));
+function openClientsModal() {
+  document.getElementById('clientsOverlay').classList.add('show');
+  document.getElementById('clientsModal').classList.add('show');
+  document.body.style.overflow = 'hidden';
+  renderClientsList();
 }
 
-// Seed demo data only if localStorage is empty (remove this call in production)
-seedDemoData();
+function closeClientsModal() {
+  document.getElementById('clientsOverlay').classList.remove('show');
+  document.getElementById('clientsModal').classList.remove('show');
+  document.body.style.overflow = '';
+  // Reset form
+  document.getElementById('newClientName').value  = '';
+  document.getElementById('newClientPhone').value = '';
+  document.getElementById('clientAddError').style.display = 'none';
+  document.getElementById('clientAddSuccess').style.display = 'none';
+}
+
+// Load clients from Google Sheet via JSONP
+function loadClients() {
+  window._clientsCallback = function(data) {
+    allClients = Array.isArray(data) ? data : [];
+  };
+
+  const s = document.createElement('script');
+  s.src = CLIENT_SHEET_URL + '?action=listClients&callback=_clientsCallback&t=' + Date.now();
+  s.onerror = () => { allClients = []; };
+  document.body.appendChild(s);
+}
+
+function renderClientsList() {
+  const container = document.getElementById('clientsList');
+
+  if (allClients.length === 0) {
+    container.innerHTML = `
+      <div style="text-align:center;padding:32px 20px;color:var(--text-muted);font-family:'Space Mono',monospace;font-size:0.75rem;">
+        No activated clients yet. Add one above.
+      </div>`;
+    return;
+  }
+
+  container.innerHTML = allClients.map((c, i) => `
+    <div class="client-row" style="animation-delay:${i * 0.04}s">
+      <div class="client-avatar">${initials(c.name)}</div>
+      <div class="client-info">
+        <div class="client-name">${c.name}</div>
+        <div class="client-phone">${c.phone}</div>
+      </div>
+      <div class="client-added">${c.addedAt ? formatDate(c.addedAt) : 'Recently'}</div>
+      <div class="client-status-dot"></div>
+    </div>
+  `).join('');
+}
+
+// Activate a new client — write to Google Sheet
+async function activateClient() {
+  const nameEl  = document.getElementById('newClientName');
+  const phoneEl = document.getElementById('newClientPhone');
+  const errEl   = document.getElementById('clientAddError');
+  const sucEl   = document.getElementById('clientAddSuccess');
+  const btn     = document.getElementById('activateBtn');
+
+  const name  = nameEl.value.trim();
+  const phone = phoneEl.value.trim().replace(/[\s\-\(\)]/g, '');
+
+  errEl.style.display = 'none';
+  sucEl.style.display = 'none';
+
+  if (!name || !phone) {
+    errEl.textContent = 'Please enter both name and phone number.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  if (phone.length < 7) {
+    errEl.textContent = 'Please enter a valid phone number.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  // Check duplicate locally
+  const exists = allClients.some(c => c.phone.replace(/[\s\-\(\)]/g, '') === phone);
+  if (exists) {
+    errEl.textContent = 'This number is already activated.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  btn.textContent = 'Activating...';
+  btn.disabled = true;
+
+  try {
+    await fetch(CLIENT_SHEET_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'addClient', name, phone })
+    });
+
+    // Optimistically add to local list
+    allClients.unshift({ name, phone, addedAt: new Date().toISOString() });
+    nameEl.value  = '';
+    phoneEl.value = '';
+
+    sucEl.textContent = `✓ ${name} (${phone}) has been activated!`;
+    sucEl.style.display = 'block';
+    renderClientsList();
+
+    setTimeout(() => { sucEl.style.display = 'none'; }, 3000);
+
+  } catch (err) {
+    errEl.textContent = 'Failed to save. Please check your connection.';
+    errEl.style.display = 'block';
+  } finally {
+    btn.textContent = 'Activate Account';
+    btn.disabled = false;
+  }
+}
+
+// Allow Enter key in phone field to submit
+document.addEventListener('DOMContentLoaded', () => {
+  const phoneInput = document.getElementById('newClientPhone');
+  if (phoneInput) {
+    phoneInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter') activateClient();
+    });
+  }
+});
