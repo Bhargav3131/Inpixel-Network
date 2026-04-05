@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inpixel Network — Client Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png" href="logo1.jpeg">
+  <link rel="stylesheet" href="userlogin.css">
+</head>
+<body>
+  <div class="grid-bg"></div>
+
+  <nav>
+    <a class="nav-logo" href="index.html">
+      <img src="logo.jpeg" alt="Inpixel Network">
+      <span>Inpixel Network</span>
+    </a>
+    <a class="nav-back" href="index.html">
+      <svg viewBox="0 0 24 24" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      Back to Home
+    </a>
+  </nav>
+
+  <div class="page-split">
+
+    <!-- ══ LEFT GOLD PANEL ══ -->
+    <div class="split-left">
+      <div class="split-left-inner">
+        <div class="lo lo1"></div>
+        <div class="lo lo2"></div>
+        <div class="lo lo3"></div>
+        <div class="left-content">
+          <div class="left-logo">
+            <img src="logo.jpeg" alt="Inpixel">
+            <span>Inpixel Network</span>
+          </div>
+          <h2 class="left-headline">Build Your<br>Digital Empire.</h2>
+          <p class="left-sub">Tell us what you need and our team will craft a website that turns visitors into customers.</p>
+          <div class="left-points">
+            <div class="left-point"><div class="left-point-dot"></div><span>150+ clients served across India</span></div>
+            <div class="left-point"><div class="left-point-dot"></div><span>Fast turnaround, premium quality</span></div>
+            <div class="left-point"><div class="left-point-dot"></div><span>One team, end-to-end delivery</span></div>
+            <div class="left-point"><div class="left-point-dot"></div><span>24/7 support after launch</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ RIGHT FORM PANEL ══ -->
+    <div class="split-right">
+
+      <!-- STEP 1: LOGIN -->
+      <div id="loginStep" class="form-wrap">
+        <div class="login-card">
+          <p class="login-eyebrow">Client Portal</p>
+          <h1 class="login-title">Welcome</h1>
+          <p class="login-sub">Enter your details to access the website requirement form. No password needed.</p>
+          <form id="loginForm" onsubmit="handleLogin(event)">
+            <div class="form-row">
+              <label>Your Name</label>
+              <input type="text" id="l-name" required placeholder="Your full name">
+            </div>
+            <div class="form-row">
+              <label>Email Address</label>
+              <input type="email" id="l-email" required placeholder="Your email address">
+            </div>
+            <div class="form-row">
+              <label>Contact Number</label>
+              <input type="tel" id="l-phone" required placeholder="Your phone number">
+            </div>
+            <button type="submit" class="btn-submit">
+              <svg viewBox="0 0 24 24" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              Continue to Form
+            </button>
+          </form>
+          <p class="login-note">Your details are used only to identify your submission. <span>100% secure.</span></p>
+        </div>
+      </div>
+
+      <!-- STEP 2: REQUIREMENT FORM -->
+      <div id="reqFormWrap" class="form-wrap">
+        <div class="req-card">
+
+          <div id="userGreeting" class="user-greeting">
+            <div class="user-greeting-dot"></div>
+            <p>Logged in as <strong id="greetName"></strong> &nbsp;·&nbsp; <span id="greetContact"></span></p>
+          </div>
+
+          <p class="login-eyebrow">Website Requirement Form</p>
+          <h2 style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.65rem;color:var(--white);margin-bottom:6px;">Tell Us About<br>Your Project</h2>
+          <p style="color:var(--text-muted);font-size:0.86rem;line-height:1.6;margin-bottom:4px;">Fill in as much detail as you can — the more we know, the better we build.</p>
+
+          <form id="reqForm" onsubmit="handleReqSubmit(event)">
+
+            <!-- 1. Business -->
+            <p class="form-section-title">1 · Your Business</p>
+            <div class="form-row">
+              <label>Business / Brand Name *</label>
+              <input type="text" id="r-business" required placeholder="e.g. Raj's Clothing Store">
+            </div>
+            <div class="form-two-col">
+              <div class="form-row">
+                <label>Industry / Niche *</label>
+                <input type="text" id="r-industry" required placeholder="e.g. Fashion, Food, Tech">
+              </div>
+              <div class="form-row">
+                <label>City / Location</label>
+                <input type="text" id="r-location" placeholder="e.g. Mumbai">
+              </div>
+            </div>
+            <div class="form-row">
+              <label>What does your business do? *</label>
+              <textarea id="r-desc" rows="3" required placeholder="Briefly describe your products or services..."></textarea>
+            </div>
+
+            <!-- 2. Website Type -->
+            <p class="form-section-title">2 · What Type of Website?</p>
+            <div class="form-row">
+              <div class="checkbox-group">
+                <label class="checkbox-item">
+                  <input type="checkbox" name="websiteType" value="Business / Portfolio Website">
+                  <label>Business / Portfolio Website <span>Showcase services, team and contact info</span></label>
+                </label>
+                <label class="checkbox-item">
+                  <input type="checkbox" name="websiteType" value="E-Commerce Store">
+                  <label>E-Commerce Store <span>Sell products online with cart &amp; payments</span></label>
+                </label>
+                <label class="checkbox-item">
+                  <input type="checkbox" name="websiteType" value="Shopify Store">
+                  <label>Shopify Store <span>Full Shopify setup with theme customization</span></label>
+                </label>
+                <label class="checkbox-item">
+                  <input type="checkbox" name="websiteType" value="Landing Page">
+                  <label>Landing Page <span>High-converting single page for a campaign</span></label>
+                </label>
+                <label class="checkbox-item">
+                  <input type="checkbox" name="websiteType" value="Booking / Appointment Website">
+                  <label>Booking / Appointment Website <span>Clinics, salons, consultants etc.</span></label>
+                </label>
+                <label class="checkbox-item">
+                  <input type="checkbox" name="websiteType" value="Other / Not sure">
+                  <label>Other / Not sure yet</label>
+                </label>
+              </div>
+            </div>
+
+            <!-- 3. Features -->
+            <p class="form-section-title">3 · Features You Need</p>
+            <div class="form-row">
+              <div class="checkbox-group">
+                <label class="checkbox-item"><input type="checkbox" name="features" value="Contact Form"><label>Contact Form</label></label>
+                <label class="checkbox-item"><input type="checkbox" name="features" value="WhatsApp Chat Button"><label>WhatsApp Chat Button</label></label>
+                <label class="checkbox-item"><input type="checkbox" name="features" value="Online Payment Gateway"><label>Online Payment Gateway</label></label>
+                <label class="checkbox-item"><input type="checkbox" name="features" value="Product Catalogue"><label>Product Catalogue</label></label>
+                <label class="checkbox-item"><input type="checkbox" name="features" value="Photo / Video Gallery"><label>Photo / Video Gallery</label></label>
+                <label class="checkbox-item"><input type="checkbox" name="features" value="Google Maps / Location"><label>Google Maps / Location</label></label>
+                <label class="checkbox-item"><input type="checkbox" name="features" value="SEO Optimisation"><label>SEO Optimisation</label></label>
+                <label class="checkbox-item"><input type="checkbox" name="features" value="Social Media Integration"><label>Social Media Integration</label></label>
+                <label class="checkbox-item"><input type="checkbox" name="features" value="Admin / CMS Panel"><label>Admin / CMS Panel <span>Manage content yourself after delivery</span></label></label>
+              </div>
+            </div>
+
+            <!-- 4. Design -->
+            <p class="form-section-title">4 · Design Preferences</p>
+            <div class="form-row">
+              <label>Preferred Style *</label>
+              <div class="radio-group">
+                <label class="radio-item"><input type="radio" name="designStyle" value="Minimal & Clean"><label>Minimal &amp; Clean</label></label>
+                <label class="radio-item"><input type="radio" name="designStyle" value="Bold & Modern"><label>Bold &amp; Modern</label></label>
+                <label class="radio-item"><input type="radio" name="designStyle" value="Luxury / Premium"><label>Luxury / Premium</label></label>
+                <label class="radio-item"><input type="radio" name="designStyle" value="Playful & Fun"><label>Playful &amp; Fun</label></label>
+                <label class="radio-item"><input type="radio" name="designStyle" value="No Preference"><label>No Preference</label></label>
+              </div>
+            </div>
+            <div class="form-two-col">
+              <div class="form-row">
+                <label>Preferred Colors</label>
+                <input type="text" id="r-colors" placeholder="e.g. Black &amp; Gold">
+              </div>
+              <div class="form-row">
+                <label>Do you have a logo?</label>
+                <div class="radio-group" style="flex-direction:column;">
+                  <label class="radio-item"><input type="radio" name="hasLogo" value="Yes"><label>Yes, I have one</label></label>
+                  <label class="radio-item"><input type="radio" name="hasLogo" value="No, need one"><label>No, need one too</label></label>
+                </div>
+              </div>
+            </div>
+            <div class="form-row">
+              <label>Reference Websites (optional)</label>
+              <input type="text" id="r-refs" placeholder="Links to sites you like the look of">
+            </div>
+
+            <!-- 5. Pages & Content -->
+            <p class="form-section-title">5 · Pages &amp; Content</p>
+            <div class="form-row">
+              <label>Pages you want *</label>
+              <input type="text" id="r-pages" required placeholder="e.g. Home, About, Services, Gallery, Contact">
+            </div>
+            <div class="form-row">
+              <label>Will you provide the content?</label>
+              <div class="radio-group">
+                <label class="radio-item"><input type="radio" name="contentProvided" value="Yes, fully"><label>Yes, fully</label></label>
+                <label class="radio-item"><input type="radio" name="contentProvided" value="Partially"><label>Partially</label></label>
+                <label class="radio-item"><input type="radio" name="contentProvided" value="No, need help"><label>No, need help</label></label>
+              </div>
+            </div>
+
+            <!-- 6. Domain & Hosting -->
+            <p class="form-section-title">6 · Domain &amp; Hosting</p>
+            <div class="form-two-col">
+              <div class="form-row">
+                <label>Have a domain?</label>
+                <div class="radio-group" style="flex-direction:column;">
+                  <label class="radio-item"><input type="radio" name="hasDomain" value="Yes, I own one"><label>Yes, I own one</label></label>
+                  <label class="radio-item"><input type="radio" name="hasDomain" value="No, need help"><label>No, need help</label></label>
+                </div>
+              </div>
+              <div class="form-row">
+                <label>Have hosting?</label>
+                <div class="radio-group" style="flex-direction:column;">
+                  <label class="radio-item"><input type="radio" name="hasHosting" value="Yes"><label>Yes</label></label>
+                  <label class="radio-item"><input type="radio" name="hasHosting" value="No"><label>No, need help</label></label>
+                </div>
+              </div>
+            </div>
+            <div class="form-row">
+              <label>Domain name (if you have one)</label>
+              <input type="text" id="r-domain" placeholder="e.g. www.mybusiness.com">
+            </div>
+
+            <!-- 7. Extras -->
+            <p class="form-section-title">7 · Anything Else?</p>
+            <div class="form-row">
+              <label>Additional notes or special requirements</label>
+              <textarea id="r-extra" rows="3" placeholder="Any other details, questions, or special requests..."></textarea>
+            </div>
+
+            <!-- 8. Source -->
+            <div class="form-row">
+              <label>How did you hear about us?</label>
+              <select id="r-source">
+                <option value="" disabled selected>Select an option</option>
+                <option>Instagram</option>
+                <option>Google Search</option>
+                <option>WhatsApp</option>
+                <option>Referral from a friend</option>
+                <option>LinkedIn</option>
+                <option>Other</option>
+              </select>
+            </div>
+
+            <!-- TERMS -->
+            <p class="form-section-title">Terms &amp; Conditions</p>
+            <div class="terms-box">
+              <h4>Inpixel Network — Terms of Engagement</h4>
+              <p><strong>1. Project Scope:</strong> The information provided in this form will be used to understand your website requirements. Inpixel Network will prepare a proposal based on your inputs. Any changes to scope after approval may affect timeline and pricing.</p>
+              <p><strong>2. Confidentiality:</strong> All information shared is treated as strictly confidential and will not be shared with any third party without your consent.</p>
+              <p><strong>3. Accuracy of Information:</strong> You confirm that all details provided are accurate and truthful. Inpixel Network is not responsible for issues arising from incorrect information provided by the client.</p>
+              <p><strong>4. Payments:</strong> Projects require an advance payment before work begins. Full payment must be completed before the final website is handed over or made live. Payment schedules will be agreed upon in the proposal stage.</p>
+              <p><strong>5. Revisions:</strong> Each project includes a defined number of revision rounds as stated in the proposal. Additional revisions beyond the agreed limit will be billed separately.</p>
+              <p><strong>6. Content Responsibility:</strong> The client is responsible for ensuring all content provided (text, images, logos) is legally owned or licensed by them. Inpixel Network is not liable for copyright infringement caused by client-provided content.</p>
+              <p><strong>7. Intellectual Property:</strong> Upon full payment, the client receives ownership of the final website. Inpixel Network retains the right to showcase the project in its portfolio unless the client requests otherwise in writing.</p>
+              <p><strong>8. Support &amp; Maintenance:</strong> Post-launch support is provided for 30 days for bug fixes. Ongoing maintenance packages are available separately.</p>
+              <p><strong>9. Cancellation:</strong> If the client cancels after work has commenced, any advance payments are non-refundable, covering time and resources already invested.</p>
+              <p><strong>10. Governing Law:</strong> These terms are governed by the laws of India. Any disputes will be subject to the jurisdiction of courts in Pune, Maharashtra.</p>
+              <p style="margin-top:10px;color:var(--text);">By checking the box below, you confirm that you have read, understood, and agree to these terms.</p>
+            </div>
+
+            <label class="terms-agree" id="termsLabel">
+              <input type="checkbox" id="termsCheck" onchange="toggleTerms(this)">
+              <p>I have read and agree to the <a href="#" onclick="return false;">Terms &amp; Conditions</a> of Inpixel Network. I confirm all information provided is accurate.</p>
+            </label>
+
+            <button type="submit" class="btn-submit" id="reqSubmitBtn">
+              <svg viewBox="0 0 24 24" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              Submit Requirement
+            </button>
+          </form>
+
+          <div class="success-wrap" id="reqSuccess">
+            <div class="success-icon">
+              <svg viewBox="0 0 24 24" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            </div>
+            <h2>Requirement Submitted!</h2>
+            <p>Thank you! Our team will review your project details and get back to you within 24 hours.</p>
+          </div>
+
+        </div>
+      </div>
+
+    </div><!-- /split-right -->
+  </div><!-- /page-split -->
+
+  <script src="userlogin.js"></script>
+</body>
+</html>
