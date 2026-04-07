@@ -6,191 +6,76 @@
   <title>Inpixel Network — Admin Panel</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-  <link rel="icon" type="image/png" href="logo1.jpeg">
+  <link rel="icon" type="image/png" href="../logo1.jpeg">
   <link rel="stylesheet" href="/adminpanel/adminpanel.css">
   <style>
-    /* ── Manage Clients Button ── */
-    .manage-clients-btn {
-      background: transparent;
-      border: 1px solid var(--border-bright);
-      color: var(--gold);
-      font-family: 'Space Mono', monospace;
-      font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase;
-      padding: 10px 18px;
-      cursor: pointer;
-      transition: all 0.3s;
-      display: flex; align-items: center; gap: 8px;
-    }
-    .manage-clients-btn:hover {
-      background: rgba(240,165,0,0.08);
-      box-shadow: 0 0 20px rgba(240,165,0,0.2);
-    }
-    .manage-clients-btn svg { width: 14px; stroke: currentColor; fill: none; stroke-width: 2; }
-    .manage-clients-btn .dot {
-      width: 6px; height: 6px; border-radius: 50%;
-      background: #22c55e; box-shadow: 0 0 6px #22c55e;
-      animation: blink 1.5s ease infinite;
-    }
+    @keyframes spin  { to { transform: rotate(360deg); } }
     @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
-    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes fadeUp{ from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
 
-    /* ── Clients Modal ── */
-    .clients-modal {
-      position: fixed; z-index: 2100;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -48%) scale(0.96);
-      width: 92%; max-width: 560px;
-      max-height: 88vh; overflow-y: auto;
-      background: var(--surface);
-      border: 1px solid var(--border-bright);
-      opacity: 0; pointer-events: none;
-      transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-    .clients-modal::before {
-      content: '';
-      position: sticky; top: 0; display: block;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, var(--gold), transparent);
-    }
-    .clients-modal.show {
-      opacity: 1; pointer-events: all;
-      transform: translate(-50%, -50%) scale(1);
-    }
+    .tab-island { display:inline-flex; background:var(--surface2); border:1px solid var(--border); padding:4px; gap:4px; margin-bottom:28px; }
+    .tab-btn { font-family:'Space Mono',monospace; font-size:0.72rem; letter-spacing:0.08em; text-transform:uppercase; padding:10px 24px; border:none; background:transparent; color:var(--text-muted); cursor:pointer; transition:all 0.25s; display:flex; align-items:center; gap:8px; }
+    .tab-btn.tab-active { background:var(--surface); border:1px solid var(--border-bright); color:var(--gold); }
+    .tab-btn .tab-dot { width:6px; height:6px; border-radius:50%; }
+    #tabWebsite .tab-dot { background:var(--gold); }
+    #tabAiAds   .tab-dot { background:#a855f7; }
+    #tabAiAds.tab-active  { color:#a855f7; border-color:rgba(168,85,247,0.4); }
 
-    .clients-modal-header {
-      position: sticky; top: 2px;
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      padding: 20px 28px;
-      display: flex; align-items: center; justify-content: space-between;
-      z-index: 10;
-    }
-    .clients-modal-title {
-      font-family: 'Syne', sans-serif;
-      font-weight: 800; font-size: 1.15rem; color: var(--white);
-      display: flex; align-items: center; gap: 10px;
-    }
-    .clients-modal-title .badge {
-      font-family: 'Space Mono', monospace;
-      font-size: 0.62rem; letter-spacing: 0.08em;
-      background: rgba(34,197,94,0.12);
-      border: 1px solid rgba(34,197,94,0.3);
-      color: #22c55e; padding: 3px 9px;
-    }
+    .svc-check-group { display:flex; gap:10px; margin-bottom:12px; }
+    .svc-check-item { display:flex; align-items:center; gap:8px; cursor:pointer; padding:9px 16px; border:1px solid var(--border); background:var(--black); flex:1; transition:all 0.2s; user-select:none; }
+    .svc-check-item:hover { border-color:rgba(240,165,0,0.3); }
+    .svc-check-item input[type=checkbox] { appearance:none; width:15px; height:15px; flex-shrink:0; background:var(--surface2); border:1px solid var(--border-bright); cursor:pointer; position:relative; transition:background 0.2s; }
+    .svc-check-item input[type=checkbox]:checked { background:var(--gold); border-color:var(--gold); }
+    .svc-check-item input[type=checkbox]:checked::after { content:''; position:absolute; top:2px; left:4px; width:4px; height:7px; border:2px solid var(--black); border-top:none; border-left:none; transform:rotate(45deg); }
+    .svc-check-item.svc-aiads input[type=checkbox]:checked { background:#a855f7; border-color:#a855f7; }
+    .svc-label { font-family:'Space Mono',monospace; font-size:0.7rem; letter-spacing:0.06em; text-transform:uppercase; }
+    .svc-label.gold { color:var(--gold); }
+    .svc-label.purple { color:#a855f7; }
 
-    .clients-modal-body { padding: 24px 28px; }
+    .manage-clients-btn { background:transparent; border:1px solid var(--border-bright); color:var(--gold); font-family:'Space Mono',monospace; font-size:0.72rem; letter-spacing:0.08em; text-transform:uppercase; padding:10px 18px; cursor:pointer; transition:all 0.3s; display:flex; align-items:center; gap:8px; }
+    .manage-clients-btn:hover { background:rgba(240,165,0,0.08); box-shadow:0 0 20px rgba(240,165,0,0.2); }
+    .manage-clients-btn svg { width:14px; stroke:currentColor; fill:none; stroke-width:2; }
+    .manage-clients-btn .dot { width:6px; height:6px; border-radius:50%; background:#22c55e; box-shadow:0 0 6px #22c55e; animation:blink 1.5s ease infinite; }
 
-    /* Add client form */
-    .add-client-form {
-      background: var(--black2);
-      border: 1px solid var(--border);
-      padding: 20px;
-      margin-bottom: 24px;
-    }
-    .add-client-form-title {
-      font-family: 'Space Mono', monospace;
-      font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase;
-      color: var(--gold); margin-bottom: 14px;
-    }
-    .add-client-fields {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
-      margin-bottom: 12px;
-    }
-    @media (max-width: 480px) { .add-client-fields { grid-template-columns: 1fr; } }
-
-    .add-client-input {
-      width: 100%; background: var(--black);
-      border: 1px solid var(--border);
-      color: var(--text); font-family: 'DM Sans', sans-serif;
-      font-size: 0.9rem; padding: 11px 14px; outline: none;
-      transition: border-color 0.3s;
-    }
-    .add-client-input:focus { border-color: var(--gold); }
-    .add-client-input::placeholder { color: var(--text-muted); }
-
-    .activate-btn {
-      width: 100%; background: var(--gold); color: var(--black);
-      font-family: 'Syne', sans-serif; font-weight: 700;
-      font-size: 0.88rem; letter-spacing: 0.04em;
-      border: none; padding: 13px;
-      cursor: pointer; transition: all 0.3s;
-      display: flex; align-items: center; justify-content: center; gap: 8px;
-    }
-    .activate-btn:hover { background: var(--gold-light); box-shadow: 0 0 24px rgba(240,165,0,0.35); }
-    .activate-btn:disabled { opacity: 0.6; cursor: not-allowed; }
-    .activate-btn svg { width: 14px; stroke: currentColor; fill: none; stroke-width: 2.5; }
-
-    .client-add-error {
-      display: none;
-      font-size: 0.78rem; color: #ff6666;
-      margin-top: 8px; font-family: 'Space Mono', monospace;
-    }
-    .client-add-success {
-      display: none;
-      font-size: 0.78rem; color: #22c55e;
-      margin-top: 8px; font-family: 'Space Mono', monospace;
-    }
-
-    /* Clients list */
-    .clients-list-title {
-      font-family: 'Space Mono', monospace;
-      font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase;
-      color: var(--text-muted); margin-bottom: 12px;
-    }
-    #clientsList { display: flex; flex-direction: column; gap: 8px; }
-
-    .client-row {
-      display: flex; align-items: center; gap: 14px;
-      background: var(--black2);
-      border: 1px solid var(--border);
-      padding: 14px 16px;
-      animation: fadeUp 0.3s ease both;
-      transition: border-color 0.3s;
-    }
-    .client-row:hover { border-color: var(--border-bright); }
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(10px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    .client-avatar {
-      width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0;
-      background: linear-gradient(135deg, var(--gold-dim), var(--gold));
-      display: flex; align-items: center; justify-content: center;
-      font-family: 'Syne', sans-serif; font-weight: 800;
-      font-size: 0.95rem; color: var(--black);
-    }
-    .client-info { flex: 1; min-width: 0; }
-    .client-name {
-      font-family: 'Syne', sans-serif; font-weight: 700;
-      font-size: 0.92rem; color: var(--white);
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-    }
-    .client-phone {
-      font-family: 'Space Mono', monospace;
-      font-size: 0.7rem; color: var(--text-muted); margin-top: 2px;
-    }
-    .client-added {
-      font-family: 'Space Mono', monospace;
-      font-size: 0.65rem; color: var(--text-muted); flex-shrink: 0;
-    }
-    .client-status-dot {
-      width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0;
-      background: #22c55e; box-shadow: 0 0 6px #22c55e;
-    }
+    .clients-modal { position:fixed; z-index:2100; top:50%; left:50%; transform:translate(-50%,-48%) scale(0.96); width:92%; max-width:560px; max-height:88vh; overflow-y:auto; background:var(--surface); border:1px solid var(--border-bright); opacity:0; pointer-events:none; transition:all 0.35s cubic-bezier(0.34,1.56,0.64,1); }
+    .clients-modal::before { content:''; position:sticky; top:0; display:block; height:2px; background:linear-gradient(90deg,transparent,var(--gold),transparent); }
+    .clients-modal.show { opacity:1; pointer-events:all; transform:translate(-50%,-50%) scale(1); }
+    .clients-modal-header { position:sticky; top:2px; background:var(--surface); border-bottom:1px solid var(--border); padding:20px 28px; display:flex; align-items:center; justify-content:space-between; z-index:10; }
+    .clients-modal-title { font-family:'Syne',sans-serif; font-weight:800; font-size:1.15rem; color:var(--white); display:flex; align-items:center; gap:10px; }
+    .clients-modal-title .badge { font-family:'Space Mono',monospace; font-size:0.62rem; letter-spacing:0.08em; background:rgba(34,197,94,0.12); border:1px solid rgba(34,197,94,0.3); color:#22c55e; padding:3px 9px; }
+    .clients-modal-body { padding:24px 28px; }
+    .add-client-form { background:var(--black2); border:1px solid var(--border); padding:20px; margin-bottom:24px; }
+    .add-client-form-title { font-family:'Space Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--gold); margin-bottom:14px; }
+    .add-client-fields { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px; }
+    @media(max-width:480px){ .add-client-fields{grid-template-columns:1fr;} }
+    .add-client-input { width:100%; background:var(--black); border:1px solid var(--border); color:var(--text); font-family:'DM Sans',sans-serif; font-size:0.9rem; padding:11px 14px; outline:none; transition:border-color 0.3s; }
+    .add-client-input:focus { border-color:var(--gold); }
+    .add-client-input::placeholder { color:var(--text-muted); }
+    .activate-btn { width:100%; background:var(--gold); color:var(--black); font-family:'Syne',sans-serif; font-weight:700; font-size:0.88rem; letter-spacing:0.04em; border:none; padding:13px; cursor:pointer; transition:all 0.3s; display:flex; align-items:center; justify-content:center; gap:8px; }
+    .activate-btn:hover { background:var(--gold-light); box-shadow:0 0 24px rgba(240,165,0,0.35); }
+    .activate-btn:disabled { opacity:0.6; cursor:not-allowed; }
+    .client-add-error   { display:none; font-size:0.78rem; color:#ff6666; margin-top:8px; font-family:'Space Mono',monospace; }
+    .client-add-success { display:none; font-size:0.78rem; color:#22c55e; margin-top:8px; font-family:'Space Mono',monospace; }
+    .clients-list-title { font-family:'Space Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-muted); margin-bottom:12px; }
+    #clientsList { display:flex; flex-direction:column; gap:8px; }
+    .client-row { display:flex; align-items:center; gap:14px; background:var(--black2); border:1px solid var(--border); padding:14px 16px; animation:fadeUp 0.3s ease both; transition:border-color 0.3s; }
+    .client-row:hover { border-color:var(--border-bright); }
+    .client-avatar { width:38px; height:38px; border-radius:50%; flex-shrink:0; background:linear-gradient(135deg,var(--gold-dim),var(--gold)); display:flex; align-items:center; justify-content:center; font-family:'Syne',sans-serif; font-weight:800; font-size:0.95rem; color:var(--black); }
+    .client-info { flex:1; min-width:0; }
+    .client-name { font-family:'Syne',sans-serif; font-weight:700; font-size:0.92rem; color:var(--white); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .client-phone { font-family:'Space Mono',monospace; font-size:0.7rem; color:var(--text-muted); margin-top:2px; }
+    .client-added { font-family:'Space Mono',monospace; font-size:0.65rem; color:var(--text-muted); flex-shrink:0; }
+    .client-status-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; background:#22c55e; box-shadow:0 0 6px #22c55e; }
   </style>
 </head>
 <body>
   <div class="grid-bg"></div>
 
-  <!-- ADMIN GATE -->
   <div id="adminGate">
     <div class="gate-card">
-      <div class="gate-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-      </div>
+      <div class="gate-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
       <h2>Admin Access</h2>
-      <p>Enter the admin passcode to access the client submissions panel.</p>
+      <p>Enter the admin passcode to access the panel.</p>
       <input class="gate-input" type="password" id="gateInput" placeholder="••••••••" maxlength="20">
       <button class="gate-btn" onclick="checkGate()">Enter Panel</button>
       <p class="gate-error" id="gateError">Incorrect passcode. Try again.</p>
@@ -199,139 +84,111 @@
 
   <nav>
     <div style="display:flex;align-items:center;gap:14px;">
-      <a class="nav-logo" href="index.html">
-        <img src="logo.jpeg" alt="Inpixel Network">
-        <span>Inpixel Network</span>
-      </a>
+      <a class="nav-logo" href="../index.html"><img src="../logo.jpeg" alt="Inpixel Network"><span>Inpixel Network</span></a>
       <span class="nav-badge">Admin Panel</span>
     </div>
     <div class="nav-right">
-      <!-- ── MANAGE CLIENTS BUTTON ── -->
       <button class="manage-clients-btn" onclick="openClientsModal()">
         <div class="dot"></div>
         <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
         Manage Clients
       </button>
-      <a class="nav-back" href="index.html">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-        Back to Site
-      </a>
+      <a class="nav-back" href="../index.html"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>Back to Site</a>
     </div>
   </nav>
 
   <main>
     <div class="page-header">
-      <div class="page-header-left">
-        <p>Dashboard</p>
-        <h1>Client Submissions</h1>
-      </div>
-      <div class="stats-row" id="statsRow">
-        <div class="stat-chip">
-          <div class="stat-chip-num" id="statTotal">0</div>
-          <div class="stat-chip-label">Total</div>
-        </div>
-        <div class="stat-chip">
-          <div class="stat-chip-num" id="statToday">0</div>
-          <div class="stat-chip-label">Today</div>
-        </div>
-        <div class="stat-chip">
-          <div class="stat-chip-num" id="statWeek">0</div>
-          <div class="stat-chip-label">This Week</div>
-        </div>
-      </div>
+      <div class="page-header-left"><p>Dashboard</p><h1>Submissions</h1></div>
     </div>
 
-    <div class="toolbar">
-      <div class="search-box">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input type="text" id="searchInput" placeholder="Search by name, email, business..." oninput="filterCards()">
-      </div>
-      <button class="filter-btn active" onclick="setFilter('all', this)">All</button>
-      <button class="filter-btn" onclick="setFilter('today', this)">Today</button>
-      <button class="filter-btn" onclick="setFilter('week', this)">This Week</button>
-      <button class="clear-btn" onclick="confirmClearAll()">Clear All</button>
+    <div class="tab-island">
+      <button class="tab-btn tab-active" id="tabWebsite" onclick="switchTab('website')"><span class="tab-dot"></span> Website</button>
+      <button class="tab-btn" id="tabAiAds" onclick="switchTab('aiads')"><span class="tab-dot"></span> AI Ads</button>
     </div>
 
-    <div id="cardsContainer"></div>
+    <div id="websitePanel">
+      <div class="stats-row" style="margin-bottom:24px;">
+        <div class="stat-chip"><div class="stat-chip-num" id="statTotal">0</div><div class="stat-chip-label">Total</div></div>
+        <div class="stat-chip"><div class="stat-chip-num" id="statToday">0</div><div class="stat-chip-label">Today</div></div>
+        <div class="stat-chip"><div class="stat-chip-num" id="statWeek">0</div><div class="stat-chip-label">This Week</div></div>
+      </div>
+      <div class="toolbar">
+        <div class="search-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="searchInput" placeholder="Search by name, phone, business..." oninput="filterCards()">
+        </div>
+        <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
+        <button class="filter-btn" onclick="setFilter('today',this)">Today</button>
+        <button class="filter-btn" onclick="setFilter('week',this)">This Week</button>
+        <button class="clear-btn" onclick="confirmClearAll()">Clear All</button>
+      </div>
+      <div id="cardsContainer"></div>
+    </div>
+
+    <div id="aiAdsPanel" style="display:none;">
+      <div class="stats-row" style="margin-bottom:24px;">
+        <div class="stat-chip"><div class="stat-chip-num" id="aiStatTotal">0</div><div class="stat-chip-label">Total</div></div>
+        <div class="stat-chip"><div class="stat-chip-num" id="aiStatToday">0</div><div class="stat-chip-label">Today</div></div>
+      </div>
+      <div class="toolbar">
+        <div class="search-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="aiSearchInput" placeholder="Search by name or phone..." oninput="renderAiAdsCards()">
+        </div>
+      </div>
+      <div id="aiAdsContainer"></div>
+    </div>
   </main>
 
-  <!-- SUBMISSION DETAIL OVERLAY -->
   <div class="overlay" id="overlay" onclick="closeModal()"></div>
-
-  <!-- SUBMISSION DETAIL MODAL -->
   <div class="detail-modal" id="detailModal">
     <div class="modal-header">
       <div class="modal-header-left">
         <div class="modal-avatar" id="mAvatar"></div>
-        <div>
-          <div class="modal-name" id="mName"></div>
-          <div class="modal-sub" id="mSub"></div>
-        </div>
+        <div><div class="modal-name" id="mName"></div><div class="modal-sub" id="mSub"></div></div>
       </div>
-      <button class="modal-close" onclick="closeModal()">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
+      <button class="modal-close" onclick="closeModal()"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
     </div>
     <div class="modal-body" id="mBody"></div>
     <div class="modal-footer">
       <div class="modal-timestamp" id="mTimestamp"></div>
-      <button class="delete-btn" id="mDeleteBtn">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
-        Delete Entry
-      </button>
+      <button class="delete-btn" id="mDeleteBtn"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>Delete Entry</button>
     </div>
   </div>
 
-  <!-- ══════════════════════════════════════
-       MANAGE CLIENTS OVERLAY + MODAL
-  ══════════════════════════════════════ -->
   <div class="overlay" id="clientsOverlay" style="z-index:2000;" onclick="closeClientsModal()"></div>
-
   <div class="clients-modal" id="clientsModal">
-    <!-- Gold top bar rendered via ::before -->
     <div class="clients-modal-header">
-      <div class="clients-modal-title">
-        Manage Clients
-        <span class="badge">Activated</span>
-      </div>
-      <button class="modal-close" onclick="closeClientsModal()">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
+      <div class="clients-modal-title">Manage Clients <span class="badge">Live</span></div>
+      <button class="modal-close" onclick="closeClientsModal()"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
     </div>
-
     <div class="clients-modal-body">
-
-      <!-- Add new client -->
       <div class="add-client-form">
         <div class="add-client-form-title">Activate New Client</div>
         <div class="add-client-fields">
-          <input
-            class="add-client-input"
-            type="text"
-            id="newClientName"
-            placeholder="Client name"
-            autocomplete="off"
-          >
-          <input
-            class="add-client-input"
-            type="tel"
-            id="newClientPhone"
-            placeholder="Phone (e.g. +91 98765 43210)"
-            autocomplete="off"
-          >
+          <input class="add-client-input" type="text" id="newClientName" placeholder="Client name" autocomplete="off">
+          <input class="add-client-input" type="tel" id="newClientPhone" placeholder="Phone (e.g. +91 98765 43210)" autocomplete="off">
+        </div>
+        <div class="svc-check-group">
+          <label class="svc-check-item"><input type="checkbox" id="svcWebsite" checked><span class="svc-label gold">Website</span></label>
+          <label class="svc-check-item svc-aiads"><input type="checkbox" id="svcAiAds"><span class="svc-label purple">AI Ads</span></label>
         </div>
         <button class="activate-btn" id="activateBtn" onclick="activateClient()">
-          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px"><polyline points="20 6 9 17 4 12"/></svg>
           Activate Account
         </button>
         <div class="client-add-error" id="clientAddError"></div>
         <div class="client-add-success" id="clientAddSuccess"></div>
       </div>
-
-      <!-- Existing clients list -->
-      <div class="clients-list-title">All Activated Clients</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+        <div class="clients-list-title" style="margin-bottom:0;">All Activated Clients</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;background:var(--black);border:1px solid var(--border);padding:8px 12px;margin-bottom:12px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" style="width:14px;stroke:var(--text-muted);flex-shrink:0;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="clientSearch" placeholder="Search by name or phone..." oninput="renderClientsList()" style="background:none;border:none;outline:none;color:var(--text);font-family:'DM Sans',sans-serif;font-size:0.88rem;width:100%;">
+      </div>
       <div id="clientsList"></div>
-
     </div>
   </div>
 

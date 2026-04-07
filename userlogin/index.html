@@ -6,339 +6,407 @@
   <title>Inpixel Network — Client Portal</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-  <link rel="icon" type="image/png" href="logo1.jpeg">
+  <link rel="icon" type="image/png" href="../logo1.jpeg">
   <link rel="stylesheet" href="/userlogin/userlogin.css">
   <style>
-    /* ── Spinner ── */
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .spin { animation: spin 0.8s linear infinite; display: inline-block; }
+    @keyframes spin    { to { transform: rotate(360deg); } }
+    @keyframes fadeUp  { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes float   { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+    .spin { animation: spin 0.8s linear infinite; display:inline-block; }
 
-    /* ── Login Error Box ── */
-    .login-error {
-      display: none;
-      align-items: flex-start;
-      gap: 14px;
-      background: rgba(255, 68, 68, 0.06);
-      border: 1px solid rgba(255, 68, 68, 0.35);
-      padding: 16px 18px;
-      margin-bottom: 20px;
-      animation: fadeUp 0.3s ease;
+    /* ── Login error ── */
+    .login-error { display:none; align-items:flex-start; gap:14px; background:rgba(255,68,68,0.06); border:1px solid rgba(255,68,68,0.35); padding:16px 18px; margin-bottom:20px; animation:fadeUp 0.3s ease; }
+    .login-error-icon { width:36px; height:36px; flex-shrink:0; border-radius:50%; background:rgba(255,68,68,0.12); border:1px solid rgba(255,68,68,0.3); display:flex; align-items:center; justify-content:center; }
+    .login-error-icon svg { width:16px; stroke:#ff6666; fill:none; stroke-width:2.5; }
+    .login-error-title { font-family:'Syne',sans-serif; font-weight:700; font-size:0.88rem; color:#ff6666; margin-bottom:3px; }
+    .login-error span { font-size:0.82rem; color:var(--text-muted); line-height:1.55; }
+    .login-error strong { color:var(--gold); }
+
+    /* ── Service Dashboard (two frames) ── */
+    #serviceDashboard { display:none; width:100%; max-width:680px; animation:fadeUp 0.5s ease; }
+    .dash-greeting {
+      font-family:'Space Mono',monospace; font-size:0.7rem; letter-spacing:0.12em; text-transform:uppercase;
+      color:var(--gold); margin-bottom:8px; display:flex; align-items:center; gap:8px;
     }
-    .login-error-icon {
-      width: 36px; height: 36px; flex-shrink: 0;
-      border-radius: 50%;
-      background: rgba(255, 68, 68, 0.12);
-      border: 1px solid rgba(255, 68, 68, 0.3);
-      display: flex; align-items: center; justify-content: center;
+    .dash-greeting::before { content:''; width:20px; height:1px; background:var(--gold); }
+    .dash-title { font-family:'Syne',sans-serif; font-weight:800; font-size:1.8rem; color:var(--white); margin-bottom:6px; }
+    .dash-sub { font-size:0.88rem; color:var(--text-muted); margin-bottom:36px; }
+
+    .service-frames { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+    @media(max-width:600px){ .service-frames { grid-template-columns:1fr; } }
+
+    .service-frame {
+      border:1px solid var(--border);
+      background:var(--surface);
+      padding:36px 28px;
+      position:relative; overflow:hidden;
+      cursor:pointer;
+      transition:all 0.35s;
+      animation:fadeUp 0.5s ease both;
     }
-    .login-error-icon svg { width: 16px; stroke: #ff6666; fill: none; stroke-width: 2.5; }
-    .login-error-body {}
-    .login-error-title {
-      font-family: 'Syne', sans-serif;
-      font-weight: 700; font-size: 0.88rem;
-      color: #ff6666; margin-bottom: 3px;
+    .service-frame::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,transparent,var(--gold),transparent); opacity:0; transition:opacity 0.3s; }
+    .service-frame:hover:not(.locked) { border-color:var(--border-bright); transform:translateY(-4px); box-shadow:0 16px 48px rgba(0,0,0,0.4); }
+    .service-frame:hover:not(.locked)::before { opacity:1; }
+    .service-frame.locked { cursor:not-allowed; opacity:0.6; }
+
+    .frame-icon { width:52px; height:52px; border:1px solid var(--border-bright); display:flex; align-items:center; justify-content:center; margin-bottom:20px; transition:all 0.3s; }
+    .service-frame:hover:not(.locked) .frame-icon { border-color:var(--gold); box-shadow:0 0 20px rgba(240,165,0,0.2); }
+    .frame-icon svg { width:22px; stroke:var(--gold); fill:none; stroke-width:1.8; }
+
+    .frame-title { font-family:'Syne',sans-serif; font-weight:800; font-size:1.15rem; color:var(--white); margin-bottom:8px; }
+    .frame-desc { font-size:0.84rem; color:var(--text-muted); line-height:1.65; margin-bottom:20px; }
+    .frame-cta { font-family:'Space Mono',monospace; font-size:0.68rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--gold); display:flex; align-items:center; gap:8px; transition:gap 0.3s; }
+    .service-frame:hover:not(.locked) .frame-cta { gap:14px; }
+    .frame-cta svg { width:14px; stroke:currentColor; fill:none; stroke-width:2; }
+
+    .frame-lock { position:absolute; inset:0; background:rgba(6,6,8,0.6); backdrop-filter:blur(2px); display:none; flex-direction:column; align-items:center; justify-content:center; gap:10px; }
+    .frame-lock svg { width:28px; stroke:var(--text-muted); fill:none; stroke-width:1.5; }
+    .frame-lock p { font-family:'Space Mono',monospace; font-size:0.68rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-muted); text-align:center; padding:0 20px; }
+
+    .frame-badge { position:absolute; top:16px; right:16px; font-family:'Space Mono',monospace; font-size:0.58rem; letter-spacing:0.1em; text-transform:uppercase; padding:4px 10px; }
+    .frame-badge.gold   { background:rgba(240,165,0,0.12); border:1px solid rgba(240,165,0,0.3); color:var(--gold); }
+    .frame-badge.purple { background:rgba(168,85,247,0.12); border:1px solid rgba(168,85,247,0.3); color:#a855f7; }
+
+    /* ── AI Ads Section ── */
+    #aiAdsWrap { display:none; width:100%; max-width:680px; }
+    .ai-back-btn { display:flex; align-items:center; gap:8px; background:none; border:none; color:var(--text-muted); font-family:'Space Mono',monospace; font-size:0.72rem; letter-spacing:0.08em; text-transform:uppercase; cursor:pointer; margin-bottom:28px; padding:0; transition:color 0.2s; }
+    .ai-back-btn:hover { color:var(--gold); }
+    .ai-back-btn svg { width:14px; stroke:currentColor; fill:none; stroke-width:2; }
+
+    #aiGreeting { display:flex; align-items:center; gap:10px; background:rgba(168,85,247,0.07); border:1px solid rgba(168,85,247,0.3); padding:11px 14px; margin-bottom:24px; }
+    .ai-greeting-dot { width:7px; height:7px; border-radius:50%; background:#a855f7; flex-shrink:0; animation:blink 2s infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+    #aiGreeting p { font-size:0.83rem; color:var(--text-muted); }
+    #aiGreeting p strong { color:#a855f7; }
+
+    /* Model grid */
+    .model-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:12px; margin-bottom:28px; }
+    @media(max-width:500px){ .model-grid { grid-template-columns:repeat(2,1fr); } }
+
+    .model-card {
+      aspect-ratio:3/4;
+      border:2px solid var(--border);
+      background:var(--surface2);
+      position:relative; overflow:hidden;
+      cursor:pointer; transition:all 0.25s;
+      display:flex; flex-direction:column;
     }
-    .login-error span {
-      font-size: 0.82rem; color: var(--text-muted); line-height: 1.55;
-    }
-    .login-error strong { color: var(--gold); }
+    .model-card:hover { border-color:rgba(168,85,247,0.5); transform:translateY(-3px); }
+    .model-card.selected { border-color:#a855f7; box-shadow:0 0 24px rgba(168,85,247,0.3); }
+    .model-card.selected::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:#a855f7; }
+    .model-img { width:100%; flex:1; object-fit:cover; background:var(--surface); display:flex; align-items:center; justify-content:center; }
+    .model-img-placeholder { width:100%; flex:1; background:linear-gradient(135deg,var(--surface),var(--surface2)); display:flex; align-items:center; justify-content:center; }
+    .model-img-placeholder svg { width:32px; stroke:var(--text-muted); fill:none; stroke-width:1.2; opacity:0.4; }
+    .model-num { font-family:'Space Mono',monospace; font-size:0.65rem; letter-spacing:0.1em; text-align:center; padding:8px 4px; color:var(--text-muted); background:var(--surface); border-top:1px solid var(--border); transition:color 0.2s; }
+    .model-card.selected .model-num { color:#a855f7; }
+    .model-check { position:absolute; top:6px; right:6px; width:20px; height:20px; border-radius:50%; background:#a855f7; display:none; align-items:center; justify-content:center; }
+    .model-card.selected .model-check { display:flex; }
+    .model-check svg { width:10px; stroke:#fff; fill:none; stroke-width:3; }
+
+    /* Script textarea */
+    .ai-script-label { display:block; font-family:'Space Mono',monospace; font-size:0.68rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--white); margin-bottom:10px; }
+    #ai-script { width:100%; background:var(--black2); border:1px solid var(--border); color:var(--white); font-family:'DM Sans',sans-serif; font-size:0.95rem; padding:16px 18px; outline:none; border-radius:0; transition:border-color 0.3s; resize:vertical; min-height:220px; }
+    #ai-script:focus { border-color:#a855f7; }
+    #ai-script::placeholder { color:var(--text-muted); }
+
+    .ai-form-error { display:none; font-size:0.82rem; color:#ff6666; font-family:'Space Mono',monospace; margin-top:10px; }
+
+    #aiSubmitBtn { width:100%; display:flex; align-items:center; justify-content:center; gap:8px; background:#a855f7; color:#fff; font-family:'Syne',sans-serif; font-weight:700; font-size:0.95rem; border:none; padding:16px 28px; cursor:pointer; transition:all 0.3s; margin-top:20px; }
+    #aiSubmitBtn:hover { background:#9333ea; box-shadow:0 0 30px rgba(168,85,247,0.4); transform:translateY(-1px); }
+    #aiSubmitBtn:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
+
+    #aiSuccess { display:none; text-align:center; padding:48px 20px; }
+    #aiSuccess.show { display:block; animation:fadeUp 0.5s ease; }
+    .ai-success-icon { width:64px; height:64px; border-radius:50%; background:rgba(168,85,247,0.1); border:2px solid #a855f7; display:flex; align-items:center; justify-content:center; margin:0 auto 20px; box-shadow:0 0 40px rgba(168,85,247,0.3); }
+    .ai-success-icon svg { width:28px; stroke:#a855f7; fill:none; }
   </style>
 </head>
 <body>
   <div class="grid-bg"></div>
 
   <nav>
-    <a class="nav-logo" href="index.html">
-      <img src="logo.jpeg" alt="Inpixel Network">
-      <span>Inpixel Network</span>
-    </a>
-    <a class="nav-back" href="index.html">
-      <svg viewBox="0 0 24 24" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-      Back to Home
-    </a>
+    <a class="nav-logo" href="../index.html"><img src="../logo.jpeg" alt="Inpixel Network"><span>Inpixel Network</span></a>
+    <a class="nav-back" href="../index.html"><svg viewBox="0 0 24 24" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>Back to Home</a>
   </nav>
 
   <div class="page-split">
 
-    <!-- ══ LEFT GOLD PANEL ══ -->
-    <div class="split-left">
-      <div class="split-left-inner">
-        <div class="lo lo1"></div>
-        <div class="lo lo2"></div>
-        <div class="lo lo3"></div>
-        <div class="left-content">
-          <div class="left-logo">
-            <img src="logo.jpeg" alt="Inpixel">
-            <span>Inpixel Network</span>
-          </div>
-          <h2 class="left-headline">Build Your<br>Digital Empire.</h2>
-          <p class="left-sub">Tell us what you need and our team will craft a website that turns visitors into customers.</p>
-          <div class="left-points">
-            <div class="left-point"><div class="left-point-dot"></div><span>150+ clients served across India</span></div>
-            <div class="left-point"><div class="left-point-dot"></div><span>Fast turnaround, premium quality</span></div>
-            <div class="left-point"><div class="left-point-dot"></div><span>One team, end-to-end delivery</span></div>
-            <div class="left-point"><div class="left-point-dot"></div><span>24/7 support after launch</span></div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <!-- ══ LEFT PANEL (hidden via CSS) ══ -->
+    <div class="split-left"></div>
 
-    <!-- ══ RIGHT FORM PANEL ══ -->
-    <div class="split-right">
+    <!-- ══ RIGHT PANEL ══ -->
+    <div class="split-right" style="align-items:flex-start;padding-top:60px;">
 
       <!-- STEP 1: LOGIN -->
       <div id="loginStep" class="form-wrap">
         <div class="login-card">
           <p class="login-eyebrow">Client Portal</p>
           <h1 class="login-title">Welcome</h1>
-          <p class="login-sub">Enter your details to access the website requirement form. Your phone number must be activated by our team.</p>
-
-          <!-- Error message (shown when number not found) -->
+          <p class="login-sub">Enter your details to access your activated services. Your phone number must be activated by our team.</p>
           <div class="login-error" id="loginError">
-            <div class="login-error-icon">
-              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-            </div>
-            <div class="login-error-body">
-              <div class="login-error-title">Account Not Activated</div>
-              <span>Your number is not in our system. Please contact <strong>Inpixel Network</strong> to activate your account before logging in.</span>
-            </div>
+            <div class="login-error-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+            <div><div class="login-error-title">Account Not Activated</div><span>Your number is not in our system. Please contact <strong>Inpixel Network</strong> to activate your account.</span></div>
           </div>
-
           <form id="loginForm" onsubmit="handleLogin(event)">
-            <div class="form-row">
-              <label>Your Name</label>
-              <input type="text" id="l-name" required placeholder="Your full name">
-            </div>
-            <div class="form-row">
-              <label>Email Address</label>
-              <input type="email" id="l-email" required placeholder="Your email address">
-            </div>
-            <div class="form-row">
-              <label>Contact Number <span style="color:var(--gold);font-size:0.7rem;font-family:'Space Mono',monospace;"></span></label>
-              <input type="tel" id="l-phone" required placeholder="e.g. +91 98765 43210"
-                oninput="document.getElementById('loginError').style.display='none'">
-            </div>
+            <div class="form-row"><label>Your Name</label><input type="text" id="l-name" required placeholder="Your full name"></div>
+            <div class="form-row"><label>Email Address</label><input type="email" id="l-email" required placeholder="Your email address"></div>
+            <div class="form-row"><label>Contact Number</label><input type="tel" id="l-phone" required placeholder="e.g. +91 98765 43210" oninput="document.getElementById('loginError').style.display='none'"></div>
             <button type="submit" class="btn-submit" id="loginBtn">
-              <svg viewBox="0 0 24 24" stroke-width="2.5" style="fill:none;stroke:currentColor">
-                <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
-              </svg>
-              Continue to Form
+              <svg viewBox="0 0 24 24" stroke-width="2.5" style="fill:none;stroke:currentColor"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              Continue
             </button>
           </form>
           <p class="login-note">Your details are used only to identify your submission. <span>100% secure.</span></p>
         </div>
       </div>
 
-      <!-- STEP 2: REQUIREMENT FORM -->
+      <!-- STEP 2: SERVICE DASHBOARD -->
+      <div id="serviceDashboard">
+        <p class="dash-greeting">Welcome back, <span id="dashGreetName"></span></p>
+        <h2 class="dash-title">Your Services</h2>
+        <p class="dash-sub">Select a service below to get started.</p>
+        <div class="service-frames">
+
+          <!-- Website Frame -->
+          <div class="service-frame" id="websiteFrame" onclick="openService('website')" style="animation-delay:0s">
+            <span class="frame-badge gold">Website</span>
+            <div class="frame-icon">
+              <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            </div>
+            <div class="frame-title">Website Development</div>
+            <div class="frame-desc">Fill in your website requirements and our team will build your dream site.</div>
+            <div class="frame-cta">Open Form <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+            <div class="frame-lock" id="websiteLock">
+              <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              <p>Not activated for this service. Contact Inpixel Network.</p>
+            </div>
+          </div>
+
+          <!-- AI Ads Frame -->
+          <div class="service-frame" id="aiAdsFrame" onclick="openService('aiads')" style="animation-delay:0.1s">
+            <span class="frame-badge purple">AI Ads</span>
+            <div class="frame-icon" style="border-color:rgba(168,85,247,0.4);">
+              <svg viewBox="0 0 24 24" style="stroke:#a855f7;"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+            </div>
+            <div class="frame-title">AI Video Ads</div>
+            <div class="frame-desc">Choose a model, provide your script and we'll generate your AI-powered video ad.</div>
+            <div class="frame-cta" style="color:#a855f7;">Open Studio <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+            <div class="frame-lock" id="aiAdsLock">
+              <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              <p>Not activated for this service. Contact Inpixel Network.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- STEP 3A: WEBSITE REQUIREMENT FORM -->
       <div id="reqFormWrap" class="form-wrap">
         <div class="req-card">
-
+          <button class="ai-back-btn" onclick="goBackToDashboard()"><svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg> Back to Services</button>
           <div id="userGreeting" class="user-greeting">
             <div class="user-greeting-dot"></div>
             <p>Logged in as <strong id="greetName"></strong> &nbsp;·&nbsp; <span id="greetContact"></span></p>
           </div>
-
           <p class="login-eyebrow">Website Requirement Form</p>
           <h2 style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.65rem;color:var(--white);margin-bottom:6px;">Tell Us About<br>Your Project</h2>
-          <p style="color:var(--text-muted);font-size:0.86rem;line-height:1.6;margin-bottom:4px;">Fill in as much detail as you can — the more we know, the better we build.</p>
+          <p style="color:var(--text-muted);font-size:0.86rem;line-height:1.6;margin-bottom:4px;">Fill in as much detail as you can.</p>
 
           <form id="reqForm" onsubmit="handleReqSubmit(event)">
-
-            <!-- 1. Business -->
             <p class="form-section-title">1 · Your Business</p>
-            <div class="form-row">
-              <label>Business / Brand Name *</label>
-              <input type="text" id="r-business" required placeholder="e.g. Raj's Clothing Store">
-            </div>
+            <div class="form-row"><label>Business / Brand Name *</label><input type="text" id="r-business" required placeholder="e.g. Raj's Clothing Store"></div>
             <div class="form-two-col">
-              <div class="form-row">
-                <label>Industry / Niche *</label>
-                <input type="text" id="r-industry" required placeholder="e.g. Fashion, Food, Tech">
-              </div>
-              <div class="form-row">
-                <label>City / Location</label>
-                <input type="text" id="r-location" placeholder="e.g. Mumbai">
-              </div>
+              <div class="form-row"><label>Industry / Niche *</label><input type="text" id="r-industry" required placeholder="e.g. Fashion, Food, Tech"></div>
+              <div class="form-row"><label>City / Location</label><input type="text" id="r-location" placeholder="e.g. Mumbai"></div>
             </div>
-            <div class="form-row">
-              <label>What does your business do? *</label>
-              <textarea id="r-desc" rows="3" required placeholder="Briefly describe your products or services..."></textarea>
-            </div>
+            <div class="form-row"><label>What does your business do? *</label><textarea id="r-desc" rows="3" required placeholder="Briefly describe your products or services..."></textarea></div>
 
-            <!-- 2. Website Type -->
             <p class="form-section-title">2 · What Type of Website?</p>
-            <div class="form-row">
-              <div class="checkbox-group">
-                <label class="checkbox-item">
-                  <input type="checkbox" name="websiteType" value="Business / Portfolio Website">
-                  <label>Business / Portfolio Website <span>Showcase services, team and contact info</span></label>
-                </label>
-                <label class="checkbox-item">
-                  <input type="checkbox" name="websiteType" value="E-Commerce Store">
-                  <label>E-Commerce Store <span>Sell products online with cart &amp; payments</span></label>
-                </label>
-                <label class="checkbox-item">
-                  <input type="checkbox" name="websiteType" value="Shopify Store">
-                  <label>Shopify Store <span>Full Shopify setup with theme customization</span></label>
-                </label>
-                <label class="checkbox-item">
-                  <input type="checkbox" name="websiteType" value="Landing Page">
-                  <label>Landing Page <span>High-converting single page for a campaign</span></label>
-                </label>
-                <label class="checkbox-item">
-                  <input type="checkbox" name="websiteType" value="Booking / Appointment Website">
-                  <label>Booking / Appointment Website <span>Clinics, salons, consultants etc.</span></label>
-                </label>
-                <label class="checkbox-item">
-                  <input type="checkbox" name="websiteType" value="Other / Not sure">
-                  <label>Other / Not sure yet</label>
-                </label>
-              </div>
-            </div>
+            <div class="form-row"><div class="checkbox-group">
+              <label class="checkbox-item"><input type="checkbox" name="websiteType" value="Business / Portfolio Website"><label>Business / Portfolio Website <span>Showcase services, team and contact info</span></label></label>
+              <label class="checkbox-item"><input type="checkbox" name="websiteType" value="E-Commerce Store"><label>E-Commerce Store <span>Sell products online with cart & payments</span></label></label>
+              <label class="checkbox-item"><input type="checkbox" name="websiteType" value="Shopify Store"><label>Shopify Store <span>Full Shopify setup with theme customization</span></label></label>
+              <label class="checkbox-item"><input type="checkbox" name="websiteType" value="Landing Page"><label>Landing Page <span>High-converting single page for a campaign</span></label></label>
+              <label class="checkbox-item"><input type="checkbox" name="websiteType" value="Booking / Appointment Website"><label>Booking / Appointment Website <span>Clinics, salons, consultants etc.</span></label></label>
+              <label class="checkbox-item"><input type="checkbox" name="websiteType" value="Other / Not sure"><label>Other / Not sure yet</label></label>
+            </div></div>
 
-            <!-- 3. Features -->
             <p class="form-section-title">3 · Features You Need</p>
-            <div class="form-row">
-              <div class="checkbox-group">
-                <label class="checkbox-item"><input type="checkbox" name="features" value="Contact Form"><label>Contact Form</label></label>
-                <label class="checkbox-item"><input type="checkbox" name="features" value="WhatsApp Chat Button"><label>WhatsApp Chat Button</label></label>
-                <label class="checkbox-item"><input type="checkbox" name="features" value="Online Payment Gateway"><label>Online Payment Gateway</label></label>
-                <label class="checkbox-item"><input type="checkbox" name="features" value="Product Catalogue"><label>Product Catalogue</label></label>
-                <label class="checkbox-item"><input type="checkbox" name="features" value="Photo / Video Gallery"><label>Photo / Video Gallery</label></label>
-                <label class="checkbox-item"><input type="checkbox" name="features" value="Google Maps / Location"><label>Google Maps / Location</label></label>
-                <label class="checkbox-item"><input type="checkbox" name="features" value="SEO Optimisation"><label>SEO Optimisation</label></label>
-                <label class="checkbox-item"><input type="checkbox" name="features" value="Social Media Integration"><label>Social Media Integration</label></label>
-                <label class="checkbox-item"><input type="checkbox" name="features" value="Admin / CMS Panel"><label>Admin / CMS Panel <span>Manage content yourself after delivery</span></label></label>
-              </div>
-            </div>
+            <div class="form-row"><div class="checkbox-group">
+              <label class="checkbox-item"><input type="checkbox" name="features" value="Contact Form"><label>Contact Form</label></label>
+              <label class="checkbox-item"><input type="checkbox" name="features" value="WhatsApp Chat Button"><label>WhatsApp Chat Button</label></label>
+              <label class="checkbox-item"><input type="checkbox" name="features" value="Online Payment Gateway"><label>Online Payment Gateway</label></label>
+              <label class="checkbox-item"><input type="checkbox" name="features" value="Product Catalogue"><label>Product Catalogue</label></label>
+              <label class="checkbox-item"><input type="checkbox" name="features" value="Photo / Video Gallery"><label>Photo / Video Gallery</label></label>
+              <label class="checkbox-item"><input type="checkbox" name="features" value="Google Maps / Location"><label>Google Maps / Location</label></label>
+              <label class="checkbox-item"><input type="checkbox" name="features" value="SEO Optimisation"><label>SEO Optimisation</label></label>
+              <label class="checkbox-item"><input type="checkbox" name="features" value="Social Media Integration"><label>Social Media Integration</label></label>
+              <label class="checkbox-item"><input type="checkbox" name="features" value="Admin / CMS Panel"><label>Admin / CMS Panel <span>Manage content yourself after delivery</span></label></label>
+            </div></div>
 
-            <!-- 4. Design -->
             <p class="form-section-title">4 · Design Preferences</p>
-            <div class="form-row">
-              <label>Preferred Style *</label>
-              <div class="radio-group">
-                <label class="radio-item"><input type="radio" name="designStyle" value="Minimal & Clean"><label>Minimal &amp; Clean</label></label>
-                <label class="radio-item"><input type="radio" name="designStyle" value="Bold & Modern"><label>Bold &amp; Modern</label></label>
-                <label class="radio-item"><input type="radio" name="designStyle" value="Luxury / Premium"><label>Luxury / Premium</label></label>
-                <label class="radio-item"><input type="radio" name="designStyle" value="Playful & Fun"><label>Playful &amp; Fun</label></label>
-                <label class="radio-item"><input type="radio" name="designStyle" value="No Preference"><label>No Preference</label></label>
-              </div>
-            </div>
+            <div class="form-row"><label>Preferred Style *</label><div class="radio-group">
+              <label class="radio-item"><input type="radio" name="designStyle" value="Minimal & Clean"><label>Minimal & Clean</label></label>
+              <label class="radio-item"><input type="radio" name="designStyle" value="Bold & Modern"><label>Bold & Modern</label></label>
+              <label class="radio-item"><input type="radio" name="designStyle" value="Luxury / Premium"><label>Luxury / Premium</label></label>
+              <label class="radio-item"><input type="radio" name="designStyle" value="Playful & Fun"><label>Playful & Fun</label></label>
+              <label class="radio-item"><input type="radio" name="designStyle" value="No Preference"><label>No Preference</label></label>
+            </div></div>
             <div class="form-two-col">
-              <div class="form-row">
-                <label>Preferred Colors</label>
-                <input type="text" id="r-colors" placeholder="e.g. Black &amp; Gold">
-              </div>
-              <div class="form-row">
-                <label>Do you have a logo?</label>
-                <div class="radio-group" style="flex-direction:column;">
-                  <label class="radio-item"><input type="radio" name="hasLogo" value="Yes"><label>Yes, I have one</label></label>
-                  <label class="radio-item"><input type="radio" name="hasLogo" value="No, need one"><label>No, need one too</label></label>
-                </div>
-              </div>
+              <div class="form-row"><label>Preferred Colors</label><input type="text" id="r-colors" placeholder="e.g. Black & Gold"></div>
+              <div class="form-row"><label>Do you have a logo?</label><div class="radio-group" style="flex-direction:column;">
+                <label class="radio-item"><input type="radio" name="hasLogo" value="Yes"><label>Yes, I have one</label></label>
+                <label class="radio-item"><input type="radio" name="hasLogo" value="No, need one"><label>No, need one too</label></label>
+              </div></div>
             </div>
-            <div class="form-row">
-              <label>Reference Websites (optional)</label>
-              <input type="text" id="r-refs" placeholder="Links to sites you like the look of">
-            </div>
+            <div class="form-row"><label>Reference Websites (optional)</label><input type="text" id="r-refs" placeholder="Links to sites you like the look of"></div>
 
-            <!-- 5. Pages & Content -->
-            <p class="form-section-title">5 · Pages &amp; Content</p>
-            <div class="form-row">
-              <label>Pages you want *</label>
-              <input type="text" id="r-pages" required placeholder="e.g. Home, About, Services, Gallery, Contact">
-            </div>
-            <div class="form-row">
-              <label>Will you provide the content?</label>
-              <div class="radio-group">
-                <label class="radio-item"><input type="radio" name="contentProvided" value="Yes, fully"><label>Yes, fully</label></label>
-                <label class="radio-item"><input type="radio" name="contentProvided" value="Partially"><label>Partially</label></label>
-                <label class="radio-item"><input type="radio" name="contentProvided" value="No, need help"><label>No, need help</label></label>
-              </div>
-            </div>
+            <p class="form-section-title">5 · Pages & Content</p>
+            <div class="form-row"><label>Pages you want *</label><input type="text" id="r-pages" required placeholder="e.g. Home, About, Services, Gallery, Contact"></div>
+            <div class="form-row"><label>Will you provide the content?</label><div class="radio-group">
+              <label class="radio-item"><input type="radio" name="contentProvided" value="Yes, fully"><label>Yes, fully</label></label>
+              <label class="radio-item"><input type="radio" name="contentProvided" value="Partially"><label>Partially</label></label>
+              <label class="radio-item"><input type="radio" name="contentProvided" value="No, need help"><label>No, need help</label></label>
+            </div></div>
 
-            <!-- 6. Domain & Hosting -->
-            <p class="form-section-title">6 · Domain &amp; Hosting</p>
+            <p class="form-section-title">6 · Domain & Hosting</p>
             <div class="form-two-col">
-              <div class="form-row">
-                <label>Have a domain?</label>
-                <div class="radio-group" style="flex-direction:column;">
-                  <label class="radio-item"><input type="radio" name="hasDomain" value="Yes, I own one"><label>Yes, I own one</label></label>
-                  <label class="radio-item"><input type="radio" name="hasDomain" value="No, need help"><label>No, need help</label></label>
-                </div>
-              </div>
-              <div class="form-row">
-                <label>Have hosting?</label>
-                <div class="radio-group" style="flex-direction:column;">
-                  <label class="radio-item"><input type="radio" name="hasHosting" value="Yes"><label>Yes</label></label>
-                  <label class="radio-item"><input type="radio" name="hasHosting" value="No"><label>No, need help</label></label>
-                </div>
-              </div>
+              <div class="form-row"><label>Have a domain?</label><div class="radio-group" style="flex-direction:column;">
+                <label class="radio-item"><input type="radio" name="hasDomain" value="Yes, I own one"><label>Yes, I own one</label></label>
+                <label class="radio-item"><input type="radio" name="hasDomain" value="No, need help"><label>No, need help</label></label>
+              </div></div>
+              <div class="form-row"><label>Have hosting?</label><div class="radio-group" style="flex-direction:column;">
+                <label class="radio-item"><input type="radio" name="hasHosting" value="Yes"><label>Yes</label></label>
+                <label class="radio-item"><input type="radio" name="hasHosting" value="No"><label>No, need help</label></label>
+              </div></div>
             </div>
-            <div class="form-row">
-              <label>Domain name (if you have one)</label>
-              <input type="text" id="r-domain" placeholder="e.g. www.mybusiness.com">
-            </div>
+            <div class="form-row"><label>Domain name (if you have one)</label><input type="text" id="r-domain" placeholder="e.g. www.mybusiness.com"></div>
 
-            <!-- 7. Extras -->
             <p class="form-section-title">7 · Anything Else?</p>
-            <div class="form-row">
-              <label>Additional notes or special requirements</label>
-              <textarea id="r-extra" rows="3" placeholder="Any other details, questions, or special requests..."></textarea>
-            </div>
+            <div class="form-row"><label>Additional notes or special requirements</label><textarea id="r-extra" rows="3" placeholder="Any other details, questions, or special requests..."></textarea></div>
+            <div class="form-row"><label>How did you hear about us?</label><select id="r-source"><option value="" disabled selected>Select an option</option><option>Instagram</option><option>Google Search</option><option>WhatsApp</option><option>Referral from a friend</option><option>LinkedIn</option><option>Other</option></select></div>
 
-            <!-- 8. Source -->
-            <div class="form-row">
-              <label>How did you hear about us?</label>
-              <select id="r-source">
-                <option value="" disabled selected>Select an option</option>
-                <option>Instagram</option>
-                <option>Google Search</option>
-                <option>WhatsApp</option>
-                <option>Referral from a friend</option>
-                <option>LinkedIn</option>
-                <option>Other</option>
-              </select>
-            </div>
-
-            <!-- TERMS -->
-            <p class="form-section-title">Terms &amp; Conditions</p>
+            <p class="form-section-title">Terms & Conditions</p>
             <div class="terms-box">
               <h4>Inpixel Network — Terms of Engagement</h4>
-              <p><strong>1. Project Scope:</strong> The information provided in this form will be used to understand your website requirements. Inpixel Network will prepare a proposal based on your inputs. Any changes to scope after approval may affect timeline and pricing.</p>
-              <p><strong>2. Confidentiality:</strong> All information shared is treated as strictly confidential and will not be shared with any third party without your consent.</p>
-              <p><strong>3. Accuracy of Information:</strong> You confirm that all details provided are accurate and truthful. Inpixel Network is not responsible for issues arising from incorrect information provided by the client.</p>
-              <p><strong>4. Payments:</strong> Projects require an advance payment before work begins. Full payment must be completed before the final website is handed over or made live. Payment schedules will be agreed upon in the proposal stage.</p>
-              <p><strong>5. Revisions:</strong> Each project includes a defined number of revision rounds as stated in the proposal. Additional revisions beyond the agreed limit will be billed separately.</p>
-              <p><strong>6. Content Responsibility:</strong> The client is responsible for ensuring all content provided (text, images, logos) is legally owned or licensed by them. Inpixel Network is not liable for copyright infringement caused by client-provided content.</p>
-              <p><strong>7. Intellectual Property:</strong> Upon full payment, the client receives ownership of the final website. Inpixel Network retains the right to showcase the project in its portfolio unless the client requests otherwise in writing.</p>
-              <p><strong>8. Support &amp; Maintenance:</strong> Post-launch support is provided for 30 days for bug fixes. Ongoing maintenance packages are available separately.</p>
-              <p><strong>9. Cancellation:</strong> If the client cancels after work has commenced, any advance payments are non-refundable, covering time and resources already invested.</p>
-              <p><strong>10. Governing Law:</strong> These terms are governed by the laws of India. Any disputes will be subject to the jurisdiction of courts in Pune, Maharashtra.</p>
-              <p style="margin-top:10px;color:var(--text);">By checking the box below, you confirm that you have read, understood, and agree to these terms.</p>
+              <p><strong>1. Project Scope:</strong> The information provided in this form will be used to understand your website requirements. Any changes to scope after approval may affect timeline and pricing.</p>
+              <p><strong>2. Confidentiality:</strong> All information shared is treated as strictly confidential.</p>
+              <p><strong>3. Payments:</strong> Projects require an advance payment before work begins. Full payment must be completed before the final website is handed over.</p>
+              <p><strong>4. Revisions:</strong> Each project includes a defined number of revision rounds. Additional revisions beyond the agreed limit will be billed separately.</p>
+              <p><strong>5. Intellectual Property:</strong> Upon full payment, the client receives ownership of the final website.</p>
+              <p><strong>6. Support:</strong> Post-launch support is provided for 30 days for bug fixes.</p>
+              <p><strong>7. Governing Law:</strong> These terms are governed by the laws of India. Disputes subject to jurisdiction of courts in Pune, Maharashtra.</p>
+              <p style="margin-top:10px;color:var(--text);">By checking the box below, you confirm you have read and agree to these terms.</p>
             </div>
-
             <label class="terms-agree" id="termsLabel">
               <input type="checkbox" id="termsCheck" onchange="toggleTerms(this)">
-              <p>I have read and agree to the <a href="#" onclick="return false;">Terms &amp; Conditions</a> of Inpixel Network. I confirm all information provided is accurate.</p>
+              <p>I have read and agree to the <a href="#" onclick="return false;">Terms & Conditions</a> of Inpixel Network.</p>
             </label>
-
             <button type="submit" class="btn-submit" id="reqSubmitBtn">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:16px">
-                <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
-              </svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:16px"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
               Submit Requirement
             </button>
           </form>
 
           <div class="success-wrap" id="reqSuccess">
-            <div class="success-icon">
-              <svg viewBox="0 0 24 24" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-            </div>
+            <div class="success-icon"><svg viewBox="0 0 24 24" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
             <h2>Requirement Submitted!</h2>
-            <p>Thank you! Our team will review your project details and get back to you within 24 hours.</p>
+            <p>Thank you! Our team will review your project and get back to you within 24 hours.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 3B: AI ADS SECTION -->
+      <div id="aiAdsWrap">
+        <div style="max-width:680px;">
+          <button class="ai-back-btn" onclick="goBackToDashboard()"><svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg> Back to Services</button>
+
+          <div id="aiGreeting">
+            <div class="ai-greeting-dot"></div>
+            <p>AI Ads Studio &nbsp;·&nbsp; <strong id="aiGreetName"></strong> &nbsp;·&nbsp; <span id="aiGreetContact"></span></p>
           </div>
 
+          <p class="login-eyebrow" style="color:#a855f7;">AI Video Ads</p>
+          <h2 style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.65rem;color:var(--white);margin-bottom:8px;">Create Your Ad</h2>
+          <p style="color:var(--text-muted);font-size:0.86rem;line-height:1.6;margin-bottom:32px;">Select a model and provide your ad script. We'll handle the rest.</p>
+
+          <form id="aiAdsForm" onsubmit="handleAiAdsSubmit(event)">
+            <input type="hidden" id="selectedModelInput" value="">
+
+            <!-- Model Selection -->
+            <p class="form-section-title" style="color:var(--white);border-color:rgba(168,85,247,0.3);">1 · Select a Model</p>
+            <div class="model-grid">
+              <!-- 10 model slots — replace .model-img-placeholder with <img> tags once you have images -->
+              <div class="model-card" data-model="1">
+                <div class="model-img-placeholder"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>
+                <div class="model-num">Model 1</div>
+                <div class="model-check"><svg viewBox="0 0 12 12"><polyline points="2 6 5 9 10 3"/></svg></div>
+              </div>
+              <div class="model-card" data-model="2">
+                <div class="model-img-placeholder"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>
+                <div class="model-num">Model 2</div>
+                <div class="model-check"><svg viewBox="0 0 12 12"><polyline points="2 6 5 9 10 3"/></svg></div>
+              </div>
+              <div class="model-card" data-model="3">
+                <div class="model-img-placeholder"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>
+                <div class="model-num">Model 3</div>
+                <div class="model-check"><svg viewBox="0 0 12 12"><polyline points="2 6 5 9 10 3"/></svg></div>
+              </div>
+              <div class="model-card" data-model="4">
+                <div class="model-img-placeholder"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>
+                <div class="model-num">Model 4</div>
+                <div class="model-check"><svg viewBox="0 0 12 12"><polyline points="2 6 5 9 10 3"/></svg></div>
+              </div>
+              <div class="model-card" data-model="5">
+                <div class="model-img-placeholder"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>
+                <div class="model-num">Model 5</div>
+                <div class="model-check"><svg viewBox="0 0 12 12"><polyline points="2 6 5 9 10 3"/></svg></div>
+              </div>
+              <div class="model-card" data-model="6">
+                <div class="model-img-placeholder"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>
+                <div class="model-num">Model 6</div>
+                <div class="model-check"><svg viewBox="0 0 12 12"><polyline points="2 6 5 9 10 3"/></svg></div>
+              </div>
+              <div class="model-card" data-model="7">
+                <div class="model-img-placeholder"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>
+                <div class="model-num">Model 7</div>
+                <div class="model-check"><svg viewBox="0 0 12 12"><polyline points="2 6 5 9 10 3"/></svg></div>
+              </div>
+              <div class="model-card" data-model="8">
+                <div class="model-img-placeholder"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>
+                <div class="model-num">Model 8</div>
+                <div class="model-check"><svg viewBox="0 0 12 12"><polyline points="2 6 5 9 10 3"/></svg></div>
+              </div>
+              <div class="model-card" data-model="9">
+                <div class="model-img-placeholder"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>
+                <div class="model-num">Model 9</div>
+                <div class="model-check"><svg viewBox="0 0 12 12"><polyline points="2 6 5 9 10 3"/></svg></div>
+              </div>
+              <div class="model-card" data-model="10">
+                <div class="model-img-placeholder"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>
+                <div class="model-num">Model 10</div>
+                <div class="model-check"><svg viewBox="0 0 12 12"><polyline points="2 6 5 9 10 3"/></svg></div>
+              </div>
+            </div>
+
+            <!-- Script -->
+            <p class="form-section-title" style="color:var(--white);border-color:rgba(168,85,247,0.3);">2 · Your Ad Script</p>
+            <label class="ai-script-label">Write the script for your ad *</label>
+            <textarea id="ai-script" placeholder="e.g. Hey! Introducing our new summer collection — fresh styles, unbeatable prices. Shop now at rajsclothing.com..."></textarea>
+
+            <div class="ai-form-error" id="aiFormError"></div>
+
+            <button type="submit" id="aiSubmitBtn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:16px"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              Submit Ad Request
+            </button>
+          </form>
+
+          <div id="aiSuccess">
+            <div class="ai-success-icon"><svg viewBox="0 0 24 24" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+            <h2 style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.6rem;color:var(--white);margin-bottom:10px;">Ad Request Submitted!</h2>
+            <p style="color:var(--text-muted);font-size:0.92rem;line-height:1.6;">Our team will start working on your AI video ad and get back to you shortly.</p>
+          </div>
         </div>
       </div>
 
