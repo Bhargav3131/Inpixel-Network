@@ -104,13 +104,16 @@ src="https://www.facebook.com/tr?id=1319458666711950&ev=PageView&noscript=1"
       <img src="logo.jpeg" alt="Inpixel Network">
       <span>Inpixel Network</span>
     </a>
-    <div class="nav-links">
+    <div class="nav-links" id="navLinks">
       <a href="/services/">Services</a>
       <a href="#about">About</a>
       <a href="#process">Process</a>
       <a href="#contact">Contact</a>
       <button class="btn-nav" onclick="openPopup()">Get Started</button>
     </div>
+    <button class="nav-hamburger" id="navHamburger" aria-label="Open menu" onclick="toggleNav()">
+      <span></span><span></span><span></span>
+    </button>
   </nav>
 
   <!-- ══════════════════════════════════════
@@ -124,25 +127,34 @@ src="https://www.facebook.com/tr?id=1319458666711950&ev=PageView&noscript=1"
 
       <!-- Left copy -->
       <div class="hero-left">
-        <p class="hero-eyebrow">Digital Growth Agency</p>
+        <div class="hero-trust-bar">
+          <div class="trust-avatars">
+            <div class="trust-avatar">R</div>
+            <div class="trust-avatar">P</div>
+            <div class="trust-avatar">S</div>
+          </div>
+          <div class="trust-text">
+            <span class="trust-stars">★★★★★</span>
+            <span>Trusted by <strong>150+ businesses</strong> across India</span>
+          </div>
+        </div>
         <h1 class="hero-h1">
           <span class="line">We Build</span>
           <span class="line gold">Digital</span>
           <span class="line outline">Empires.</span>
         </h1>
         <p class="hero-sub">
-          Inpixel Network turns your brand into a movement — with precision-crafted social media strategies,
-          stunning web experiences, and AI-powered ads built to convert.
+          From conversion-focused websites to AI-powered ad campaigns — we build the digital presence your business deserves. Fast delivery, clean design, real results.
         </p>
         <div class="hero-ctas">
-          <button class="btn-primary" onclick="openPopup()">
+          <a class="btn-primary" href="https://api.whatsapp.com/send/?phone=919697993131&text=Hello+I+want+to+get+started+with+Inpixel+Network&type=phone_number&app_absent=0" target="_blank" rel="noopener noreferrer" onclick="if(typeof fbq!=='undefined'){fbq('track','Lead',{content_name:'Hero CTA - Start Growing'})}">
             <span class="shine"></span>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:16px">
-              <line x1="22" y1="2" x2="11" y2="13"/>
-              <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+            <svg viewBox="0 0 24 24" fill="currentColor" style="width:16px">
+              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+              <path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.121 1.532 5.853L.057 23.716a.5.5 0 0 0 .614.63l6.012-1.576A11.95 11.95 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.907 0-3.7-.528-5.23-1.444l-.374-.222-3.875 1.016 1.033-3.77-.243-.389A9.96 9.96 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/>
             </svg>
             Start Growing
-          </button>
+          </a>
           <button class="btn-ghost" onclick="document.getElementById('services').scrollIntoView({behavior:'smooth'})">
             Explore Services
           </button>
