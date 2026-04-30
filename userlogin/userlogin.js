@@ -1,9 +1,9 @@
 // ============================================================
-//   INPIXEL NETWORK — userlogin.js (v2)
-//   Two-service portal: Website & AI Ads
+//   INPIXEL NETWORK — userlogin.js (v3)
+//   Three-service portal: Website, AI Ads & Meta Ads
 // ============================================================
 
-const CLIENT_SHEET_URL = 'https://script.google.com/macros/s/AKfycbzBjJN_VQMS5QRG6J1d2RwrEC13XhSEeUTCv0tObV9UkrReiAKmgr1DgQaWo3cczhi9MA/exec';
+const CLIENT_SHEET_URL = 'https://script.google.com/macros/s/AKfycbxZi42cfMcq4to42oXNov4QGGEsnH1jy5_cJHmW1mLcOamwIaEpnudcBIyJCIBpJ_1TkQ/exec';
 const SHEET_URL        = 'https://script.google.com/macros/s/AKfycbyVtBf_GzWpbauRxqcsXX7eOS05PS3DcCpOYYyghNCQXpiwjw09rmithNxOC3lmJ5nx/exec';
 
 let currentUser = null;
@@ -29,6 +29,24 @@ document.addEventListener('DOMContentLoaded', () => {
       document.querySelectorAll('.model-card').forEach(c => c.classList.remove('selected'));
       this.classList.add('selected');
       document.getElementById('selectedModelInput').value = this.dataset.model;
+    });
+  });
+
+  // Meta Ads objective buttons
+  document.querySelectorAll('.objective-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.objective-btn').forEach(b => b.classList.remove('selected'));
+      this.classList.add('selected');
+      document.getElementById('metaObjectiveInput').value = this.dataset.value;
+    });
+  });
+
+  // Meta Ads lead destination buttons
+  document.querySelectorAll('.dest-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.dest-btn').forEach(b => b.classList.remove('selected'));
+      this.classList.add('selected');
+      document.getElementById('metaDestinationInput').value = this.dataset.value;
     });
   });
 });
@@ -58,19 +76,11 @@ async function handleLogin(e) {
     currentUser = { name, email, phone, services: result.services || 'website' };
     sessionStorage.setItem('inpixel_user', JSON.stringify(currentUser));
 
-    // Show service dashboard
     document.getElementById('loginStep').style.display = 'none';
     document.getElementById('serviceDashboard').style.display = 'block';
     document.getElementById('dashGreetName').textContent = name;
 
-    // Set lock state on cards
-    const hasWeb = currentUser.services.includes('website') || currentUser.services === 'both';
-    const hasAi  = currentUser.services.includes('aiads')   || currentUser.services === 'both';
-    document.getElementById('websiteFrame').classList.toggle('locked', !hasWeb);
-    document.getElementById('aiAdsFrame').classList.toggle('locked', !hasAi);
-    document.getElementById('websiteLock').style.display = hasWeb ? 'none' : 'flex';
-    document.getElementById('aiAdsLock').style.display   = hasAi  ? 'none' : 'flex';
-
+    applyServiceLocks();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   } catch (err) {
     errEl.style.display = 'flex';
@@ -78,6 +88,20 @@ async function handleLogin(e) {
     btn.disabled = false;
     btn.innerHTML = '<svg viewBox="0 0 24 24" stroke-width="2.5" style="width:16px;fill:none;stroke:currentColor"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg> Continue';
   }
+}
+
+function applyServiceLocks() {
+  const svcs = currentUser.services;
+  const hasWeb  = svcs.includes('website')  || svcs === 'both';
+  const hasAi   = svcs.includes('aiads')    || svcs === 'both';
+  const hasMeta = svcs.includes('metaads');
+
+  document.getElementById('websiteFrame').classList.toggle('locked', !hasWeb);
+  document.getElementById('aiAdsFrame').classList.toggle('locked', !hasAi);
+  document.getElementById('metaAdsFrame').classList.toggle('locked', !hasMeta);
+  document.getElementById('websiteLock').style.display = hasWeb  ? 'none' : 'flex';
+  document.getElementById('aiAdsLock').style.display   = hasAi   ? 'none' : 'flex';
+  document.getElementById('metaAdsLock').style.display = hasMeta ? 'none' : 'flex';
 }
 
 function checkPhoneInSheet(phone) {
@@ -98,11 +122,14 @@ function checkPhoneInSheet(phone) {
 
 // ── Service Dashboard: open a section ───────────────────────
 function openService(type) {
-  const hasWeb = currentUser.services.includes('website') || currentUser.services === 'both';
-  const hasAi  = currentUser.services.includes('aiads')   || currentUser.services === 'both';
+  const svcs   = currentUser.services;
+  const hasWeb  = svcs.includes('website')  || svcs === 'both';
+  const hasAi   = svcs.includes('aiads')    || svcs === 'both';
+  const hasMeta = svcs.includes('metaads');
 
-  if (type === 'website' && !hasWeb) return;
-  if (type === 'aiads'   && !hasAi)  return;
+  if (type === 'website'  && !hasWeb)  return;
+  if (type === 'aiads'    && !hasAi)   return;
+  if (type === 'metaads'  && !hasMeta) return;
 
   document.getElementById('serviceDashboard').style.display = 'none';
 
@@ -110,17 +137,22 @@ function openService(type) {
     document.getElementById('reqFormWrap').style.display = 'block';
     document.getElementById('greetName').textContent    = currentUser.name;
     document.getElementById('greetContact').textContent = currentUser.phone + ' · ' + currentUser.email;
-  } else {
+  } else if (type === 'aiads') {
     document.getElementById('aiAdsWrap').style.display = 'block';
     document.getElementById('aiGreetName').textContent    = currentUser.name;
     document.getElementById('aiGreetContact').textContent = currentUser.phone;
+  } else if (type === 'metaads') {
+    document.getElementById('metaAdsWrap').style.display = 'block';
+    document.getElementById('metaGreetName').textContent    = currentUser.name;
+    document.getElementById('metaGreetContact').textContent = currentUser.phone;
   }
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function goBackToDashboard() {
-  document.getElementById('reqFormWrap').style.display  = 'none';
-  document.getElementById('aiAdsWrap').style.display    = 'none';
+  document.getElementById('reqFormWrap').style.display   = 'none';
+  document.getElementById('aiAdsWrap').style.display     = 'none';
+  document.getElementById('metaAdsWrap').style.display   = 'none';
   document.getElementById('serviceDashboard').style.display = 'block';
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -173,16 +205,16 @@ function handleAiAdsSubmit(e) {
   const errEl  = document.getElementById('aiFormError');
 
   errEl.style.display = 'none';
-  if (!model) { errEl.textContent = 'Please select a model first.'; errEl.style.display = 'block'; return; }
+  if (!model)  { errEl.textContent = 'Please select a model first.'; errEl.style.display = 'block'; return; }
   if (!script) { errEl.textContent = 'Please enter your ad script.'; errEl.style.display = 'block'; return; }
 
   const user = currentUser || JSON.parse(sessionStorage.getItem('inpixel_user') || '{}');
   btn.innerHTML = '<svg class="spin" viewBox="0 0 24 24" stroke-width="2.5" style="width:16px;fill:none;stroke:currentColor"><path d="M12 2a10 10 0 1 0 10 10" stroke-linecap="round"/></svg> Submitting...';
   btn.disabled = true;
 
-  const cbName = '_aiAdsSubmit_' + Date.now();
+  const cbName   = '_aiAdsSubmit_' + Date.now();
   const scriptEl = document.createElement('script');
-  const timeout = setTimeout(() => {
+  const timeout  = setTimeout(() => {
     delete window[cbName]; scriptEl.remove();
     errEl.textContent = 'Request timed out. Please try again.'; errEl.style.display = 'block';
     btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:16px"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Submit Ad Request';
@@ -220,4 +252,99 @@ function handleAiAdsSubmit(e) {
     + '&callback=' + cbName
     + '&t=' + Date.now();
   document.body.appendChild(scriptEl);
+}
+
+// ── Meta Ads Form ────────────────────────────────────────────
+function handleMetaAdsSubmit() {
+  const business     = document.getElementById('meta-business').value.trim();
+  const advertising  = document.getElementById('meta-advertising').value.trim();
+  const audience     = (document.getElementById('meta-audience')    || {value:''}).value.trim();
+  const budget       = (document.getElementById('meta-budget')      || {value:''}).value.trim();
+  const link         = (document.getElementById('meta-link')        || {value:''}).value.trim();
+  const objective    = document.getElementById('metaObjectiveInput').value;
+  const destEl       = document.getElementById('metaDestinationInput');
+  const destination  = destEl ? destEl.value : '';
+  const extra        = document.getElementById('meta-extra').value.trim();
+  const termsEl      = document.getElementById('metaTermsCheck');
+  const termsChecked = termsEl ? termsEl.checked : true;
+  const btn          = document.getElementById('metaSubmitBtn');
+  const errEl        = document.getElementById('metaFormError');
+
+  errEl.style.display = 'none';
+  if (!business)     { errEl.textContent = 'Please enter your business name.';          errEl.style.display = 'block'; return; }
+  if (!advertising)  { errEl.textContent = 'Please describe what you are advertising.'; errEl.style.display = 'block'; return; }
+  if (!objective)    { errEl.textContent = 'Please select a campaign objective.';       errEl.style.display = 'block'; return; }
+  if (!destination)  { errEl.textContent = 'Please select where leads should go.';     errEl.style.display = 'block'; return; }
+  if (!termsChecked) { errEl.textContent = 'Please agree to the Terms & Conditions.';  errEl.style.display = 'block'; return; }
+
+  const user = currentUser || JSON.parse(sessionStorage.getItem('inpixel_user') || '{}');
+  btn.innerHTML = '<svg class="spin" viewBox="0 0 24 24" stroke-width="2.5" style="width:16px;fill:none;stroke:currentColor"><path d="M12 2a10 10 0 1 0 10 10" stroke-linecap="round"/></svg> Submitting...';
+  btn.disabled = true;
+
+  const cbName   = '_metaAdsSubmit_' + Date.now();
+  const scriptEl = document.createElement('script');
+  const timeout  = setTimeout(() => {
+    delete window[cbName]; scriptEl.remove();
+    errEl.textContent = 'Request timed out. Please try again.'; errEl.style.display = 'block';
+    resetMetaBtn(btn);
+  }, 10000);
+
+  window[cbName] = function(res) {
+    clearTimeout(timeout); delete window[cbName]; scriptEl.remove();
+    if (res && res.success) {
+      document.getElementById('metaAdsForm').style.display = 'none';
+      const greet = document.getElementById('metaGreeting'); if (greet) greet.style.display = 'none';
+      document.getElementById('metaSuccess').classList.add('show');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      errEl.textContent = (res && res.error) ? res.error : 'Failed to submit. Please try again.';
+      errEl.style.display = 'block';
+      resetMetaBtn(btn);
+    }
+  };
+
+  scriptEl.onerror = () => {
+    clearTimeout(timeout); delete window[cbName];
+    errEl.textContent = 'Network error. Please try again.'; errEl.style.display = 'block';
+    resetMetaBtn(btn);
+  };
+
+  scriptEl.src = CLIENT_SHEET_URL
+    + '?action=submitMetaAds'
+    + '&name='        + encodeURIComponent(user.name  || '')
+    + '&phone='       + encodeURIComponent(user.phone || '')
+    + '&business='    + encodeURIComponent(business)
+    + '&advertising=' + encodeURIComponent(advertising)
+    + '&audience='    + encodeURIComponent(audience)
+    + '&budget='      + encodeURIComponent(budget)
+    + '&link='        + encodeURIComponent(link)
+    + '&objective='   + encodeURIComponent(objective)
+    + '&destination=' + encodeURIComponent(destination)
+    + '&extra='       + encodeURIComponent(extra)
+    + '&callback='    + cbName
+    + '&t='           + Date.now();
+  document.body.appendChild(scriptEl);
+}
+
+function resetMetaBtn(btn) {
+  btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:16px"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Submit Brief';
+  btn.disabled = false;
+}
+
+function resetMetaForm() {
+  ['meta-business','meta-advertising','meta-audience','meta-budget','meta-link','meta-extra'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.value = '';
+  });
+  const oi = document.getElementById('metaObjectiveInput');   if (oi) oi.value = '';
+  const di = document.getElementById('metaDestinationInput'); if (di) di.value = '';
+  document.querySelectorAll('.objective-btn').forEach(b => b.classList.remove('selected'));
+  document.querySelectorAll('.dest-btn').forEach(b => b.classList.remove('selected'));
+  const tc = document.getElementById('metaTermsCheck'); if (tc) tc.checked = false;
+  const tl = document.getElementById('metaTermsLabel'); if (tl) tl.classList.remove('agreed');
+  document.getElementById('metaFormError').style.display = 'none';
+  resetMetaBtn(document.getElementById('metaSubmitBtn'));
+  document.getElementById('metaSuccess').classList.remove('show');
+  document.getElementById('metaAdsForm').style.display = 'block';
+  const greet = document.getElementById('metaGreeting'); if (greet) greet.style.display = 'flex';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }

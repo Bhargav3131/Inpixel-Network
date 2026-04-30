@@ -7,7 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
   <link rel="icon" type="image/png" href="../logo1.jpeg">
-  <link rel="stylesheet" href="/adminpanel/adminpanel.css">
+  <link rel="stylesheet" href="adminpanel.css">
+<link rel="stylesheet" href="styles.css">
   <style>
     @keyframes spin  { to { transform: rotate(360deg); } }
     @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
@@ -19,7 +20,9 @@
     .tab-btn .tab-dot { width:6px; height:6px; border-radius:50%; }
     #tabWebsite .tab-dot { background:var(--gold); }
     #tabAiAds   .tab-dot { background:#a855f7; }
-    #tabAiAds.tab-active  { color:#a855f7; border-color:rgba(168,85,247,0.4); }
+    #tabMetaAds .tab-dot { background:#1877f2; }
+    #tabAiAds.tab-active   { color:#a855f7; border-color:rgba(168,85,247,0.4); }
+    #tabMetaAds.tab-active { color:#6aabff; border-color:rgba(24,119,242,0.4); }
 
     .svc-check-group { display:flex; gap:10px; margin-bottom:12px; }
     .svc-check-item { display:flex; align-items:center; gap:8px; cursor:pointer; padding:9px 16px; border:1px solid var(--border); background:var(--black); flex:1; transition:all 0.2s; user-select:none; }
@@ -105,6 +108,7 @@
     <div class="tab-island">
       <button class="tab-btn tab-active" id="tabWebsite" onclick="switchTab('website')"><span class="tab-dot"></span> Website</button>
       <button class="tab-btn" id="tabAiAds" onclick="switchTab('aiads')"><span class="tab-dot"></span> AI Ads</button>
+      <button class="tab-btn" id="tabMetaAds" onclick="switchTab('metaads')"><span class="tab-dot"></span> Meta Ads</button>
     </div>
 
     <div id="websitePanel">
@@ -138,6 +142,20 @@
         </div>
       </div>
       <div id="aiAdsContainer"></div>
+    </div>
+
+    <div id="metaAdsPanel" style="display:none;">
+      <div class="stats-row" style="margin-bottom:24px;">
+        <div class="stat-chip"><div class="stat-chip-num" id="metaStatTotal">0</div><div class="stat-chip-label">Total</div></div>
+        <div class="stat-chip"><div class="stat-chip-num" id="metaStatToday">0</div><div class="stat-chip-label">Today</div></div>
+      </div>
+      <div class="toolbar">
+        <div class="search-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="metaSearchInput" placeholder="Search by name, phone, business..." oninput="renderMetaAdsCards()">
+        </div>
+      </div>
+      <div id="metaAdsContainer"></div>
     </div>
   </main>
 
@@ -173,6 +191,7 @@
         <div class="svc-check-group">
           <label class="svc-check-item"><input type="checkbox" id="svcWebsite" checked><span class="svc-label gold">Website</span></label>
           <label class="svc-check-item svc-aiads"><input type="checkbox" id="svcAiAds"><span class="svc-label purple">AI Ads</span></label>
+          <label class="svc-check-item" style="border-color:rgba(24,119,242,0.25);"><input type="checkbox" id="svcMetaAds" style="accent-color:#1877f2;"><span class="svc-label" style="color:#6aabff;">Meta Ads</span></label>
         </div>
         <button class="activate-btn" id="activateBtn" onclick="activateClient()">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px"><polyline points="20 6 9 17 4 12"/></svg>
@@ -192,6 +211,6 @@
     </div>
   </div>
 
-  <script src="/adminpanel/adminpanel.js"></script>
+  <script src="adminpanel.js"></script>
 </body>
 </html>

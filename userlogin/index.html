@@ -7,7 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
   <link rel="icon" type="image/png" href="../logo1.jpeg">
-  <link rel="stylesheet" href="/userlogin/userlogin.css">
+  <link rel="stylesheet" href="userlogin.css">
+<link rel="stylesheet" href="styles.css">
   <style>
     @keyframes spin    { to { transform: rotate(360deg); } }
     @keyframes fadeUp  { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
@@ -119,6 +120,120 @@
     #aiSuccess.show { display:block; animation:fadeUp 0.5s ease; }
     .ai-success-icon { width:64px; height:64px; border-radius:50%; background:rgba(168,85,247,0.1); border:2px solid #a855f7; display:flex; align-items:center; justify-content:center; margin:0 auto 20px; box-shadow:0 0 40px rgba(168,85,247,0.3); }
     .ai-success-icon svg { width:28px; stroke:#a855f7; fill:none; }
+
+    /* ── Meta Ads Section ── */
+    #metaAdsWrap { display:none; width:100%; max-width:720px; }
+
+    #metaGreeting { display:flex; align-items:center; gap:10px; background:rgba(24,119,242,0.07); border:1px solid rgba(24,119,242,0.3); padding:11px 14px; margin-bottom:28px; }
+    .meta-greeting-dot { width:7px; height:7px; border-radius:50%; background:#1877f2; flex-shrink:0; animation:blink 2s infinite; }
+    #metaGreeting p { font-size:0.83rem; color:var(--text-muted); }
+    #metaGreeting p strong { color:#1877f2; }
+
+    /* Section blocks */
+    .meta-section {
+      background:var(--surface); border:1px solid var(--border);
+      padding:24px 24px 20px; margin-bottom:16px; position:relative; overflow:hidden;
+    }
+    .meta-section::before {
+      content:''; position:absolute; top:0; left:0; right:0; height:2px;
+      background:linear-gradient(90deg,transparent,rgba(24,119,242,0.5),transparent);
+    }
+    .meta-section-title {
+      font-family:'Space Mono',monospace; font-size:0.65rem; letter-spacing:0.14em;
+      text-transform:uppercase; color:#6aabff; margin-bottom:18px;
+      display:flex; align-items:center; gap:8px;
+    }
+    .meta-section-title::before { content:''; width:14px; height:1px; background:#1877f2; }
+
+    /* Field label */
+    .meta-label {
+      display:block; font-family:'Space Mono',monospace; font-size:0.65rem;
+      letter-spacing:0.1em; text-transform:uppercase; color:var(--text-muted);
+      margin-bottom:8px; margin-top:16px;
+    }
+    .meta-label:first-child { margin-top:0; }
+    .meta-label .req { color:#1877f2; margin-left:2px; }
+
+    /* Inputs */
+    .meta-input {
+      width:100%; background:var(--black2); border:1px solid rgba(240,165,0,0.15);
+      color:var(--white); font-family:'DM Sans',sans-serif; font-size:0.93rem;
+      padding:13px 15px; outline:none; border-radius:0; transition:border-color 0.3s, box-shadow 0.3s;
+    }
+    .meta-input:focus { border-color:#1877f2; box-shadow:0 0 0 3px rgba(24,119,242,0.08); }
+    .meta-input::placeholder { color:var(--text-muted); }
+    .meta-textarea { resize:vertical; min-height:110px; }
+    .meta-two-col { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+    @media(max-width:520px){ .meta-two-col { grid-template-columns:1fr; } }
+
+    /* Objective buttons */
+    .objective-grid { display:flex; flex-wrap:wrap; gap:8px; }
+    .objective-btn {
+      font-family:'Space Mono',monospace; font-size:0.65rem; letter-spacing:0.08em;
+      text-transform:uppercase; padding:10px 16px;
+      border:1px solid var(--border); background:var(--black2); color:var(--text-muted);
+      cursor:pointer; transition:all 0.25s; flex:1; min-width:80px; text-align:center;
+    }
+    .objective-btn:hover { border-color:rgba(24,119,242,0.4); color:#6aabff; }
+    .objective-btn.selected { border-color:#1877f2; background:rgba(24,119,242,0.12); color:#6aabff; box-shadow:0 0 12px rgba(24,119,242,0.2); }
+
+    /* Lead destination buttons */
+    .destination-grid { display:flex; flex-wrap:wrap; gap:8px; }
+    .dest-btn {
+      font-family:'Space Mono',monospace; font-size:0.65rem; letter-spacing:0.08em;
+      text-transform:uppercase; padding:10px 16px;
+      border:1px solid var(--border); background:var(--black2); color:var(--text-muted);
+      cursor:pointer; transition:all 0.25s; display:flex; align-items:center; gap:6px;
+    }
+    .dest-btn svg { width:13px; stroke:currentColor; fill:none; flex-shrink:0; }
+    .dest-btn:hover { border-color:rgba(24,119,242,0.4); color:#6aabff; }
+    .dest-btn.selected { border-color:#1877f2; background:rgba(24,119,242,0.12); color:#6aabff; box-shadow:0 0 12px rgba(24,119,242,0.2); }
+
+    /* Terms */
+    .meta-terms-box {
+      background:var(--black2); border:1px solid var(--border);
+      padding:16px; max-height:160px; overflow-y:auto;
+      font-size:0.79rem; color:var(--text-muted); line-height:1.7; margin-bottom:12px;
+    }
+    .meta-terms-box::-webkit-scrollbar { width:3px; }
+    .meta-terms-box::-webkit-scrollbar-thumb { background:rgba(24,119,242,0.4); border-radius:2px; }
+    .meta-terms-agree {
+      display:flex; align-items:flex-start; gap:12px; cursor:pointer;
+      padding:12px 14px; border:1px solid var(--border); background:var(--black2);
+      transition:border-color 0.2s; margin-bottom:6px;
+    }
+    .meta-terms-agree:hover { border-color:rgba(24,119,242,0.3); }
+    .meta-terms-agree.agreed { border-color:rgba(24,119,242,0.45); background:rgba(24,119,242,0.06); }
+    .meta-terms-agree input[type=checkbox] {
+      appearance:none; width:17px; height:17px; flex-shrink:0;
+      background:var(--surface2); border:1px solid rgba(24,119,242,0.4);
+      cursor:pointer; position:relative; margin-top:3px; transition:background 0.2s;
+    }
+    .meta-terms-agree input[type=checkbox]:checked { background:#1877f2; border-color:#1877f2; }
+    .meta-terms-agree input[type=checkbox]:checked::after {
+      content:''; position:absolute; top:2px; left:5px;
+      width:4px; height:8px; border:2px solid #fff; border-top:none; border-left:none;
+      transform:rotate(45deg);
+    }
+    .meta-terms-agree p { font-size:0.83rem; color:var(--text); line-height:1.5; }
+
+    .meta-form-error { display:none; font-size:0.8rem; color:#ff6666; font-family:'Space Mono',monospace; margin-top:10px; padding:10px 14px; background:rgba(255,68,68,0.07); border:1px solid rgba(255,68,68,0.2); }
+
+    #metaSubmitBtn {
+      width:100%; display:flex; align-items:center; justify-content:center; gap:8px;
+      background:#1877f2; color:#fff; font-family:'Syne',sans-serif; font-weight:700;
+      font-size:0.95rem; border:none; padding:16px 28px; cursor:pointer;
+      transition:all 0.3s; margin-top:20px;
+    }
+    #metaSubmitBtn:hover { background:#1565d8; box-shadow:0 0 30px rgba(24,119,242,0.4); transform:translateY(-1px); }
+    #metaSubmitBtn:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
+
+    #metaSuccess { display:none; text-align:center; padding:48px 20px; }
+    #metaSuccess.show { display:block; animation:fadeUp 0.5s ease; }
+    .meta-success-icon { width:64px; height:64px; border-radius:50%; background:rgba(24,119,242,0.1); border:2px solid #1877f2; display:flex; align-items:center; justify-content:center; margin:0 auto 20px; box-shadow:0 0 40px rgba(24,119,242,0.3); }
+    .meta-success-icon svg { width:28px; stroke:#1877f2; fill:none; }
+
+    .frame-badge.blue { background:rgba(24,119,242,0.12); border:1px solid rgba(24,119,242,0.3); color:#6aabff; }
   </style>
 </head>
 <body>
@@ -182,8 +297,23 @@
             </div>
           </div>
 
+          <!-- Meta Ads Frame -->
+          <div class="service-frame" id="metaAdsFrame" onclick="openService('metaads')" style="animation-delay:0.1s">
+            <span class="frame-badge blue">Meta Ads</span>
+            <div class="frame-icon" style="border-color:rgba(24,119,242,0.4);">
+              <svg viewBox="0 0 24 24" style="stroke:#1877f2;"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+            </div>
+            <div class="frame-title">Meta Ads</div>
+            <div class="frame-desc">Submit your Meta advertising brief — we'll set up and run your Facebook & Instagram campaigns.</div>
+            <div class="frame-cta" style="color:#1877f2;">Open Brief <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+            <div class="frame-lock" id="metaAdsLock">
+              <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              <p>Not activated for this service. Contact Inpixel Network.</p>
+            </div>
+          </div>
+
           <!-- AI Ads Frame -->
-          <div class="service-frame" id="aiAdsFrame" onclick="openService('aiads')" style="animation-delay:0.1s">
+          <div class="service-frame" id="aiAdsFrame" onclick="openService('aiads')" style="animation-delay:0.2s">
             <span class="frame-badge purple">AI Ads</span>
             <div class="frame-icon" style="border-color:rgba(168,85,247,0.4);">
               <svg viewBox="0 0 24 24" style="stroke:#a855f7;"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
@@ -410,9 +540,130 @@
         </div>
       </div>
 
+      <!-- STEP 3C: META ADS SECTION -->
+      <div id="metaAdsWrap">
+        <div style="max-width:720px;">
+          <button class="ai-back-btn" onclick="goBackToDashboard()"><svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg> Back to Services</button>
+
+          <div id="metaGreeting">
+            <div class="meta-greeting-dot"></div>
+            <p>Meta Ads Brief &nbsp;·&nbsp; <strong id="metaGreetName"></strong> &nbsp;·&nbsp; <span id="metaGreetContact"></span></p>
+          </div>
+
+          <p class="login-eyebrow" style="color:#1877f2; margin-bottom:6px;">Meta Ads</p>
+          <h2 style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.65rem;color:var(--white);margin-bottom:6px;">Your Ad Brief</h2>
+          <p style="color:var(--text-muted);font-size:0.86rem;line-height:1.6;margin-bottom:28px;">Fill in the details below and our team will set up and run your Facebook & Instagram campaigns end to end.</p>
+
+          <div id="metaAdsForm">
+            <input type="hidden" id="metaObjectiveInput" value="">
+            <input type="hidden" id="metaDestinationInput" value="">
+
+            <!-- 1. Business Info -->
+            <div class="meta-section">
+              <div class="meta-section-title">Business Info</div>
+              <label class="meta-label">Business Name <span class="req">*</span></label>
+              <input type="text" id="meta-business" class="meta-input" placeholder="e.g. Inpixel Network">
+
+              <label class="meta-label">What exactly are you advertising? <span class="req">*</span></label>
+              <textarea id="meta-advertising" class="meta-input meta-textarea" placeholder="e.g. Social media management packages for small businesses — content creation, scheduling, analytics. Starting ₹5,000/month. 1-week free trial offer."></textarea>
+
+              <label class="meta-label">Target Audience</label>
+              <input type="text" id="meta-audience" class="meta-input" placeholder="e.g. Business owners aged 25–45 in Pune and Mumbai">
+            </div>
+
+            <!-- 2. Campaign Settings -->
+            <div class="meta-section">
+              <div class="meta-section-title">Campaign Settings</div>
+
+              <label class="meta-label">Campaign Objective <span class="req">*</span></label>
+              <div class="objective-grid">
+                <button type="button" class="objective-btn" data-value="Leads">Leads</button>
+                <button type="button" class="objective-btn" data-value="Traffic">Traffic</button>
+                <button type="button" class="objective-btn" data-value="Awareness">Awareness</button>
+                <button type="button" class="objective-btn" data-value="Engagement">Engagement</button>
+                <button type="button" class="objective-btn" data-value="Sales">Sales</button>
+              </div>
+
+              <label class="meta-label" style="margin-top:20px;">Where should leads go? <span class="req">*</span></label>
+              <div class="destination-grid">
+                <button type="button" class="dest-btn" data-value="Instagram DM">
+                  <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+                  Instagram DM
+                </button>
+                <button type="button" class="dest-btn" data-value="WhatsApp">
+                  <svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+                  WhatsApp
+                </button>
+                <button type="button" class="dest-btn" data-value="Website">
+                  <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                  Website
+                </button>
+                <button type="button" class="dest-btn" data-value="Facebook Page">
+                  <svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+                  Facebook Page
+                </button>
+              </div>
+
+              <div class="meta-two-col" style="margin-top:16px;">
+                <div>
+                  <label class="meta-label" style="margin-top:0;">Daily Budget (INR)</label>
+                  <input type="number" id="meta-budget" class="meta-input" placeholder="e.g. 500" min="0">
+                </div>
+                <div>
+                  <label class="meta-label" style="margin-top:0;">Website / Landing Page Link</label>
+                  <input type="url" id="meta-link" class="meta-input" placeholder="https://yourbusiness.com">
+                </div>
+              </div>
+            </div>
+
+            <!-- 3. Extra Info -->
+            <div class="meta-section">
+              <div class="meta-section-title">Additional Info</div>
+              <label class="meta-label" style="margin-top:0;">Competitor context, tone, offer deadlines, restrictions... <span style="font-style:italic;font-size:0.7em;">(optional)</span></label>
+              <textarea id="meta-extra" class="meta-input meta-textarea" placeholder="e.g. Our competitor is XYZ. Tone should be confident and professional. Offer ends 31st May."></textarea>
+            </div>
+
+            <!-- 4. Terms -->
+            <div class="meta-section">
+              <div class="meta-section-title">Terms & Conditions</div>
+              <div class="meta-terms-box">
+                <p><strong style="color:var(--text);">Meta Ads Service Agreement</strong></p><br>
+                <p>By submitting this brief, you agree to the following:</p><br>
+                <p><strong style="color:var(--text);">1. Ad Spend:</strong> The daily budget you specify will be charged directly to your payment method by Meta. Inpixel Network does not hold or manage your ad spend funds.</p><br>
+                <p><strong style="color:var(--text);">2. Account Access:</strong> You agree to grant temporary access to your Meta Business Manager or ad account for campaign setup. Access will be revoked upon your request.</p><br>
+                <p><strong style="color:var(--text);">3. Content Approval:</strong> All ad creatives will be shared with you for approval before going live. Inpixel Network is not liable for delays caused by late approvals.</p><br>
+                <p><strong style="color:var(--text);">4. Policy Compliance:</strong> You confirm that your product or service complies with Meta's advertising policies. Inpixel Network is not responsible for ad rejections due to policy violations on your end.</p><br>
+                <p><strong style="color:var(--text);">5. Results:</strong> While we aim to deliver the best results, ad performance depends on multiple factors including budget, audience, and market conditions. Inpixel Network does not guarantee specific outcomes.</p><br>
+                <p><strong style="color:var(--text);">6. Data:</strong> Information submitted in this form is used solely for campaign setup and internal records. It will not be shared with third parties.</p>
+              </div>
+              <label class="meta-terms-agree" id="metaTermsLabel">
+                <input type="checkbox" id="metaTermsCheck" onchange="document.getElementById('metaTermsLabel').classList.toggle('agreed', this.checked)">
+                <p>I have read and agree to the Meta Ads Service Terms & Conditions above.</p>
+              </label>
+            </div>
+
+            <div class="meta-form-error" id="metaFormError"></div>
+
+            <button type="button" id="metaSubmitBtn" onclick="handleMetaAdsSubmit()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:16px"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              Submit Brief
+            </button>
+          </div>
+
+          <div id="metaSuccess">
+            <div class="meta-success-icon"><svg viewBox="0 0 24 24" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+            <h2 style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.6rem;color:var(--white);margin-bottom:10px;">Brief Submitted!</h2>
+            <p style="color:var(--text-muted);font-size:0.92rem;line-height:1.6;margin-bottom:28px;">Our team will review your Meta Ads brief and get back to you within 24 hours.</p>
+            <button onclick="resetMetaForm()" style="background:transparent;border:1px solid rgba(24,119,242,0.4);color:#6aabff;font-family:'Space Mono',monospace;font-size:0.75rem;letter-spacing:0.08em;padding:12px 24px;cursor:pointer;transition:all 0.3s;">
+              ↩ Submit Another Brief
+            </button>
+          </div>
+        </div>
+      </div>
+
     </div><!-- /split-right -->
   </div><!-- /page-split -->
 
-  <script src="/userlogin/userlogin.js"></script>
+  <script src="userlogin.js"></script>
 </body>
 </html>
