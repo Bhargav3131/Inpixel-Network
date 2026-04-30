@@ -3,3 +3,4 @@ Allow: /
 Disallow: /adminpanel/
 
 Sitemap: https://www.inpixelnetwork.in/sitemap.xml
+..
