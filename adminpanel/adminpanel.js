@@ -62,7 +62,7 @@ function loadSubmissions() {
     updateStats(); renderCards();
   };
   const s = document.createElement('script');
-  s.src = SHEET_URL + '?callback=_sheetCallback&t=' + Date.now();
+ s.src = CLIENT_SHEET_URL + '?action=listWebsite&callback=_sheetCallback&t=' + Date.now();
   s.onerror = () => { document.getElementById('cardsContainer').innerHTML = '<div class="empty-state"><p style="color:#ff4444;font-family:\'Space Mono\',monospace;font-size:0.8rem;">Failed to load.</p></div>'; };
   document.body.appendChild(s);
 }
