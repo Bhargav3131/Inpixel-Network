@@ -1,9 +1,10 @@
 // ============================================================
-//   INPIXEL NETWORK — userlogin.js (v3)
+//   INPIXEL NETWORK — userlogin.js (v4)
 //   Three-service portal: Website, AI Ads & Meta Ads
 // ============================================================
 
-const CLIENT_SHEET_URL = 'https://script.google.com/macros/s/AKfycbxIWqHNa13UQtJne9jJnQiqABlukufZGaHv2muY2qbcBkCTQz55o4MgGSxLQK0E9YaV/exec';const SHEET_URL        = 'https://script.google.com/macros/s/AKfycbyVtBf_GzWpbauRxqcsXX7eOS05PS3DcCpOYYyghNCQXpiwjw09rmithNxOC3lmJ5nx/exec';
+const CLIENT_SHEET_URL = 'https://script.google.com/macros/s/AKfycbxIWqHNa13UQtJne9jJnQiqABlukufZGaHv2muY2qbcBkCTQz55o4MgGSxLQK0E9YaV/exec';
+const SHEET_URL        = 'https://script.google.com/macros/s/AKfycbxIWqHNa13UQtJne9jJnQiqABlukufZGaHv2muY2qbcBkCTQz55o4MgGSxLQK0E9YaV/exec';
 
 let currentUser = null;
 
@@ -157,7 +158,7 @@ function goBackToDashboard() {
 }
 
 // ── Website Requirement Form ────────────────────────────────
-async function handleReqSubmit(e) {
+function handleReqSubmit(e) {
   e.preventDefault();
   if (!document.getElementById('termsCheck').checked) {
     const lbl = document.getElementById('termsLabel');
@@ -166,33 +167,72 @@ async function handleReqSubmit(e) {
     setTimeout(() => lbl.style.borderColor = '', 2500);
     return;
   }
-  const btn = document.getElementById('reqSubmitBtn');
+
+  const btn   = document.getElementById('reqSubmitBtn');
+  const errEl = document.getElementById('reqFormError') || { style: { display: 'none' }, textContent: '' };
   btn.textContent = 'Submitting...'; btn.disabled = true;
-  const user = currentUser || JSON.parse(sessionStorage.getItem('inpixel_user') || '{}');
+
+  const user       = currentUser || JSON.parse(sessionStorage.getItem('inpixel_user') || '{}');
   const getChecked = n => [...document.querySelectorAll('input[name="'+n+'"]:checked')].map(i => i.value).join(', ');
   const getRadio   = n => { const el = document.querySelector('input[name="'+n+'"]:checked'); return el ? el.value : 'Not selected'; };
+
   const payload = {
-    client_name: user.name, client_phone: user.phone, client_email: user.email,
-    services: getChecked('websiteType'), business: document.getElementById('r-business').value,
-    industry: document.getElementById('r-industry').value, location: document.getElementById('r-location').value,
-    description: document.getElementById('r-desc').value, features: getChecked('features'),
-    design_style: getRadio('designStyle'), colors: document.getElementById('r-colors').value,
-    has_logo: getRadio('hasLogo'), references: document.getElementById('r-refs').value,
-    pages: document.getElementById('r-pages').value, content: getRadio('contentProvided'),
-    domain: getRadio('hasDomain'), hosting: getRadio('hasHosting'),
-    domain_name: document.getElementById('r-domain').value, extra: document.getElementById('r-extra').value,
-    source: document.getElementById('r-source').value
+    client_name:  user.name  || '',
+    client_phone: user.phone || '',
+    client_email: user.email || '',
+    services:     getChecked('websiteType'),
+    business:     document.getElementById('r-business').value,
+    industry:     document.getElementById('r-industry').value,
+    location:     document.getElementById('r-location').value,
+    description:  document.getElementById('r-desc').value,
+    features:     getChecked('features'),
+    design_style: getRadio('designStyle'),
+    colors:       document.getElementById('r-colors').value,
+    has_logo:     getRadio('hasLogo'),
+    references:   document.getElementById('r-refs').value,
+    pages:        document.getElementById('r-pages').value,
+    content:      getRadio('contentProvided'),
+    domain:       getRadio('hasDomain'),
+    hosting:      getRadio('hasHosting'),
+    domain_name:  document.getElementById('r-domain').value,
+    extra:        document.getElementById('r-extra').value,
+    source:       document.getElementById('r-source').value
   };
-  try {
-    await fetch(SHEET_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
-    document.getElementById('reqForm').style.display      = 'none';
-    document.getElementById('userGreeting').style.display = 'none';
-    document.getElementById('reqSuccess').classList.add('show');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  } catch (err) {
+
+  const cbName   = '_websiteSubmit_' + Date.now();
+  const scriptEl = document.createElement('script');
+
+  const timeout = setTimeout(() => {
+    delete window[cbName]; scriptEl.remove();
     btn.textContent = 'Submit Requirement'; btn.disabled = false;
-    alert('Failed to submit. Please try again.');
-  }
+    alert('Request timed out. Please try again.');
+  }, 10000);
+
+  window[cbName] = function(res) {
+    clearTimeout(timeout); delete window[cbName]; scriptEl.remove();
+    if (res && res.success) {
+      document.getElementById('reqForm').style.display      = 'none';
+      document.getElementById('userGreeting').style.display = 'none';
+      document.getElementById('reqSuccess').classList.add('show');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      btn.textContent = 'Submit Requirement'; btn.disabled = false;
+      alert((res && res.error) ? res.error : 'Failed to submit. Please try again.');
+    }
+  };
+
+  scriptEl.onerror = () => {
+    clearTimeout(timeout); delete window[cbName];
+    btn.textContent = 'Submit Requirement'; btn.disabled = false;
+    alert('Network error. Please try again.');
+  };
+
+  const qs = Object.entries(payload)
+    .map(([k, v]) => encodeURIComponent(k) + '=' + encodeURIComponent(v || ''))
+    .join('&');
+
+  scriptEl.src = CLIENT_SHEET_URL + '?action=submitWebsite&' + qs + '&callback=' + cbName + '&t=' + Date.now();
+  document.body.appendChild(scriptEl);
 }
 
 // ── AI Ads Form ─────────────────────────────────────────────
@@ -244,12 +284,12 @@ function handleAiAdsSubmit(e) {
 
   scriptEl.src = CLIENT_SHEET_URL
     + '?action=submitAiAds'
-    + '&name='   + encodeURIComponent(user.name  || '')
-    + '&phone='  + encodeURIComponent(user.phone || '')
-    + '&model='  + encodeURIComponent(model)
-    + '&script=' + encodeURIComponent(script)
+    + '&name='     + encodeURIComponent(user.name  || '')
+    + '&phone='    + encodeURIComponent(user.phone || '')
+    + '&model='    + encodeURIComponent(model)
+    + '&script='   + encodeURIComponent(script)
     + '&callback=' + cbName
-    + '&t=' + Date.now();
+    + '&t='        + Date.now();
   document.body.appendChild(scriptEl);
 }
 
