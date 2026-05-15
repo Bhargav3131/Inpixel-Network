@@ -2,7 +2,7 @@
 //   INPIXEL NETWORK — adminpanel.js (v2)
 // ============================================================
 
-const CLIENT_SHEET_URL = 'https://script.google.com/macros/s/AKfycbwPxZjeBzxBGxd9Gx0jUV2n4HoE46OUeZbOqveHiR_CWDKJESuZbVgHMLtJoVU0qDiY/exec';
+const CLIENT_SHEET_URL = 'https://script.google.com/macros/s/AKfycbwbMiDdHdtXx_qqqTrnZMmYl9wP15XDHCcvSwPy5AmejtB4DWdjbe_PFCdCcyV_k3Q/exec';
 const SHEET_URL        = 'https://script.google.com/macros/s/AKfycbyVtBf_GzWpbauRxqcsXX7eOS05PS3DcCpOYYyghNCQXpiwjw09rmithNxOC3lmJ5nx/exec';
 const ADMIN_PASS       = 'inpixel2026';
 
