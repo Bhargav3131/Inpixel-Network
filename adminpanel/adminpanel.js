@@ -2,7 +2,8 @@
 //   INPIXEL NETWORK — adminpanel.js (v2)
 // ============================================================
 
-const CLIENT_SHEET_URL = 'https://script.google.com/macros/s/AKfycbxIWqHNa13UQtJne9jJnQiqABlukufZGaHv2muY2qbcBkCTQz55o4MgGSxLQK0E9YaV/exec';const SHEET_URL        = 'https://script.google.com/macros/s/AKfycbyVtBf_GzWpbauRxqcsXX7eOS05PS3DcCpOYYyghNCQXpiwjw09rmithNxOC3lmJ5nx/exec';
+const CLIENT_SHEET_URL = 'https://script.google.com/macros/s/AKfycbwPxZjeBzxBGxd9Gx0jUV2n4HoE46OUeZbOqveHiR_CWDKJESuZbVgHMLtJoVU0qDiY/exec';
+const SHEET_URL        = 'https://script.google.com/macros/s/AKfycbyVtBf_GzWpbauRxqcsXX7eOS05PS3DcCpOYYyghNCQXpiwjw09rmithNxOC3lmJ5nx/exec';
 const ADMIN_PASS       = 'inpixel2026';
 
 document.getElementById('gateInput').addEventListener('keydown', e => {

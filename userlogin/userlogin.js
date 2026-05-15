@@ -3,7 +3,7 @@
 //   Three-service portal: Website, AI Ads & Meta Ads
 // ============================================================
 
-const CLIENT_SHEET_URL = 'https://script.google.com/macros/s/AKfycbxIWqHNa13UQtJne9jJnQiqABlukufZGaHv2muY2qbcBkCTQz55o4MgGSxLQK0E9YaV/exec';
+const CLIENT_SHEET_URL = 'https://script.google.com/macros/s/AKfycbwPxZjeBzxBGxd9Gx0jUV2n4HoE46OUeZbOqveHiR_CWDKJESuZbVgHMLtJoVU0qDiY/exec';
 const SHEET_URL        = 'https://script.google.com/macros/s/AKfycbxIWqHNa13UQtJne9jJnQiqABlukufZGaHv2muY2qbcBkCTQz55o4MgGSxLQK0E9YaV/exec';
 
 let currentUser = null;
