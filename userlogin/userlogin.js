@@ -1,10 +1,7 @@
 // ============================================================
-//   INPIXEL NETWORK — userlogin.js (v4)
+//   INPIXEL NETWORK — userlogin.js (v5 — Supabase)
 //   Three-service portal: Website, AI Ads & Meta Ads
 // ============================================================
-
-const CLIENT_SHEET_URL = 'https://script.google.com/macros/s/AKfycbwbMiDdHdtXx_qqqTrnZMmYl9wP15XDHCcvSwPy5AmejtB4DWdjbe_PFCdCcyV_k3Q/exec';
-const SHEET_URL        = 'https://script.google.com/macros/s/AKfycbxIWqHNa13UQtJne9jJnQiqABlukufZGaHv2muY2qbcBkCTQz55o4MgGSxLQK0E9YaV/exec';
 
 let currentUser = null;
 
@@ -104,20 +101,15 @@ function applyServiceLocks() {
   document.getElementById('metaAdsLock').style.display = hasMeta ? 'none' : 'flex';
 }
 
-function checkPhoneInSheet(phone) {
-  return new Promise((resolve, reject) => {
-    const cbName = '_inpixelCheck_' + Date.now();
-    const script = document.createElement('script');
-    const timeout = setTimeout(() => { delete window[cbName]; script.remove(); reject(new Error('Timeout')); }, 8000);
-    window[cbName] = function(data) {
-      clearTimeout(timeout); delete window[cbName]; script.remove();
-      resolve({ approved: data && data.approved === true, services: data && data.services ? data.services : 'website' });
-    };
-    const normalized = phone.replace(/[\s\-\(\)]/g, '');
-    script.src = CLIENT_SHEET_URL + '?action=checkClient&phone=' + encodeURIComponent(normalized) + '&callback=' + cbName + '&t=' + Date.now();
-    script.onerror = () => { clearTimeout(timeout); delete window[cbName]; reject(new Error('Script load failed')); };
-    document.body.appendChild(script);
-  });
+async function checkPhoneInSheet(phone) {
+  const normalized = phone.replace(/[\s\-\(\)]/g, '');
+  const { data, error } = await db
+    .from('clients')
+    .select('services')
+    .eq('phone', normalized)
+    .maybeSingle();
+  if (error || !data) return { approved: false, services: 'website' };
+  return { approved: true, services: data.services || 'website' };
 }
 
 // ── Service Dashboard: open a section ───────────────────────
@@ -158,7 +150,7 @@ function goBackToDashboard() {
 }
 
 // ── Website Requirement Form ────────────────────────────────
-function handleReqSubmit(e) {
+async function handleReqSubmit(e) {
   e.preventDefault();
   if (!document.getElementById('termsCheck').checked) {
     const lbl = document.getElementById('termsLabel');
@@ -176,67 +168,44 @@ function handleReqSubmit(e) {
   const getChecked = n => [...document.querySelectorAll('input[name="'+n+'"]:checked')].map(i => i.value).join(', ');
   const getRadio   = n => { const el = document.querySelector('input[name="'+n+'"]:checked'); return el ? el.value : 'Not selected'; };
 
-  const payload = {
-    client_name:  user.name  || '',
-    client_phone: user.phone || '',
-    client_email: user.email || '',
-    services:     getChecked('websiteType'),
-    business:     document.getElementById('r-business').value,
-    industry:     document.getElementById('r-industry').value,
-    location:     document.getElementById('r-location').value,
-    description:  document.getElementById('r-desc').value,
-    features:     getChecked('features'),
-    design_style: getRadio('designStyle'),
-    colors:       document.getElementById('r-colors').value,
-    has_logo:     getRadio('hasLogo'),
-    references:   document.getElementById('r-refs').value,
-    pages:        document.getElementById('r-pages').value,
-    content:      getRadio('contentProvided'),
-    domain:       getRadio('hasDomain'),
-    hosting:      getRadio('hasHosting'),
-    domain_name:  document.getElementById('r-domain').value,
-    extra:        document.getElementById('r-extra').value,
-    source:       document.getElementById('r-source').value
+  const row = {
+    client_name:      user.name  || '',
+    client_phone:     user.phone || '',
+    client_email:     user.email || '',
+    services:         getChecked('websiteType'),
+    business_name:    document.getElementById('r-business').value,
+    industry:         document.getElementById('r-industry').value,
+    location:         document.getElementById('r-location').value,
+    description:      document.getElementById('r-desc').value,
+    features:         getChecked('features'),
+    design_style:     getRadio('designStyle'),
+    colors:           document.getElementById('r-colors').value,
+    has_logo:         getRadio('hasLogo'),
+    references_urls:  document.getElementById('r-refs').value,
+    pages:            document.getElementById('r-pages').value,
+    content_provided: getRadio('contentProvided'),
+    has_domain:       getRadio('hasDomain'),
+    domain_name:      document.getElementById('r-domain').value,
+    has_hosting:      getRadio('hasHosting'),
+    extra_notes:      document.getElementById('r-extra').value,
+    source:           document.getElementById('r-source').value
   };
 
-  const cbName   = '_websiteSubmit_' + Date.now();
-  const scriptEl = document.createElement('script');
+  const { error } = await db.from('website_submissions').insert([row]);
 
-  const timeout = setTimeout(() => {
-    delete window[cbName]; scriptEl.remove();
+  if (!error) {
+    document.getElementById('reqForm').style.display      = 'none';
+    document.getElementById('userGreeting').style.display = 'none';
+    document.getElementById('reqSuccess').classList.add('show');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } else {
     btn.textContent = 'Submit Requirement'; btn.disabled = false;
-    alert('Request timed out. Please try again.');
-  }, 10000);
-
-  window[cbName] = function(res) {
-    clearTimeout(timeout); delete window[cbName]; scriptEl.remove();
-    if (res && res.success) {
-      document.getElementById('reqForm').style.display      = 'none';
-      document.getElementById('userGreeting').style.display = 'none';
-      document.getElementById('reqSuccess').classList.add('show');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    } else {
-      btn.textContent = 'Submit Requirement'; btn.disabled = false;
-      alert((res && res.error) ? res.error : 'Failed to submit. Please try again.');
-    }
-  };
-
-  scriptEl.onerror = () => {
-    clearTimeout(timeout); delete window[cbName];
-    btn.textContent = 'Submit Requirement'; btn.disabled = false;
-    alert('Network error. Please try again.');
-  };
-
-  const qs = Object.entries(payload)
-    .map(([k, v]) => encodeURIComponent(k) + '=' + encodeURIComponent(v || ''))
-    .join('&');
-
-  scriptEl.src = CLIENT_SHEET_URL + '?action=submitWebsite&' + qs + '&callback=' + cbName + '&t=' + Date.now();
-  document.body.appendChild(scriptEl);
+    alert(error.message || 'Failed to submit. Please try again.');
+  }
 }
 
 // ── AI Ads Form ─────────────────────────────────────────────
-function handleAiAdsSubmit(e) {
+async function handleAiAdsSubmit(e) {
   e.preventDefault();
   const model  = document.getElementById('selectedModelInput').value;
   const script = document.getElementById('ai-script').value.trim();
@@ -251,50 +220,32 @@ function handleAiAdsSubmit(e) {
   btn.innerHTML = '<svg class="spin" viewBox="0 0 24 24" stroke-width="2.5" style="width:16px;fill:none;stroke:currentColor"><path d="M12 2a10 10 0 1 0 10 10" stroke-linecap="round"/></svg> Submitting...';
   btn.disabled = true;
 
-  const cbName   = '_aiAdsSubmit_' + Date.now();
-  const scriptEl = document.createElement('script');
-  const timeout  = setTimeout(() => {
-    delete window[cbName]; scriptEl.remove();
-    errEl.textContent = 'Request timed out. Please try again.'; errEl.style.display = 'block';
-    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:16px"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Submit Ad Request';
-    btn.disabled = false;
-  }, 10000);
-
-  window[cbName] = function(res) {
-    clearTimeout(timeout); delete window[cbName]; scriptEl.remove();
-    if (res && res.success) {
-      document.getElementById('aiAdsForm').style.display  = 'none';
-      document.getElementById('aiGreeting').style.display = 'none';
-      document.getElementById('aiSuccess').classList.add('show');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    } else {
-      errEl.textContent = (res && res.error) ? res.error : 'Failed to submit. Please try again.';
-      errEl.style.display = 'block';
-      btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:16px"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Submit Ad Request';
-      btn.disabled = false;
-    }
-  };
-
-  scriptEl.onerror = () => {
-    clearTimeout(timeout); delete window[cbName];
-    errEl.textContent = 'Network error. Please try again.'; errEl.style.display = 'block';
+  const resetBtn = () => {
     btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:16px"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Submit Ad Request';
     btn.disabled = false;
   };
 
-  scriptEl.src = CLIENT_SHEET_URL
-    + '?action=submitAiAds'
-    + '&name='     + encodeURIComponent(user.name  || '')
-    + '&phone='    + encodeURIComponent(user.phone || '')
-    + '&model='    + encodeURIComponent(model)
-    + '&script='   + encodeURIComponent(script)
-    + '&callback=' + cbName
-    + '&t='        + Date.now();
-  document.body.appendChild(scriptEl);
+  const { error } = await db.from('ai_ads_submissions').insert([{
+    name:     user.name  || '',
+    phone:    user.phone || '',
+    model_no: model,
+    script:   script
+  }]);
+
+  if (!error) {
+    document.getElementById('aiAdsForm').style.display  = 'none';
+    document.getElementById('aiGreeting').style.display = 'none';
+    document.getElementById('aiSuccess').classList.add('show');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } else {
+    errEl.textContent = error.message || 'Failed to submit. Please try again.';
+    errEl.style.display = 'block';
+    resetBtn();
+  }
 }
 
 // ── Meta Ads Form ────────────────────────────────────────────
-function handleMetaAdsSubmit() {
+async function handleMetaAdsSubmit() {
   const business     = document.getElementById('meta-business').value.trim();
   const advertising  = document.getElementById('meta-advertising').value.trim();
   const audience     = (document.getElementById('meta-audience')    || {value:''}).value.trim();
@@ -320,49 +271,29 @@ function handleMetaAdsSubmit() {
   btn.innerHTML = '<svg class="spin" viewBox="0 0 24 24" stroke-width="2.5" style="width:16px;fill:none;stroke:currentColor"><path d="M12 2a10 10 0 1 0 10 10" stroke-linecap="round"/></svg> Submitting...';
   btn.disabled = true;
 
-  const cbName   = '_metaAdsSubmit_' + Date.now();
-  const scriptEl = document.createElement('script');
-  const timeout  = setTimeout(() => {
-    delete window[cbName]; scriptEl.remove();
-    errEl.textContent = 'Request timed out. Please try again.'; errEl.style.display = 'block';
+  const { error } = await db.from('meta_ads_submissions').insert([{
+    name:                user.name  || '',
+    phone:               user.phone || '',
+    business_name:       business,
+    what_advertising:    advertising,
+    target_audience:     audience,
+    campaign_objective:  objective,
+    daily_budget:        budget,
+    lead_destination:    destination,
+    website_link:        link,
+    extra_notes:         extra
+  }]);
+
+  if (!error) {
+    document.getElementById('metaAdsForm').style.display = 'none';
+    const greet = document.getElementById('metaGreeting'); if (greet) greet.style.display = 'none';
+    document.getElementById('metaSuccess').classList.add('show');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } else {
+    errEl.textContent = error.message || 'Failed to submit. Please try again.';
+    errEl.style.display = 'block';
     resetMetaBtn(btn);
-  }, 10000);
-
-  window[cbName] = function(res) {
-    clearTimeout(timeout); delete window[cbName]; scriptEl.remove();
-    if (res && res.success) {
-      document.getElementById('metaAdsForm').style.display = 'none';
-      const greet = document.getElementById('metaGreeting'); if (greet) greet.style.display = 'none';
-      document.getElementById('metaSuccess').classList.add('show');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    } else {
-      errEl.textContent = (res && res.error) ? res.error : 'Failed to submit. Please try again.';
-      errEl.style.display = 'block';
-      resetMetaBtn(btn);
-    }
-  };
-
-  scriptEl.onerror = () => {
-    clearTimeout(timeout); delete window[cbName];
-    errEl.textContent = 'Network error. Please try again.'; errEl.style.display = 'block';
-    resetMetaBtn(btn);
-  };
-
-  scriptEl.src = CLIENT_SHEET_URL
-    + '?action=submitMetaAds'
-    + '&name='        + encodeURIComponent(user.name  || '')
-    + '&phone='       + encodeURIComponent(user.phone || '')
-    + '&business='    + encodeURIComponent(business)
-    + '&advertising=' + encodeURIComponent(advertising)
-    + '&audience='    + encodeURIComponent(audience)
-    + '&budget='      + encodeURIComponent(budget)
-    + '&link='        + encodeURIComponent(link)
-    + '&objective='   + encodeURIComponent(objective)
-    + '&destination=' + encodeURIComponent(destination)
-    + '&extra='       + encodeURIComponent(extra)
-    + '&callback='    + cbName
-    + '&t='           + Date.now();
-  document.body.appendChild(scriptEl);
+  }
 }
 
 function resetMetaBtn(btn) {
