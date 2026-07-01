@@ -974,3 +974,347 @@ footer.site-footer {
   .footer-bottom { padding: 16px 24px; }
   .footer-bottom-inner { flex-direction: column; gap: 8px; text-align: center; }
 }
+
+/* ── CUSTOM RESTRUCTURING OVERRIDES ── */
+@media (max-width: 900px) {
+  .svc-row {
+    grid-template-columns: 1fr !important;
+    gap: 32px !important;
+  }
+  .svc-row > div:nth-child(2) {
+    order: -1; /* Keep the illustrative card/box above the text on mobile */
+  }
+}
+
+/* ── COMPREHENSIVE MOBILE FIXES ── */
+@media (max-width: 768px) {
+  /* Homepage service rows - fix inline styles */
+  .svc-row {
+    padding: 28px 20px !important;
+    gap: 24px !important;
+    margin-bottom: 24px !important;
+  }
+  .svc-row h3 {
+    font-size: 1.4rem !important;
+  }
+  .svc-row p {
+    font-size: 0.88rem !important;
+  }
+  /* Fix hero trust bar wrapping */
+  .hero-trust-bar {
+    gap: 10px;
+  }
+  /* Nav hamburger visible */
+  .nav-hamburger {
+    display: flex;
+  }
+}
+
+@media (max-width: 480px) {
+  .svc-row {
+    padding: 20px 16px !important;
+    gap: 20px !important;
+    margin-bottom: 20px !important;
+  }
+  .svc-row h3 {
+    font-size: 1.2rem !important;
+  }
+}
+
+/* ══════════════════════════════════════
+   TRUST & CONVERSION ADDITIONS
+   ══════════════════════════════════════ */
+
+/* ── PRICE COMPARISON ── */
+.price-compare-section {
+  background: var(--black);
+  padding: 100px 48px;
+  position: relative; z-index: 1;
+}
+.price-compare-header {
+  text-align: center;
+  margin-bottom: 60px;
+}
+.price-compare-header .section-label {
+  justify-content: center;
+}
+.price-compare-header .section-h2 {
+  text-align: center;
+}
+.price-compare-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  max-width: 800px;
+  margin: 0 auto 48px;
+}
+.compare-col {
+  display: flex;
+  flex-direction: column;
+}
+.compare-cell {
+  padding: 18px 24px;
+  font-size: 0.92rem;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  min-height: 56px;
+}
+.compare-cell:last-child { border-bottom: none; }
+.compare-col-header .compare-cell {
+  background: var(--surface);
+  font-weight: 600;
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+}
+.compare-col-header .compare-service {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  color: var(--white);
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+}
+.compare-col-others .compare-cell {
+  background: var(--black2);
+}
+.compare-col-others .compare-head {
+  background: var(--surface2);
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+.compare-col-others s {
+  color: #ef4444;
+  text-decoration: line-through;
+  opacity: 0.7;
+}
+.compare-col-us {
+  border-left: 2px solid var(--gold);
+}
+.compare-col-us .compare-cell {
+  background: rgba(240,165,0,0.03);
+}
+.compare-col-us .compare-head {
+  background: var(--gold);
+  color: var(--black);
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 0.9rem;
+}
+.compare-col-us strong {
+  color: var(--gold);
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 1.1rem;
+}
+
+/* ── GUARANTEE STRIP ── */
+.guarantee-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+  border: 1px solid rgba(34,197,94,0.25);
+  background: rgba(34,197,94,0.04);
+  padding: 28px 36px;
+  border-radius: 12px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+.guarantee-badge {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+.guarantee-badge strong {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--white);
+  display: block;
+  margin-bottom: 4px;
+}
+.guarantee-badge span {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+/* ── TESTIMONIALS REDESIGN ── */
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+}
+.testimonial-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 36px 32px 28px;
+  position: relative;
+  transition: all 0.4s;
+  display: flex;
+  flex-direction: column;
+}
+.testimonial-card:hover {
+  border-color: var(--border-bright);
+  transform: translateY(-4px);
+  box-shadow: var(--glow);
+}
+.testimonial-featured {
+  border-color: var(--gold);
+  background: rgba(240,165,0,0.03);
+  transform: scale(1.03);
+}
+.testimonial-featured:hover {
+  transform: scale(1.03) translateY(-4px);
+}
+.testimonial-quote {
+  font-family: 'Syne', sans-serif;
+  font-size: 4rem;
+  color: var(--gold);
+  line-height: 1;
+  margin-bottom: -10px;
+  opacity: 0.3;
+}
+.testimonial-text {
+  font-size: 0.92rem;
+  line-height: 1.7;
+  color: var(--text-muted);
+  font-style: italic;
+  margin-bottom: 20px;
+  flex: 1;
+}
+.testimonial-stars {
+  color: var(--gold);
+  font-size: 1rem;
+  letter-spacing: 2px;
+  margin-bottom: 20px;
+}
+.testimonial-author {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+.testimonial-avatar {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 1rem;
+  color: var(--black);
+  flex-shrink: 0;
+}
+.testimonial-name {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--white);
+}
+.testimonial-role {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+.testimonial-result {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  color: #22c55e;
+  padding: 10px 14px;
+  background: rgba(34,197,94,0.06);
+  border: 1px solid rgba(34,197,94,0.15);
+  border-radius: 6px;
+}
+
+/* ── FAQ SECTION ── */
+.faq-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+.faq-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: border-color 0.3s;
+}
+.faq-card:hover,
+.faq-card[open] {
+  border-color: var(--border-bright);
+}
+.faq-card summary {
+  padding: 20px 48px 20px 24px;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 0.92rem;
+  color: var(--white);
+  cursor: pointer;
+  list-style: none;
+  position: relative;
+  transition: color 0.3s;
+}
+.faq-card summary::-webkit-details-marker { display: none; }
+.faq-card summary::after {
+  content: '+';
+  position: absolute; right: 20px; top: 50%; transform: translateY(-50%);
+  font-family: 'Space Mono', monospace;
+  color: var(--gold); font-size: 1.2rem;
+  transition: transform 0.3s;
+}
+.faq-card[open] summary::after {
+  content: '\2212';
+}
+.faq-card summary:hover { color: var(--gold); }
+.faq-answer {
+  padding: 0 24px 20px;
+  font-size: 0.88rem;
+  line-height: 1.65;
+  color: var(--text-muted);
+}
+
+/* ── TRUST RESPONSIVE ── */
+@media (max-width: 1100px) {
+  .testimonials-grid { grid-template-columns: 1fr; max-width: 600px; margin: 0 auto; }
+  .testimonial-featured { transform: none; }
+  .testimonial-featured:hover { transform: translateY(-4px); }
+}
+@media (max-width: 768px) {
+  .price-compare-section { padding: 60px 20px; }
+  .price-compare-grid {
+    grid-template-columns: 1fr;
+    max-width: 100%;
+  }
+  .compare-col { flex-direction: row; flex-wrap: wrap; }
+  .price-compare-grid {
+    display: flex;
+    flex-direction: column;
+  }
+  .compare-cell { font-size: 0.82rem; padding: 14px 16px; }
+  .guarantee-strip {
+    flex-direction: column;
+    padding: 24px 20px;
+    text-align: center;
+    gap: 20px;
+  }
+  .guarantee-badge { flex-direction: column; align-items: center; text-align: center; }
+  .guarantee-strip .btn-primary { width: 100%; justify-content: center; }
+  .faq-grid { grid-template-columns: 1fr; }
+  .faq-card summary { font-size: 0.85rem; padding: 16px 40px 16px 18px; }
+  .faq-answer { padding: 0 18px 16px; font-size: 0.82rem; }
+  .testimonial-card { padding: 28px 24px 24px; }
+}

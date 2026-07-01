@@ -18,6 +18,27 @@ const revealObserver = new IntersectionObserver(entries => {
 
 document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
+// Nav hamburger toggle
+function toggleNav() {
+  const hamburger = document.getElementById('navHamburger');
+  const navLinks = document.getElementById('navLinks');
+  if (hamburger && navLinks) {
+    hamburger.classList.toggle('active');
+    navLinks.classList.toggle('open');
+  }
+}
+// Close nav when link is clicked (mobile)
+document.querySelectorAll('.nav-links a').forEach(link => {
+  link.addEventListener('click', () => {
+    const hamburger = document.getElementById('navHamburger');
+    const navLinks = document.getElementById('navLinks');
+    if (hamburger && navLinks) {
+      hamburger.classList.remove('active');
+      navLinks.classList.remove('open');
+    }
+  });
+});
+
 // Smooth scroll to hash on page load (e.g. services.html#ai-ads)
 window.addEventListener('DOMContentLoaded', () => {
   if (window.location.hash) {

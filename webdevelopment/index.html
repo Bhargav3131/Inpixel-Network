@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Website Development Services — Inpixel Network</title>
+  <meta name="description" content="Custom website development starting from &#8377;2,999. Fast, mobile-responsive, conversion-optimized landing pages and multi-page corporate sites built for performance.">
+  <link rel="canonical" href="https://inpixelnetwork.in/webdevelopment/">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="../services/services.css">
+  <link rel="icon" type="image/png" href="../logo1.jpeg">
+  <style>
+    .lead-intro {
+      text-align: left;
+      max-width: 900px;
+      margin: 0 auto 30px;
+      padding: 24px;
+      background: rgba(255,255,255,0.02);
+      border-left: 3px solid var(--gold);
+      border-radius: 4px;
+      box-shadow: 0 4px 30px rgba(0,0,0,0.2);
+    }
+    .lead-intro p {
+      font-size: 0.98rem;
+      line-height: 1.6;
+      color: var(--white);
+      margin: 0;
+      font-family: 'DM Sans', sans-serif;
+    }
+    
+    /* Premium Table styling with lines and readable fonts */
+    .plans-table-container {
+      overflow-x: auto;
+      max-width: 900px;
+      margin: 0 auto 50px;
+      border: 1px solid var(--border);
+      background: var(--black2);
+      border-radius: 10px;
+      box-shadow: var(--glow);
+    }
+    .plans-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.92rem;
+      line-height: 1.5;
+    }
+    .plans-table th, .plans-table td {
+      padding: 16px 22px;
+      border-bottom: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+    }
+    .plans-table th:last-child, .plans-table td:last-child {
+      border-right: none;
+    }
+    .plans-table th {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      background: var(--surface);
+      color: var(--white);
+      font-size: 0.95rem;
+    }
+    .plans-table td.feature-name {
+      font-weight: 600;
+      color: var(--white);
+      width: 35%;
+    }
+    .plans-table td.plan-val {
+      color: var(--text-muted);
+    }
+    .plans-table tr:last-child td {
+      border-bottom: none;
+    }
+    .plans-table tr:hover td {
+      background: rgba(255, 255, 255, 0.015);
+    }
+    .plans-table th.gold-head {
+      color: var(--gold);
+    }
+
+    /* FAQ Section */
+    .faq-wrapper {
+      max-width: 800px;
+      margin: 60px auto 0;
+    }
+    .faq-item {
+      background: var(--black2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+    .faq-item summary {
+      padding: 20px 24px;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      color: var(--white);
+      cursor: pointer;
+      list-style: none;
+      position: relative;
+    }
+    .faq-item summary::-webkit-details-marker { display: none; }
+    .faq-item summary::after {
+      content: '+';
+      position: absolute; right: 24px; top: 50%; transform: translateY(-50%);
+      font-family: 'Space Mono', monospace; color: var(--gold); font-size: 1.2rem;
+    }
+    .faq-item[open] summary::after { content: '−'; }
+    .faq-body {
+      padding: 0 24px 20px;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* Benefits Grid */
+    .benefits-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 60px;
+      align-items: center;
+      margin: 60px auto;
+      max-width: 1000px;
+    }
+    .benefits-list {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .benefit-item {
+      display: flex;
+      gap: 16px;
+    }
+    .benefit-icon {
+      width: 40px; height: 40px;
+      border: 1px solid var(--border-bright);
+      background: rgba(240,165,0,0.05);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .benefit-icon svg { width: 18px; stroke: var(--gold); }
+    .benefit-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: var(--white);
+      margin-bottom: 6px;
+    }
+    .benefit-desc {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+    
+    @media (max-width: 900px) {
+      .benefits-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+      .benefits-grid > div:nth-child(2) {
+        order: -1;
+      }
+      .image-gallery-row {
+        grid-template-columns: 1fr !important;
+        gap: 16px !important;
+      }
+    }
+    @media (max-width: 768px) {
+      .plans-table th, .plans-table td {
+        padding: 12px 14px;
+        font-size: 0.82rem;
+      }
+      .plans-table td.feature-name {
+        width: 40%;
+        min-width: 110px;
+      }
+      .plans-table-container {
+        margin: 0 0 40px;
+        border-radius: 8px;
+      }
+      .lead-intro {
+        margin: 0 0 24px;
+        padding: 18px;
+      }
+      .lead-intro p {
+        font-size: 0.9rem;
+      }
+      .faq-item summary {
+        padding: 16px 44px 16px 18px;
+        font-size: 0.92rem;
+      }
+      .faq-item summary::after {
+        right: 16px;
+      }
+      .faq-body {
+        padding: 0 18px 16px;
+        font-size: 0.85rem;
+      }
+      .faq-wrapper {
+        margin: 40px auto 0;
+      }
+      .faq-wrapper h3, .benefits-grid h3 {
+        font-size: 1.3rem !important;
+      }
+      .benefit-title {
+        font-size: 0.95rem;
+      }
+      .benefit-desc {
+        font-size: 0.82rem;
+      }
+      .svc-cta-bar {
+        margin-top: 50px !important;
+      }
+      .btn-primary {
+        width: 100%;
+        justify-content: center;
+        text-align: center;
+        font-size: 0.85rem;
+      }
+    }
+    @media (max-width: 480px) {
+      .plans-table th, .plans-table td {
+        padding: 10px 10px;
+        font-size: 0.78rem;
+      }
+      .lead-intro {
+        padding: 14px;
+      }
+      .faq-item summary {
+        font-size: 0.85rem;
+        padding: 14px 40px 14px 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="grid-bg"></div>
+
+  <!-- NAV -->
+  <nav id="nav">
+    <a class="nav-logo" href="https://inpixelnetwork.in/">
+      <img src="../logo.jpeg" alt="Inpixel Network">
+      <span>Inpixel Network</span>
+    </a>
+    <div class="nav-links" id="navLinks">
+      <a href="https://inpixelnetwork.in/webdevelopment/" class="nav-active">Websites</a>
+      <a href="https://inpixelnetwork.in/aivideos/">AI Videos</a>
+      <a href="https://inpixelnetwork.in/metaads/">Meta Ads</a>
+      <a href="https://inpixelnetwork.in/socialmedia/">Social Media</a>
+      <a href="https://inpixelnetwork.in/#about">About</a>
+      <a href="https://inpixelnetwork.in/#contact">Contact</a>
+      <button class="btn-nav" onclick="window.location.href='https://inpixelnetwork.in/#contact'">Get Started</button>
+    </div>
+    <button class="nav-hamburger" id="navHamburger" aria-label="Open menu" onclick="toggleNav()"><span></span><span></span><span></span></button>
+  </nav>
+
+  <!-- PAGE HERO (Optimized Left-Aligned & Smaller Heading) -->
+  <section class="page-hero" style="text-align: left; min-height: auto; border-bottom: 1px solid var(--border);">
+    <div class="page-hero-inner max-w" style="margin: 0; text-align: left;">
+      <p class="hero-eyebrow" style="text-align: left;">Pricing & Details</p>
+      <h1 class="page-hero-h1" style="text-align: left; font-size: 1.35rem; margin: 4px 0; font-family: 'Syne', sans-serif; font-weight: 700; letter-spacing: -0.01em;">Website <span class="gold">Development</span></h1>
+    </div>
+  </section>
+
+  <!-- PLANS SECTION -->
+  <section class="svc-detail-section" style="padding-top: 40px;">
+    <div class="max-w">
+      
+      <!-- Lead Intro Paragraph styled premium -->
+      <div class="lead-intro">
+        <p>
+          We construct clean, high-performance web pages tailored to your brand. Select the <strong>Starter Plan</strong> for a single-page landing presence, or scale up with the <strong>Professional Plan</strong> for multi-page layouts featuring integrated analytics tracking.
+        </p>
+      </div>
+
+      <div class="plans-table-container">
+        <table class="plans-table">
+          <thead>
+            <tr>
+              <th>Feature</th>
+              <th class="gold-head">Starter Plan (&#8377;2,999)</th>
+              <th class="gold-head">Professional Plan (&#8377;5,999)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="feature-name">Layout</td>
+              <td class="plan-val">Single Page Landing Page</td>
+              <td class="plan-val">Multi-Page Website (Up to 5)</td>
+            </tr>
+            <tr>
+              <td class="feature-name">UX Design</td>
+              <td class="plan-val">Conversion-Optimized Templates</td>
+              <td class="plan-val">Custom Brand UI/UX Design</td>
+            </tr>
+            <tr>
+              <td class="feature-name">Mobile Responsive</td>
+              <td class="plan-val" style="color: var(--gold); font-weight: 500;">✓ Yes (Mobile-First)</td>
+              <td class="plan-val" style="color: var(--gold); font-weight: 500;">✓ Yes (Mobile-First)</td>
+            </tr>
+            <tr>
+              <td class="feature-name">SEO Configuration</td>
+              <td class="plan-val">Basic meta tag setup</td>
+              <td class="plan-val" style="color: var(--gold); font-weight: 500;">✓ Advanced with sitemap & robot indexing</td>
+            </tr>
+            <tr>
+              <td class="feature-name">Analytics & Tracking</td>
+              <td class="plan-val">&mdash; None</td>
+              <td class="plan-val" style="color: var(--gold); font-weight: 500;">✓ Google Analytics & Pixel tracking</td>
+            </tr>
+            <tr>
+              <td class="feature-name">Delivery Speed</td>
+              <td class="plan-val">7 working days</td>
+              <td class="plan-val">14 working days</td>
+            </tr>
+            <tr>
+              <td class="feature-name">Form Integration</td>
+              <td class="plan-val" style="color: var(--gold); font-weight: 500;">✓ Simple contact form</td>
+              <td class="plan-val" style="color: var(--gold); font-weight: 500;">✓ Advanced contact & detailed query</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>
+                <a href="https://wa.me/919697993131?text=Hello%20I%20want%20to%20get%20started%20with%20Website%20Starter%20Plan%20at%20Inpixel%20Network" target="_blank" rel="noopener noreferrer" class="btn-primary" style="padding: 12px 24px; font-size: 0.8rem; cursor: pointer;">Select Starter</a>
+              </td>
+              <td>
+                <a href="https://wa.me/919697993131?text=Hello%20I%20want%20to%20get%20started%20with%20Website%20Professional%20Plan%20at%20Inpixel%20Network" target="_blank" rel="noopener noreferrer" class="btn-primary" style="padding: 12px 24px; font-size: 0.8rem; cursor: pointer;">Select Professional</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- BENEFITS & LAPTOP BROWSER SVG MOCKUP -->
+      <div class="benefits-grid">
+        <div class="benefits-list">
+          <h3 style="font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.6rem; color: var(--white); margin-bottom: 8px;">Technical Standards We Enforce</h3>
+          
+          <div class="benefit-item">
+            <div class="benefit-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            </div>
+            <div>
+              <h4 class="benefit-title">Mobile-First Fluid Layouts</h4>
+              <p class="benefit-desc">Over 70% of web traffic is mobile. We build websites that fit and look stunning on everything from a compact smartphone to a 4K TV.</p>
+            </div>
+          </div>
+
+          <div class="benefit-item">
+            <div class="benefit-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            </div>
+            <div>
+              <h4 class="benefit-title">Instant Performance Speeds</h4>
+              <p class="benefit-desc">We clean up layouts, optimize visual assets, and construct semantic code to hit high Core Web Vitals marks.</p>
+            </div>
+          </div>
+
+          <div class="benefit-item">
+            <div class="benefit-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            </div>
+            <div>
+              <h4 class="benefit-title">SEO Schema Configurations</h4>
+              <p class="benefit-desc">We structure index metadata, local business listings, and clean robots instructions so search engines catalog your pages easily.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- SVG Laptop Browser Mockup -->
+        <div style="background: var(--surface); border: 1px solid var(--border); padding: 30px; border-radius: 12px; box-shadow: var(--glow); text-align: center;">
+          <h4 style="font-family: 'Space Mono', monospace; font-size: 0.72rem; letter-spacing: 0.1em; color: var(--gold); margin-bottom: 24px; text-transform: uppercase;">Laptop UI Layout Mockup</h4>
+          
+          <svg viewBox="0 0 240 180" style="width: 90%; height: auto; margin: 0 auto; display: block; overflow: visible;">
+            <!-- Laptop Screen Shell -->
+            <rect x="20" y="10" width="200" height="130" rx="6" fill="#0f0f11" stroke="rgba(255,255,255,0.15)" stroke-width="2" />
+            <!-- Keyboard/Base -->
+            <polygon points="10,140 230,140 220,152 20,152" fill="#1b1b1f" stroke="rgba(240,165,0,0.4)" stroke-width="2" />
+            <!-- Trackpad -->
+            <rect x="105" y="143" width="30" height="6" rx="1" fill="#0f0f11" />
+            
+            <!-- Browser Header -->
+            <rect x="25" y="15" width="190" height="12" fill="#151518" rx="2" />
+            <!-- Dots -->
+            <circle cx="32" cy="21" r="2" fill="#ef4444" />
+            <circle cx="38" cy="21" r="2" fill="#f59e0b" />
+            <circle cx="44" cy="21" r="2" fill="#10b981" />
+            <!-- Search bar -->
+            <rect x="54" y="18" width="120" height="6" rx="2" fill="rgba(255,255,255,0.06)" />
+            
+            <!-- Website UI Mockup Content -->
+            <!-- Hero text layout -->
+            <rect x="35" y="40" width="80" height="6" rx="1" fill="var(--white)" />
+            <rect x="35" y="50" width="60" height="4" rx="1" fill="rgba(255,255,255,0.4)" />
+            
+            <!-- CTA Button -->
+            <rect x="35" y="62" width="25" height="8" rx="2" fill="var(--gold)" />
+            
+            <!-- Graphic Element right -->
+            <rect x="135" y="40" width="65" height="50" rx="4" fill="rgba(240,165,0,0.05)" stroke="var(--gold)" stroke-width="1" />
+            <circle cx="167" cy="65" r="14" fill="none" stroke="rgba(240,165,0,0.2)" stroke-width="2" />
+            <polygon points="167,58 174,70 160,70" fill="var(--gold)" opacity="0.8" />
+            
+            <!-- Three Columns bottom -->
+            <rect x="35" y="105" width="45" height="25" rx="2" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.05)" stroke-width="1" />
+            <rect x="35" y="110" width="30" height="3" fill="rgba(255,255,255,0.2)" />
+            
+            <rect x="97" y="105" width="45" height="25" rx="2" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.05)" stroke-width="1" />
+            <rect x="97" y="110" width="30" height="3" fill="rgba(255,255,255,0.2)" />
+            
+            <rect x="155" y="105" width="45" height="25" rx="2" fill="rgba(240,165,0,0.04)" stroke="var(--gold)" stroke-width="1" />
+            <text x="177" y="120" fill="var(--gold)" font-family="Space Mono" font-size="8" font-weight="bold" text-anchor="middle">99%</text>
+          </svg>
+        </div>
+      </div>
+
+      <!-- IMAGE GALLERY ROW (Above FAQ) -->
+      <div style="text-align: center; margin-top: 60px; margin-bottom: 20px;">
+        <h3 style="font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.6rem; color: var(--white); margin-bottom: 8px;">Development & Design Showcase</h3>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">Modern UI/UX prototyping, code standards, and fluid responsive grids built for performance.</p>
+      </div>
+
+      <div class="image-gallery-row" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin: 30px auto 60px; max-width: 900px;">
+        <div style="border-radius: 8px; overflow: hidden; border: 1px solid var(--border); box-shadow: var(--glow); aspect-ratio: 4/3;">
+          <img src="../assets/images/web-ui-design.png" alt="UI Design Prototypes" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+        </div>
+        <div style="border-radius: 8px; overflow: hidden; border: 1px solid var(--border); box-shadow: var(--glow); aspect-ratio: 4/3;">
+          <img src="../assets/images/web-dev-code.png" alt="Code standards workspace" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+        </div>
+        <div style="border-radius: 8px; overflow: hidden; border: 1px solid var(--border); box-shadow: var(--glow); aspect-ratio: 4/3;">
+          <img src="../assets/images/web-responsive-test.png" alt="Responsive browser testing" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+        </div>
+      </div>
+
+      <!-- FAQS -->
+      <div class="faq-wrapper">
+        <h3 style="font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.6rem; color: var(--white); margin-bottom: 24px; text-align: center;">Frequently Asked Questions</h3>
+        
+        <details class="faq-item" open>
+          <summary>Do I need to buy domain and hosting separately?</summary>
+          <div class="faq-body">
+            Yes, domains and hosting services are client-side expenses. We assist you in selecting the most cost-effective hosting platforms and coordinate all domain mappings.
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>Can I edit the website content myself later?</summary>
+          <div class="faq-body">
+            Yes, we construct pages with clean, editable code structures and assist you in setting up simple templates if you need to update text or photos in the future.
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>What is basic vs advanced SEO setup?</summary>
+          <div class="faq-body">
+            Basic SEO configures page title, meta description, and semantic headings. Advanced SEO adds structured schema markups (JSON-LD), generates xml sitemaps, formats robots.txt exclusions, and integrates Google Analytics/Facebook pixels.
+          </div>
+        </details>
+      </div>
+
+      <div class="svc-cta-bar" style="margin-top: 80px;">
+        <p>Ready to build your brand blueprint online?</p>
+        <a href="https://wa.me/919697993131?text=Hello%20I%20want%20to%20get%20started%20with%20Website%20Development%20at%20Inpixel%20Network" target="_blank" rel="noopener noreferrer" class="btn-primary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:16px">
+            <line x1="22" y1="2" x2="11" y2="13"/>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+          </svg>
+          Chat Now — Free Consultation
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-inner max-w">
+      <div class="footer-brand">
+        <a href="https://inpixelnetwork.in/" class="footer-logo">
+          <img src="../logo.jpeg" alt="Inpixel Network">
+          <span>Inpixel Network</span>
+        </a>
+        <p class="footer-brand-desc">Transforming digital presence, one pixel at a time. Pune's go-to agency for growth-driven brands.</p>
+        <a href="https://instagram.com/inpixel_network" target="_blank" rel="noopener noreferrer" class="footer-social" aria-label="Instagram">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8">
+            <rect x="2" y="2" width="20" height="20" rx="5"/>
+            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+          </svg>
+          @inpixel_network
+        </a>
+      </div>
+      <div class="footer-col">
+        <h5 class="footer-col-title">Quick Links</h5>
+        <ul class="footer-links">
+          <li><a href="https://inpixelnetwork.in/">Home</a></li>
+          <li><a href="https://inpixelnetwork.in/services/">Services</a></li>
+          <li><a href="https://inpixelnetwork.in/#about">About Us</a></li>
+          <li><a href="https://inpixelnetwork.in/#process">Our Process</a></li>
+          <li><a href="https://inpixelnetwork.in/#contact">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5 class="footer-col-title">Legal</h5>
+        <ul class="footer-links">
+          <li><a href="https://inpixelnetwork.in/terms/">Terms & Conditions</a></li>
+          <li><a href="https://inpixelnetwork.in/privacy/">Privacy Policy</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5 class="footer-col-title">Contact</h5>
+        <ul class="footer-links footer-contact">
+          <li>
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            <a href="mailto:supportinpixelnetwork@gmail.com">supportinpixelnetwork@gmail.com</a>
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <span>Pune, Maharashtra, India</span>
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <span>Mon–Sat, 9 AM – 6 PM</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="max-w footer-bottom-inner">
+        <span>© 2026 Inpixel Network. All rights reserved.</span>
+        <span class="footer-bottom-links">
+          <a href="https://inpixelnetwork.in/terms/">Terms</a>
+          <span>·</span>
+          <a href="https://inpixelnetwork.in/privacy/">Privacy</a>
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../services/services.js"></script>
+</body>
+</html>

@@ -40,6 +40,27 @@ const revealObserver = new IntersectionObserver(entries => {
 
 document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
+// ── Nav Hamburger Toggle ──
+function toggleNav() {
+  const hamburger = document.getElementById('navHamburger');
+  const navLinks = document.getElementById('navLinks');
+  if (hamburger && navLinks) {
+    hamburger.classList.toggle('active');
+    navLinks.classList.toggle('open');
+  }
+}
+// Close nav when a link is clicked (mobile)
+document.querySelectorAll('.nav-links a').forEach(link => {
+  link.addEventListener('click', () => {
+    const hamburger = document.getElementById('navHamburger');
+    const navLinks = document.getElementById('navLinks');
+    if (hamburger && navLinks) {
+      hamburger.classList.remove('active');
+      navLinks.classList.remove('open');
+    }
+  });
+});
+
 // ── Popup Open / Close ──
 function openPopup() {
   document.getElementById('overlay').classList.add('show');
