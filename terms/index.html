@@ -17,18 +17,21 @@
 <body>
   <div class="grid-bg"></div>
 
-  <!-- NAV -->
   <nav id="nav">
     <a class="nav-logo" href="https://inpixelnetwork.in/">
-      <img src="logo.jpeg" alt="Inpixel Network">
+      <img src="../logo.jpeg" alt="Inpixel Network">
       <span>Inpixel Network</span>
     </a>
-    <div class="nav-links">
-      <a href="https://inpixelnetwork.in/services/">Services</a>
+    <div class="nav-links" id="navLinks">
+      <a href="https://inpixelnetwork.in/webdevelopment/">Websites</a>
+      <a href="https://inpixelnetwork.in/aivideos/">AI Videos</a>
+      <a href="https://inpixelnetwork.in/metaads/">Meta Ads</a>
+      <a href="https://inpixelnetwork.in/socialmedia/">Social Media</a>
       <a href="https://inpixelnetwork.in/#process">Process</a>
       <a href="https://inpixelnetwork.in/#contact">Contact</a>
       <button class="btn-nav" onclick="window.location.href='https://inpixelnetwork.in/#contact'">Get Started</button>
     </div>
+    <button class="nav-hamburger" id="navHamburger" aria-label="Open menu" onclick="toggleNav()"><span></span><span></span><span></span></button>
   </nav>
 
   <!-- PAGE HERO -->
@@ -202,6 +205,24 @@
   <script>
     window.addEventListener('scroll', () => {
       document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 60);
+    });
+    function toggleNav() {
+      const hamburger = document.getElementById('navHamburger');
+      const navLinks = document.getElementById('navLinks');
+      if (hamburger && navLinks) {
+        hamburger.classList.toggle('active');
+        navLinks.classList.toggle('open');
+      }
+    }
+    document.querySelectorAll('.nav-links a').forEach(link => {
+      link.addEventListener('click', () => {
+        const hamburger = document.getElementById('navHamburger');
+        const navLinks = document.getElementById('navLinks');
+        if (hamburger && navLinks) {
+          hamburger.classList.remove('active');
+          navLinks.classList.remove('open');
+        }
+      });
     });
   </script>
 </body>
