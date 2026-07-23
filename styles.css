@@ -1077,8 +1077,8 @@ footer.site-footer {
 .price-compare-tbl th,
 .price-compare-tbl td {
   padding: 18px 24px;
-  border-bottom: 1px solid var(--border);
-  border-right: 1px solid var(--border);
+  border-bottom: 1px solid rgba(240, 165, 0, 0.2);
+  border-right: 1px solid rgba(240, 165, 0, 0.2);
   text-align: left;
   vertical-align: middle;
 }
@@ -1107,6 +1107,8 @@ footer.site-footer {
   font-size: 0.9rem;
   white-space: normal;
   word-break: break-word;
+  border-left: 2px solid var(--gold);
+  border-right: 2px solid var(--gold);
 }
 
 /* Body rows */
@@ -1115,7 +1117,7 @@ footer.site-footer {
   font-weight: 500;
 }
 .price-compare-tbl tbody td.col-others {
-  background: rgba(0,0,0,0.2);
+  background: rgba(0,0,0,0.25);
 }
 .price-compare-tbl tbody td.col-others s {
   color: #ef4444;
@@ -1123,13 +1125,25 @@ footer.site-footer {
   opacity: 0.7;
 }
 .price-compare-tbl tbody td.col-us {
-  background: rgba(240,165,0,0.04);
+  background: rgba(240,165,0,0.06);
+  border-left: 2px solid var(--gold);
+  border-right: 2px solid var(--gold);
 }
 .price-compare-tbl tbody td.col-us strong {
   color: var(--gold);
   font-family: 'Syne', sans-serif;
   font-weight: 800;
   font-size: 1.1rem;
+  white-space: nowrap;
+}
+.price-period {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--gold-light);
+  display: inline-block;
+  margin-left: 3px;
+  white-space: nowrap;
 }
 
 /* ── Pricing table mobile ── */
@@ -1161,6 +1175,10 @@ footer.site-footer {
   }
   .price-compare-tbl tbody td.col-others s {
     font-size: 0.72rem;
+  }
+  .price-period {
+    font-size: 0.68rem;
+    margin-left: 2px;
   }
 }
 
