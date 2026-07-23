@@ -29,16 +29,31 @@ if (scene && card) {
   });
 }
 
-// ── Scroll Reveal ──
+// ── Scroll Reveal (staggered, respects reduced motion) ──
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
 const revealObserver = new IntersectionObserver(entries => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
-      setTimeout(() => entry.target.classList.add('visible'), 100);
+      if (prefersReducedMotion) {
+        entry.target.classList.add('visible');
+      } else {
+        const delay = entry.target.dataset.delay || 100;
+        setTimeout(() => entry.target.classList.add('visible'), Number(delay));
+      }
     }
   });
 }, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
 
-document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+document.querySelectorAll('.reveal').forEach((el, i) => {
+  // Auto-stagger siblings with the same parent (e.g. service cards, process steps)
+  const siblings = el.parentElement.querySelectorAll(':scope > .reveal');
+  if (siblings.length > 1 && !el.dataset.delay) {
+    const idx = Array.from(siblings).indexOf(el);
+    el.dataset.delay = 100 + idx * 120;
+  }
+  revealObserver.observe(el);
+});
 
 // ── Nav Hamburger Toggle ──
 function toggleNav() {
