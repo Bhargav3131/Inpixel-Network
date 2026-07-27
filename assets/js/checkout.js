@@ -234,9 +234,9 @@ function openPaymentModal(service, planName, amount) {
         theme: { color: '#f0a500' }
       };
       
-      const rzp = new window.Razorpay(options);
       rzp.on('payment.failed', function (response) {
-        const failureReason = (response && response.error && (response.error.description || response.error.reason)) || 'Payment failed or cancelled';
+        const err = response && response.error;
+        const failureReason = err ? (err.description ? err.description + (err.reason ? ' (' + err.reason + ')' : '') : (err.reason || err.code || 'Payment failed or cancelled')) : 'Cancelled by user / Payment failed';
         // Mark payment as failed in DB with failure reason
         fetch('/api/payments/update-status', {
           method: 'POST',

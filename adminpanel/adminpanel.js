@@ -560,7 +560,8 @@ function renderPayments() {
     const phone = p.client_phone || '—';
     const failureReason = p.failure_reason ? `<div class="pay-meta" style="color:#ef4444;margin-top:4px;">Reason: ${p.failure_reason}</div>` : '';
 
-    return '<div class="pay-card ' + cardClass + '" onclick="openPaymentModalDetail(' + p.id + ')" style="cursor:pointer;animation-delay:' + (i * 0.04) + 's">'
+    const payIdStr = String(p.id).replace(/'/g, "\\'");
+    return '<div class="pay-card ' + cardClass + '" onclick="openPaymentModalDetail(\'' + payIdStr + '\')" style="cursor:pointer;animation-delay:' + (i * 0.04) + 's">'
       + '<div class="pay-info">'
       + '<div class="pay-name">' + name + ' <span style="font-size:0.75rem;font-weight:400;color:var(--text-muted);">(' + (p.client_email || 'No email') + ')</span></div>'
       + '<div class="pay-meta">' + phone + ' · <strong style="color:var(--white);">' + (p.plan_name || service) + '</strong></div>'
@@ -576,7 +577,7 @@ function renderPayments() {
 }
 
 function openPaymentModalDetail(id) {
-  const p = allPayments.find(x => x.id === id);
+  const p = allPayments.find(x => String(x.id) === String(id));
   if (!p) return;
 
   const status = (p.status || 'pending').toLowerCase();
