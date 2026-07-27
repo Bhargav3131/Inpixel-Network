@@ -39,17 +39,13 @@ module.exports = async function (req, res) {
     const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    await supabase.from('payments').insert({
-      razorpay_order_id,
-      razorpay_payment_id,
-      client_name,
-      client_phone,
-      client_email,
-      service,
-      plan_name,
-      amount,
-      status: 'paid'
-    });
+    // Update the pending record to "paid" (created by create-order)
+    await supabase.from('payments')
+      .update({
+        razorpay_payment_id,
+        status: 'paid'
+      })
+      .eq('razorpay_order_id', razorpay_order_id);
 
     let targetService = '';
     if (service === 'webdevelopment-starter' || service === 'webdevelopment-pro' || service === 'webdevelopment' || service === 'website') {

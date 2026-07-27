@@ -220,6 +220,12 @@ function openPaymentModal(service, planName, amount) {
       
       const rzp = new window.Razorpay(options);
       rzp.on('payment.failed', function (response) {
+        // Mark payment as failed in DB
+        fetch('/api/payments/update-status', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ razorpay_order_id: data.order_id, status: 'failed' })
+        }).catch(() => {});
         errorEl.textContent = 'Payment failed. Please try again.';
         errorEl.style.display = 'block';
         btn.disabled = false;

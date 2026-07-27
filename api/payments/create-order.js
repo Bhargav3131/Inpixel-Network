@@ -1,4 +1,5 @@
 const Razorpay = require('razorpay');
+const { createClient } = require('@supabase/supabase-js');
 
 module.exports = async function (req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -44,6 +45,20 @@ module.exports = async function (req, res) {
       currency: 'INR', 
       receipt: 'receipt_' + Date.now(), 
       notes: { service, plan, client_name, client_phone } 
+    });
+
+    // Save a "pending" payment record immediately so admin can track all attempts
+    const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
+    await supabase.from('payments').insert({
+      razorpay_order_id: order.id,
+      razorpay_payment_id: null,
+      client_name: client_name || '',
+      client_phone: client_phone || '',
+      client_email: client_email || '',
+      service: service || plan || '',
+      plan_name: plan || service || '',
+      amount,
+      status: 'pending'
     });
 
     return res.status(200).json({ 
