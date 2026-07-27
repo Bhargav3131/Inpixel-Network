@@ -1,28 +1,68 @@
 // ============================================================
-//   INPIXEL NETWORK — adminpanel.js (v3 — Supabase)
+//   INPIXEL NETWORK — adminpanel.js (v4 — API Auth & Fetch)
 // ============================================================
-
-const ADMIN_PASS = 'inpixel@0313';
 
 document.getElementById('gateInput').addEventListener('keydown', e => {
   if (e.key === 'Enter') checkGate();
 });
+document.getElementById('gateEmail').addEventListener('keydown', e => {
+  if (e.key === 'Enter') checkGate();
+});
 
-function checkGate() {
-  const val = document.getElementById('gateInput').value;
-  if (val === ADMIN_PASS) {
-    document.getElementById('adminGate').style.display = 'none';
-    document.querySelector('nav').style.display  = 'flex';
-    document.querySelector('main').style.display = 'block';
-    loadSubmissions();
-    loadAiAdsSubmissions();
-    loadMetaAdsSubmissions();
-    loadClients();
-  } else {
+async function checkGate() {
+  const email = document.getElementById('gateEmail').value;
+  const password = document.getElementById('gateInput').value;
+  
+  if (!email || !password) {
+    document.getElementById('gateError').textContent = 'Please enter both email and password.';
     document.getElementById('gateError').style.display = 'block';
-    document.getElementById('gateInput').value = '';
-    document.getElementById('gateInput').focus();
+    return;
   }
+
+  const btn = document.querySelector('.gate-btn');
+  const prevText = btn.textContent;
+  btn.textContent = 'Checking...';
+  btn.disabled = true;
+
+  try {
+    const res = await fetch('/api/admin/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+    
+    const data = await res.json();
+    
+    if (res.ok) {
+      sessionStorage.setItem('admin_token', data.token);
+      document.getElementById('adminGate').style.display = 'none';
+      document.querySelector('nav').style.display  = 'flex';
+      document.querySelector('main').style.display = 'block';
+      loadSubmissions();
+      loadAiAdsSubmissions();
+      loadMetaAdsSubmissions();
+      loadClients();
+    } else {
+      document.getElementById('gateError').textContent = data.error || 'Incorrect credentials.';
+      document.getElementById('gateError').style.display = 'block';
+      document.getElementById('gateInput').value = '';
+      document.getElementById('gateInput').focus();
+    }
+  } catch (err) {
+    document.getElementById('gateError').textContent = 'Network error. Please try again.';
+    document.getElementById('gateError').style.display = 'block';
+  } finally {
+    btn.textContent = prevText;
+    btn.disabled = false;
+  }
+}
+
+// Helper to get headers
+function authHeaders() {
+  return {
+    'Authorization': 'Bearer ' + sessionStorage.getItem('admin_token'),
+    'Content-Type': 'application/json'
+  };
 }
 
 let allSubmissions = [], allAiAds = [], allMetaAds = [], allClients = [];
@@ -41,28 +81,28 @@ function switchTab(tab) {
 // ── WEBSITE SUBMISSIONS ──────────────────────────────────────
 async function loadSubmissions() {
   document.getElementById('cardsContainer').innerHTML = '<div class="empty-state"><p style="color:var(--text-muted);font-family:\'Space Mono\',monospace;font-size:0.8rem;">Loading...</p></div>';
-  const { data, error } = await db
-    .from('website_submissions')
-    .select('*')
-    .order('submitted_at', { ascending: false });
-  if (error) {
+  try {
+    const res = await fetch('/api/admin/submissions?type=website', { headers: authHeaders() });
+    const data = await res.json();
+    if (!res.ok) throw new Error();
+    
+    allSubmissions = (data.submissions || []).map(r => ({
+      id: r.id,
+      submittedAt: r.submitted_at || new Date().toISOString(),
+      user: { name: r.client_name || '', email: r.client_email || '', phone: String(r.client_phone || '') },
+      businessName: r.business_name || '', industry: r.industry || '', location: r.location || '',
+      description: r.description || '',
+      websiteTypes: (r.services || '').split(',').map(s => s.trim()).filter(Boolean),
+      features: (r.features || '').split(',').map(s => s.trim()).filter(Boolean),
+      designStyle: r.design_style || '', colorTheme: r.colors || '', hasLogo: r.has_logo || '',
+      referenceWebsites: r.references_urls || '', pages: r.pages || '', contentProvided: r.content_provided || '',
+      hasDomain: r.has_domain || '', domainName: r.domain_name || '', hasHosting: r.has_hosting || '',
+      extraNotes: r.extra_notes || '', hearAboutUs: r.source || '', budget: r.budget || '', timeline: r.timeline || ''
+    }));
+    updateStats(); renderCards();
+  } catch (err) {
     document.getElementById('cardsContainer').innerHTML = '<div class="empty-state"><p style="color:#ff4444;font-family:\'Space Mono\',monospace;font-size:0.8rem;">Failed to load.</p></div>';
-    return;
   }
-  allSubmissions = (data || []).map(r => ({
-    id: r.id,
-    submittedAt: r.submitted_at || new Date().toISOString(),
-    user: { name: r.client_name || '', email: r.client_email || '', phone: String(r.client_phone || '') },
-    businessName: r.business_name || '', industry: r.industry || '', location: r.location || '',
-    description: r.description || '',
-    websiteTypes: (r.services || '').split(',').map(s => s.trim()).filter(Boolean),
-    features: (r.features || '').split(',').map(s => s.trim()).filter(Boolean),
-    designStyle: r.design_style || '', colorTheme: r.colors || '', hasLogo: r.has_logo || '',
-    referenceWebsites: r.references_urls || '', pages: r.pages || '', contentProvided: r.content_provided || '',
-    hasDomain: r.has_domain || '', domainName: r.domain_name || '', hasHosting: r.has_hosting || '',
-    extraNotes: r.extra_notes || '', hearAboutUs: r.source || '', budget: r.budget || '', timeline: r.timeline || ''
-  }));
-  updateStats(); renderCards();
 }
 
 function updateStats() {
@@ -130,22 +170,22 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal
 
 async function deleteEntry(id) {
   if (!confirm('Delete this submission?')) return;
-  const { error } = await db.from('website_submissions').delete().eq('id', id);
-  if (!error) {
+  try {
+    const res = await fetch('/api/admin/submissions', {
+      method: 'DELETE',
+      headers: authHeaders(),
+      body: JSON.stringify({ type: 'website', id })
+    });
+    if (!res.ok) throw new Error();
     allSubmissions = allSubmissions.filter(s => s.id !== id);
     closeModal(); updateStats(); renderCards();
-  } else {
+  } catch (err) {
     alert('Failed to delete. Please try again.');
   }
 }
 async function confirmClearAll() {
-  if (!confirm('Delete ALL submissions?')) return;
-  const { error } = await db.from('website_submissions').delete().gt('id', 0);
-  if (!error) {
-    allSubmissions = []; updateStats(); renderCards();
-  } else {
-    alert('Failed to clear all. Please try again.');
-  }
+  if (!confirm('Delete ALL submissions? (Not implemented via API yet, skipping)')) return;
+  // Intentionally skipped for now since API doesn't mention clear all
 }
 function setFilter(f, btn) {
   currentFilter = f;
@@ -157,20 +197,23 @@ function filterCards() { currentSearch = document.getElementById('searchInput').
 // ── AI ADS SUBMISSIONS ───────────────────────────────────────
 async function loadAiAdsSubmissions() {
   document.getElementById('aiAdsContainer').innerHTML = '<div class="empty-state"><p style="color:var(--text-muted);font-family:\'Space Mono\',monospace;font-size:0.8rem;">Loading AI Ads submissions...</p></div>';
-  const { data, error } = await db
-    .from('ai_ads_submissions')
-    .select('*')
-    .order('submitted_at', { ascending: false });
-  if (error) { allAiAds = []; renderAiAdsCards(); return; }
-  allAiAds = (data || []).map(r => ({
-    id: r.id,
-    'Name': r.name || '',
-    'Phone': r.phone || '',
-    'Model No': r.model_no || '',
-    'Script': r.script || '',
-    'Submitted At': r.submitted_at || ''
-  }));
-  renderAiAdsCards(); updateAiAdsStats();
+  try {
+    const res = await fetch('/api/admin/submissions?type=aiads', { headers: authHeaders() });
+    const data = await res.json();
+    if (!res.ok) throw new Error();
+    
+    allAiAds = (data.submissions || []).map(r => ({
+      id: r.id,
+      'Name': r.name || '',
+      'Phone': r.phone || '',
+      'Model No': r.model_no || '',
+      'Script': r.script || '',
+      'Submitted At': r.submitted_at || ''
+    }));
+    renderAiAdsCards(); updateAiAdsStats();
+  } catch (err) {
+    allAiAds = []; renderAiAdsCards();
+  }
 }
 
 function updateAiAdsStats() {
@@ -203,9 +246,17 @@ function openAiModal(id) {
   document.getElementById('mBody').innerHTML = '<div class="detail-section"><div class="detail-section-title">Client Info</div><div class="detail-grid"><div class="detail-field"><label>Name</label><p>'+(s['Name']||'—')+'</p></div><div class="detail-field"><label>Phone</label><p>'+(s['Phone']||'—')+'</p></div></div></div><div class="detail-section"><div class="detail-section-title">AI Ad Details</div><div class="detail-grid"><div class="detail-field"><label>Selected Model</label><p style="color:#a855f7;font-family:\'Syne\',sans-serif;font-weight:700;font-size:1.1rem;">Model '+(s['Model No']||'—')+'</p></div><div class="detail-field full"><label>Ad Script</label><p style="white-space:pre-wrap;line-height:1.7">'+(s['Script']||'—')+'</p></div></div></div>';
   document.getElementById('mDeleteBtn').onclick = async () => {
     if (!confirm('Delete this entry?')) return;
-    const { error } = await db.from('ai_ads_submissions').delete().eq('id', id);
-    if (!error) { allAiAds = allAiAds.filter(x => x.id !== id); closeModal(); renderAiAdsCards(); updateAiAdsStats(); }
-    else alert('Failed to delete.');
+    try {
+      const res = await fetch('/api/admin/submissions', {
+        method: 'DELETE',
+        headers: authHeaders(),
+        body: JSON.stringify({ type: 'aiads', id })
+      });
+      if (!res.ok) throw new Error();
+      allAiAds = allAiAds.filter(x => x.id !== id); closeModal(); renderAiAdsCards(); updateAiAdsStats();
+    } catch (err) {
+      alert('Failed to delete.');
+    }
   };
   document.getElementById('overlay').classList.add('show');
   document.getElementById('detailModal').classList.add('show');
@@ -215,26 +266,29 @@ function openAiModal(id) {
 // ── META ADS SUBMISSIONS ─────────────────────────────────────
 async function loadMetaAdsSubmissions() {
   document.getElementById('metaAdsContainer').innerHTML = '<div class="empty-state"><p style="color:var(--text-muted);font-family:\'Space Mono\',monospace;font-size:0.8rem;">Loading Meta Ads submissions...</p></div>';
-  const { data, error } = await db
-    .from('meta_ads_submissions')
-    .select('*')
-    .order('submitted_at', { ascending: false });
-  if (error) { allMetaAds = []; renderMetaAdsCards(); return; }
-  allMetaAds = (data || []).map(r => ({
-    id: r.id,
-    'Name': r.name || '',
-    'Phone': r.phone || '',
-    'Business Name': r.business_name || '',
-    'What Advertising': r.what_advertising || '',
-    'Target Audience': r.target_audience || '',
-    'Campaign Objective': r.campaign_objective || '',
-    'Daily Budget': r.daily_budget || '',
-    'Lead Destination': r.lead_destination || '',
-    'Website Link': r.website_link || '',
-    'Extra Notes': r.extra_notes || '',
-    'Submitted At': r.submitted_at || ''
-  }));
-  renderMetaAdsCards(); updateMetaAdsStats();
+  try {
+    const res = await fetch('/api/admin/submissions?type=metaads', { headers: authHeaders() });
+    const data = await res.json();
+    if (!res.ok) throw new Error();
+    
+    allMetaAds = (data.submissions || []).map(r => ({
+      id: r.id,
+      'Name': r.name || '',
+      'Phone': r.phone || '',
+      'Business Name': r.business_name || '',
+      'What Advertising': r.what_advertising || '',
+      'Target Audience': r.target_audience || '',
+      'Campaign Objective': r.campaign_objective || '',
+      'Daily Budget': r.daily_budget || '',
+      'Lead Destination': r.lead_destination || '',
+      'Website Link': r.website_link || '',
+      'Extra Notes': r.extra_notes || '',
+      'Submitted At': r.submitted_at || ''
+    }));
+    renderMetaAdsCards(); updateMetaAdsStats();
+  } catch (err) {
+    allMetaAds = []; renderMetaAdsCards();
+  }
 }
 
 function updateMetaAdsStats() {
@@ -300,9 +354,17 @@ function openMetaModal(id) {
     + '</div></div>';
   document.getElementById('mDeleteBtn').onclick = async () => {
     if (!confirm('Delete this entry?')) return;
-    const { error } = await db.from('meta_ads_submissions').delete().eq('id', id);
-    if (!error) { allMetaAds = allMetaAds.filter(x => x.id !== id); closeModal(); renderMetaAdsCards(); updateMetaAdsStats(); }
-    else alert('Failed to delete.');
+    try {
+      const res = await fetch('/api/admin/submissions', {
+        method: 'DELETE',
+        headers: authHeaders(),
+        body: JSON.stringify({ type: 'metaads', id })
+      });
+      if (!res.ok) throw new Error();
+      allMetaAds = allMetaAds.filter(x => x.id !== id); closeModal(); renderMetaAdsCards(); updateMetaAdsStats();
+    } catch (err) {
+      alert('Failed to delete.');
+    }
   };
   document.getElementById('overlay').classList.add('show');
   document.getElementById('detailModal').classList.add('show');
@@ -332,16 +394,19 @@ function closeClientsModal() {
 }
 
 async function loadClients() {
-  const { data, error } = await db
-    .from('clients')
-    .select('*')
-    .order('added_at', { ascending: false });
-  allClients = error ? [] : (data || []).map(r => ({
-    name: r.name,
-    phone: r.phone,
-    services: r.services || 'website',
-    addedAt: r.added_at
-  }));
+  try {
+    const res = await fetch('/api/admin/clients', { headers: authHeaders() });
+    const data = await res.json();
+    if (!res.ok) throw new Error();
+    allClients = (data.clients || []).map(r => ({
+      name: r.name,
+      phone: r.phone,
+      services: r.services || 'website',
+      addedAt: r.added_at
+    }));
+  } catch (err) {
+    allClients = [];
+  }
 }
 
 function renderClientsList() {
@@ -377,11 +442,16 @@ function renderClientsList() {
 async function deactivateClient(phone) {
   if (!confirm('Remove this client? They will no longer be able to log in.')) return;
   const normalized = String(phone).replace(/[\s\-\(\)]/g, '');
-  const { error } = await db.from('clients').delete().eq('phone', normalized);
-  if (!error) {
+  try {
+    const res = await fetch('/api/admin/clients', {
+      method: 'DELETE',
+      headers: authHeaders(),
+      body: JSON.stringify({ phone: normalized })
+    });
+    if (!res.ok) throw new Error();
     allClients = allClients.filter(c => String(c.phone).replace(/[\s\-\(\)]/g, '') !== normalized);
     renderClientsList();
-  } else {
+  } catch (err) {
     alert('Failed to remove client.');
   }
 }
@@ -411,17 +481,23 @@ async function activateClient() {
 
   const reset = () => { btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px"><polyline points="20 6 9 17 4 12"/></svg> Activate Account'; btn.disabled = false; };
 
-  // Upsert: insert or update if phone already exists
-  const { error } = await db.from('clients').upsert(
-    { name, phone, services, added_at: new Date().toISOString() },
-    { onConflict: 'phone' }
-  );
+  try {
+    const res = await fetch('/api/admin/clients', {
+      method: 'POST',
+      headers: authHeaders(),
+      body: JSON.stringify({ name, phone, services })
+    });
+    
+    if (!res.ok) {
+      const data = await res.json();
+      throw new Error(data.error || 'Failed to save');
+    }
 
-  if (!error) {
     const norm = p => String(p).replace(/[\s\-\(\)]/g, '');
     const idx  = allClients.findIndex(c => norm(c.phone) === norm(phone));
     if (idx >= 0) allClients[idx].services = services;
     else allClients.unshift({ name, phone, addedAt: new Date().toISOString(), services });
+    
     nameEl.value = ''; phoneEl.value = '';
     document.getElementById('svcWebsite').checked = true;
     document.getElementById('svcAiAds').checked = false;
@@ -430,8 +506,8 @@ async function activateClient() {
     sucEl.textContent = '✓ ' + name + ' activated for ' + label + '!';
     sucEl.style.display = 'block'; renderClientsList();
     setTimeout(() => { sucEl.style.display = 'none'; }, 3000);
-  } else {
-    errEl.textContent = error.message || 'Failed to save.'; errEl.style.display = 'block';
+  } catch (err) {
+    errEl.textContent = err.message || 'Failed to save.'; errEl.style.display = 'block';
   }
   reset();
 }
