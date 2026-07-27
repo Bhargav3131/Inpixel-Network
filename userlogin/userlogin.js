@@ -51,8 +51,6 @@ document.addEventListener('DOMContentLoaded', () => {
 // ── Step 1: Login ───────────────────────────────────────────
 async function handleLogin(e) {
   e.preventDefault();
-  const name  = document.getElementById('l-name').value.trim();
-  const email = document.getElementById('l-email').value.trim();
   const phone = document.getElementById('l-phone').value.trim();
   const btn   = document.getElementById('loginBtn');
   const errEl = document.getElementById('loginError');
@@ -70,12 +68,12 @@ async function handleLogin(e) {
       return;
     }
 
-    currentUser = { name, email, phone, services: result.services || 'website' };
+    currentUser = { name: result.name || 'Client', email: '', phone, services: result.services || 'website' };
     sessionStorage.setItem('inpixel_user', JSON.stringify(currentUser));
 
     document.getElementById('loginStep').style.display = 'none';
     document.getElementById('serviceDashboard').style.display = 'block';
-    document.getElementById('dashGreetName').textContent = name;
+    document.getElementById('dashGreetName').textContent = result.name || 'Client';
 
     applyServiceLocks();
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -105,11 +103,11 @@ async function checkPhoneInSheet(phone) {
   const normalized = phone.replace(/[\s\-\(\)]/g, '');
   const { data, error } = await db
     .from('clients')
-    .select('services')
+    .select('name, services')
     .eq('phone', normalized)
     .maybeSingle();
-  if (error || !data) return { approved: false, services: 'website' };
-  return { approved: true, services: data.services || 'website' };
+  if (error || !data) return { approved: false, name: '', services: 'website' };
+  return { approved: true, name: data.name || '', services: data.services || 'website' };
 }
 
 // ── Service Dashboard: open a section ───────────────────────

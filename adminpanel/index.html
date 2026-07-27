@@ -23,6 +23,30 @@
     #tabMetaAds .tab-dot { background:#1877f2; }
     #tabAiAds.tab-active   { color:#a855f7; border-color:rgba(168,85,247,0.4); }
     #tabMetaAds.tab-active { color:#6aabff; border-color:rgba(24,119,242,0.4); }
+    #tabPayments .tab-dot { background:#22c55e; }
+    #tabPayments.tab-active { color:#22c55e; border-color:rgba(34,197,94,0.4); }
+    .pay-card { background: var(--surface); border: 1px solid var(--border); padding: 18px 20px; margin-bottom: 10px; animation: fadeUp 0.4s ease both; display: flex; align-items: center; gap: 16px; cursor: default; transition: border-color 0.2s; }
+    .pay-card:hover { border-color: rgba(255,255,255,0.15); }
+    .pay-card.status-paid { border-left: 3px solid #22c55e; }
+    .pay-card.status-pending { border-left: 3px solid #f0a500; }
+    .pay-card.status-failed { border-left: 3px solid #ef4444; }
+    .pay-status { font-family: 'Space Mono', monospace; font-size: 0.65rem; letter-spacing: 0.08em; text-transform: uppercase; padding: 4px 10px; border-radius: 2px; font-weight: 700; }
+    .pay-status.s-paid { background: rgba(34,197,94,0.12); color: #22c55e; border: 1px solid rgba(34,197,94,0.3); }
+    .pay-status.s-pending { background: rgba(240,165,0,0.12); color: #f0a500; border: 1px solid rgba(240,165,0,0.3); }
+    .pay-status.s-failed { background: rgba(239,68,68,0.12); color: #ef4444; border: 1px solid rgba(239,68,68,0.3); }
+    .pay-info { flex: 1; }
+    .pay-name { font-family: 'Syne', sans-serif; font-weight: 700; color: var(--white); font-size: 0.95rem; }
+    .pay-meta { font-family: 'Space Mono', monospace; font-size: 0.7rem; color: var(--text-muted); margin-top: 4px; }
+    .pay-amount { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.1rem; color: var(--white); text-align: right; }
+    .pay-amount small { font-size: 0.7rem; color: var(--text-muted); display: block; font-weight: 400; font-family: 'Space Mono', monospace; }
+    .pay-live-dot { width: 8px; height: 8px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 8px #22c55e; animation: blink 1.5s ease infinite; display: inline-block; margin-right: 6px; }
+    .pay-stats-row { display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
+    .pay-stat { flex: 1; min-width: 100px; background: var(--surface); border: 1px solid var(--border); padding: 16px; text-align: center; }
+    .pay-stat-num { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.5rem; }
+    .pay-stat-num.green { color: #22c55e; }
+    .pay-stat-num.orange { color: #f0a500; }
+    .pay-stat-num.red { color: #ef4444; }
+    .pay-stat-label { font-family: 'Space Mono', monospace; font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 4px; }
 
     .svc-check-group { display:flex; gap:10px; margin-bottom:12px; }
     .svc-check-item { display:flex; align-items:center; gap:8px; cursor:pointer; padding:9px 16px; border:1px solid var(--border); background:var(--black); flex:1; transition:all 0.2s; user-select:none; }
@@ -110,6 +134,7 @@
       <button class="tab-btn tab-active" id="tabWebsite" onclick="switchTab('website')"><span class="tab-dot"></span> Website</button>
       <button class="tab-btn" id="tabAiAds" onclick="switchTab('aiads')"><span class="tab-dot"></span> AI Ads</button>
       <button class="tab-btn" id="tabMetaAds" onclick="switchTab('metaads')"><span class="tab-dot"></span> Meta Ads</button>
+      <button class="tab-btn" id="tabPayments" onclick="switchTab('payments')"><span class="tab-dot"></span> Payments</button>
     </div>
 
     <div id="websitePanel">
@@ -157,6 +182,20 @@
         </div>
       </div>
       <div id="metaAdsContainer"></div>
+    </div>
+
+    <div id="paymentsPanel" style="display:none;">
+      <div class="pay-stats-row">
+        <div class="pay-stat"><div class="pay-stat-num green" id="payStatPaid">0</div><div class="pay-stat-label">Completed</div></div>
+        <div class="pay-stat"><div class="pay-stat-num orange" id="payStatPending">0</div><div class="pay-stat-label">Pending</div></div>
+        <div class="pay-stat"><div class="pay-stat-num red" id="payStatFailed">0</div><div class="pay-stat-label">Failed</div></div>
+        <div class="pay-stat"><div class="pay-stat-num" id="payStatTotal" style="color:var(--white)">0</div><div class="pay-stat-label">Total</div></div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+        <div style="display:flex;align-items:center;gap:8px;"><span class="pay-live-dot"></span><span style="font-family:'Space Mono',monospace;font-size:0.72rem;color:#22c55e;text-transform:uppercase;letter-spacing:0.08em;">Live</span></div>
+        <span style="font-family:'Space Mono',monospace;font-size:0.68rem;color:var(--text-muted);" id="payLastUpdated">Updated just now</span>
+      </div>
+      <div id="paymentsContainer"></div>
     </div>
   </main>
 

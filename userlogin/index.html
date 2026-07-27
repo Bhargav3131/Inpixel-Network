@@ -257,21 +257,19 @@
         <div class="login-card">
           <p class="login-eyebrow">Client Portal</p>
           <h1 class="login-title">Welcome</h1>
-          <p class="login-sub">Enter your details to access your activated services. Your phone number must be activated by our team.</p>
+          <p class="login-sub">Enter your registered mobile number to access your services.</p>
           <div class="login-error" id="loginError">
             <div class="login-error-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
-            <div><div class="login-error-title">Account Not Activated</div><span>Your number is not in our system. Please contact <strong>Inpixel Network</strong> to activate your account.</span></div>
+            <div><div class="login-error-title">Not Subscribed</div><span>Your number is not in our system. Please subscribe to a plan or contact <strong>Inpixel Network</strong> to activate your account.</span></div>
           </div>
           <form id="loginForm" onsubmit="handleLogin(event)">
-            <div class="form-row"><label>Your Name</label><input type="text" id="l-name" required placeholder="Your full name"></div>
-            <div class="form-row"><label>Email Address</label><input type="email" id="l-email" required placeholder="Your email address"></div>
-            <div class="form-row"><label>Contact Number</label><input type="tel" id="l-phone" required placeholder="e.g. +91 98765 43210" oninput="document.getElementById('loginError').style.display='none'"></div>
+            <div class="form-row"><label>Mobile Number</label><input type="tel" id="l-phone" required placeholder="e.g. +91 98765 43210" oninput="document.getElementById('loginError').style.display='none'"></div>
             <button type="submit" class="btn-submit" id="loginBtn">
               <svg viewBox="0 0 24 24" stroke-width="2.5" style="fill:none;stroke:currentColor"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
               Continue
             </button>
           </form>
-          <p class="login-note">Your details are used only to identify your submission. <span>100% secure.</span></p>
+          <p class="login-note">We verify your phone number against our client list. <span>100% secure.</span></p>
         </div>
       </div>
 

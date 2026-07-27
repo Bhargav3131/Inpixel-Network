@@ -42,6 +42,7 @@ async function checkGate() {
       loadAiAdsSubmissions();
       loadMetaAdsSubmissions();
       loadClients();
+      loadPayments();
     } else {
       document.getElementById('gateError').textContent = data.error || 'Incorrect credentials.';
       document.getElementById('gateError').style.display = 'block';
@@ -65,7 +66,7 @@ function authHeaders() {
   };
 }
 
-let allSubmissions = [], allAiAds = [], allMetaAds = [], allClients = [];
+let allSubmissions = [], allAiAds = [], allMetaAds = [], allClients = [], allPayments = [];
 let currentFilter = 'all', currentSearch = '', currentOpenId = null;
 
 // ── TAB SWITCHER ─────────────────────────────────────────────
@@ -73,9 +74,13 @@ function switchTab(tab) {
   document.getElementById('tabWebsite').classList.toggle('tab-active',  tab === 'website');
   document.getElementById('tabAiAds').classList.toggle('tab-active',   tab === 'aiads');
   document.getElementById('tabMetaAds').classList.toggle('tab-active', tab === 'metaads');
+  document.getElementById('tabPayments').classList.toggle('tab-active', tab === 'payments');
   document.getElementById('websitePanel').style.display  = tab === 'website'  ? 'block' : 'none';
   document.getElementById('aiAdsPanel').style.display    = tab === 'aiads'    ? 'block' : 'none';
   document.getElementById('metaAdsPanel').style.display  = tab === 'metaads'  ? 'block' : 'none';
+  document.getElementById('paymentsPanel').style.display = tab === 'payments' ? 'block' : 'none';
+  if (tab === 'payments') { startPaymentsLive(); }
+  else if (payRefreshInterval) { clearInterval(payRefreshInterval); payRefreshInterval = null; }
 }
 
 // ── WEBSITE SUBMISSIONS ──────────────────────────────────────
@@ -510,6 +515,71 @@ async function activateClient() {
     errEl.textContent = err.message || 'Failed to save.'; errEl.style.display = 'block';
   }
   reset();
+}
+
+// ── PAYMENTS DASHBOARD ───────────────────────────────────────
+let payRefreshInterval = null;
+
+async function loadPayments() {
+  const token = sessionStorage.getItem('admin_token');
+  if (!token) return;
+  try {
+    const res = await fetch('/api/admin/payments', {
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+    if (!res.ok) return;
+    const json = await res.json();
+    allPayments = json.data || [];
+    updatePayStats();
+    renderPayments();
+    document.getElementById('payLastUpdated').textContent = 'Updated ' + new Date().toLocaleTimeString('en-IN');
+  } catch(e) { console.error('Failed to load payments', e); }
+}
+
+function updatePayStats() {
+  document.getElementById('payStatTotal').textContent = allPayments.length;
+  document.getElementById('payStatPaid').textContent = allPayments.filter(p => p.status === 'paid').length;
+  document.getElementById('payStatPending').textContent = allPayments.filter(p => p.status === 'pending').length;
+  document.getElementById('payStatFailed').textContent = allPayments.filter(p => p.status === 'failed').length;
+}
+
+function renderPayments() {
+  const container = document.getElementById('paymentsContainer');
+  if (!allPayments.length) {
+    container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-muted);font-family:\'Space Mono\',monospace;font-size:0.8rem;">No payments recorded yet.</div>';
+    return;
+  }
+  container.innerHTML = allPayments.map((p, i) => {
+    const status = (p.status || 'pending').toLowerCase();
+    const statusClass = status === 'paid' ? 's-paid' : status === 'failed' ? 's-failed' : 's-pending';
+    const cardClass = 'status-' + (status === 'paid' ? 'paid' : status === 'failed' ? 'failed' : 'pending');
+    const amount = p.amount ? '₹' + (p.amount / 100).toLocaleString('en-IN') : '—';
+    const service = (p.service || '').replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+    const date = p.created_at ? new Date(p.created_at).toLocaleString('en-IN') : '—';
+    const name = p.client_name || 'Unknown';
+    const phone = p.client_phone || '—';
+    const orderId = p.razorpay_order_id || '—';
+    const paymentId = p.razorpay_payment_id || '—';
+    return '<div class="pay-card ' + cardClass + '" style="animation-delay:' + (i * 0.04) + 's">'
+      + '<div class="pay-info">'
+      + '<div class="pay-name">' + name + '</div>'
+      + '<div class="pay-meta">' + phone + ' · ' + service + '</div>'
+      + '<div class="pay-meta" style="margin-top:2px;">Order: ' + orderId + '</div>'
+      + '<div class="pay-meta" style="margin-top:2px;">Payment: ' + paymentId + '</div>'
+      + '<div class="pay-meta" style="margin-top:2px;">' + date + '</div>'
+      + '</div>'
+      + '<div style="text-align:right;">'
+      + '<div class="pay-amount">' + amount + '<small>' + (p.plan_name || service) + '</small></div>'
+      + '<div style="margin-top:8px;"><span class="pay-status ' + statusClass + '">' + status.toUpperCase() + '</span></div>'
+      + '</div>'
+      + '</div>';
+  }).join('');
+}
+
+function startPaymentsLive() {
+  if (payRefreshInterval) clearInterval(payRefreshInterval);
+  loadPayments();
+  payRefreshInterval = setInterval(loadPayments, 15000); // refresh every 15 seconds
 }
 
 document.addEventListener('DOMContentLoaded', () => {
