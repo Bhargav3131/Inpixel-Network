@@ -11,7 +11,7 @@ module.exports = async function (req, res) {
   }
 
   try {
-    const { razorpay_order_id, status } = req.body || {};
+    const { razorpay_order_id, status, failure_reason } = req.body || {};
 
     if (!razorpay_order_id || !status) {
       return res.status(400).json({ success: false, message: 'Missing order_id or status' });
@@ -25,7 +25,10 @@ module.exports = async function (req, res) {
     const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
     
     await supabase.from('payments')
-      .update({ status: 'failed' })
+      .update({ 
+        status: 'failed',
+        failure_reason: failure_reason || 'Cancelled by user / Payment failed'
+      })
       .eq('razorpay_order_id', razorpay_order_id)
       .eq('status', 'pending'); // Only update if still pending (don't overwrite 'paid')
 

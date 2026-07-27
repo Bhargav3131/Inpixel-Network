@@ -102,10 +102,16 @@ function openPaymentModal(service, planName, amount) {
   const modal = document.createElement('div');
   modal.className = 'inpixel-payment-modal';
   
+  const serviceLabel = service.replace(/-/g, ' ').toUpperCase();
+  const formattedAmount = '₹' + (amount / 100).toLocaleString('en-IN');
+  
   modal.innerHTML = `
     <button class="inpixel-payment-close">&times;</button>
-    <h3 class="inpixel-payment-title">Complete Payment</h3>
-    <p class="inpixel-payment-desc">${planName}</p>
+    <div style="text-align:center;">
+      <span style="display:inline-block; padding:3px 10px; background:rgba(240,165,0,0.12); border:1px solid rgba(240,165,0,0.3); color:var(--gold); border-radius:12px; font-size:0.7rem; font-family:'Space Mono',monospace; letter-spacing:0.08em; text-transform:uppercase; margin-bottom:8px;">${serviceLabel}</span>
+      <h3 class="inpixel-payment-title" style="margin-bottom:4px;">${planName}</h3>
+      <p class="inpixel-payment-desc" style="margin-bottom:20px;">Amount to Pay: <strong style="color:var(--white);">${formattedAmount}</strong></p>
+    </div>
     
     <div id="payment-form-content">
       <div class="inpixel-payment-group">
@@ -113,7 +119,7 @@ function openPaymentModal(service, planName, amount) {
         <input type="text" id="pay-name" placeholder="John Doe">
       </div>
       <div class="inpixel-payment-group">
-        <label>Phone Number</label>
+        <label>Phone Number (for dashboard login)</label>
         <input type="tel" id="pay-phone" placeholder="+91 98765 43210">
       </div>
       <div class="inpixel-payment-group">
@@ -121,7 +127,7 @@ function openPaymentModal(service, planName, amount) {
         <input type="email" id="pay-email" placeholder="john@example.com">
       </div>
       <div class="inpixel-payment-error" id="pay-error"></div>
-      <button class="inpixel-payment-btn" id="pay-btn">Proceed to Pay ₹${(amount / 100).toLocaleString('en-IN')}</button>
+      <button class="inpixel-payment-btn" id="pay-btn">Proceed to Pay ${formattedAmount}</button>
     </div>
   `;
   
@@ -168,7 +174,7 @@ function openPaymentModal(service, planName, amount) {
       });
       const data = await res.json();
       
-      if (!res.ok) throw new Error(data.error || 'Failed to create order');
+      if (!res.ok) throw new Error(data.message || data.error || 'Failed to create order');
       
       const options = {
         key: data.key_id,
@@ -181,7 +187,7 @@ function openPaymentModal(service, planName, amount) {
           try {
             modal.querySelector('#payment-form-content').innerHTML = `
               <div style="text-align:center; padding: 20px 0;">
-                <div style="color:var(--gold); margin-bottom:10px;">Verifying Payment...</div>
+                <div style="color:var(--gold); font-family:'Space Mono',monospace; font-size:0.85rem; margin-bottom:10px;">Verifying Payment & Activating Account...</div>
               </div>
             `;
             
@@ -196,16 +202,26 @@ function openPaymentModal(service, planName, amount) {
               })
             });
             const verifyData = await verifyRes.json();
-            if (!verifyRes.ok) throw new Error(verifyData.error || 'Verification failed');
+            if (!verifyRes.ok) throw new Error(verifyData.message || verifyData.error || 'Verification failed');
             
             modal.querySelector('.inpixel-payment-title').style.display = 'none';
             modal.querySelector('.inpixel-payment-desc').style.display = 'none';
             modal.querySelector('#payment-form-content').innerHTML = `
               <div style="text-align: center; padding: 10px 0;">
                 <div class="success-checkmark">✓</div>
-                <h3 style="font-family:'Syne',sans-serif; color:var(--white); margin:0 0 10px 0; font-size:1.4rem;">Payment Successful!</h3>
-                <p style="color:rgba(255,255,255,0.7); margin-bottom:24px; font-size:0.95rem;">Your account has been activated.</p>
-                <a href="/userlogin/" style="display:inline-block; text-decoration:none; width:100%; padding:14px; background:var(--gold); color:var(--black); border-radius:4px; font-family:'Syne',sans-serif; font-weight:700; font-size:1rem; transition:background 0.2s;">Login to Your Dashboard &rarr;</a>
+                <h3 style="font-family:'Syne',sans-serif; color:var(--white); margin:0 0 4px 0; font-size:1.4rem;">Payment Successful!</h3>
+                <p style="color:#22c55e; margin-bottom:16px; font-size:0.85rem; font-family:'Space Mono',monospace;">✓ Account Auto-Activated</p>
+                
+                <div style="background:var(--black); border:1px solid var(--border); padding:14px; border-radius:6px; text-align:left; font-size:0.8rem; margin-bottom:20px; line-height:1.6;">
+                  <div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span style="color:rgba(255,255,255,0.5);">Name:</span><strong style="color:var(--white);">${client_name}</strong></div>
+                  <div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span style="color:rgba(255,255,255,0.5);">Phone:</span><strong style="color:var(--gold);">${client_phone}</strong></div>
+                  ${client_email ? `<div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span style="color:rgba(255,255,255,0.5);">Email:</span><strong style="color:var(--white);">${client_email}</strong></div>` : ''}
+                  <div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span style="color:rgba(255,255,255,0.5);">Enrolled Plan:</span><strong style="color:var(--white);">${planName}</strong></div>
+                  <div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span style="color:rgba(255,255,255,0.5);">Amount Paid:</span><strong style="color:#22c55e;">${formattedAmount}</strong></div>
+                  <div style="display:flex; justify-content:space-between; font-size:0.7rem; color:rgba(255,255,255,0.4); margin-top:8px; border-top:1px solid rgba(255,255,255,0.1); padding-top:6px;"><span>Payment ID:</span><span>${response.razorpay_payment_id || '—'}</span></div>
+                </div>
+
+                <a href="/userlogin/" style="display:inline-block; text-decoration:none; width:100%; padding:14px; background:var(--gold); color:var(--black); border-radius:4px; font-family:'Syne',sans-serif; font-weight:700; font-size:1rem; transition:background 0.2s; box-sizing:border-box;">Login to Your Dashboard &rarr;</a>
               </div>
             `;
             
@@ -220,28 +236,32 @@ function openPaymentModal(service, planName, amount) {
       
       const rzp = new window.Razorpay(options);
       rzp.on('payment.failed', function (response) {
-        // Mark payment as failed in DB
+        const failureReason = (response && response.error && (response.error.description || response.error.reason)) || 'Payment failed or cancelled';
+        // Mark payment as failed in DB with failure reason
         fetch('/api/payments/update-status', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ razorpay_order_id: data.order_id, status: 'failed' })
+          body: JSON.stringify({ 
+            razorpay_order_id: data.order_id, 
+            status: 'failed',
+            failure_reason: failureReason
+          })
         }).catch(() => {});
-        errorEl.textContent = 'Payment failed. Please try again.';
+        errorEl.textContent = 'Payment failed: ' + failureReason;
         errorEl.style.display = 'block';
         btn.disabled = false;
-        btn.textContent = 'Proceed to Pay \u20b9' + (amount / 100).toLocaleString('en-IN');
+        btn.textContent = 'Proceed to Pay ' + formattedAmount;
       });
       rzp.open();
       
-      // We don't close modal yet, wait for razorpay popup
       btn.disabled = false;
-      btn.textContent = 'Proceed to Pay \u20b9' + (amount / 100).toLocaleString('en-IN');
+      btn.textContent = 'Proceed to Pay ' + formattedAmount;
       
     } catch(err) {
       errorEl.textContent = err.message;
       errorEl.style.display = 'block';
       btn.disabled = false;
-      btn.textContent = 'Proceed to Pay \u20b9' + (amount / 100).toLocaleString('en-IN');
+      btn.textContent = 'Proceed to Pay ' + formattedAmount;
     }
   });
 }

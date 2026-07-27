@@ -558,22 +558,74 @@ function renderPayments() {
     const date = p.created_at ? new Date(p.created_at).toLocaleString('en-IN') : '—';
     const name = p.client_name || 'Unknown';
     const phone = p.client_phone || '—';
-    const orderId = p.razorpay_order_id || '—';
-    const paymentId = p.razorpay_payment_id || '—';
-    return '<div class="pay-card ' + cardClass + '" style="animation-delay:' + (i * 0.04) + 's">'
+    const failureReason = p.failure_reason ? `<div class="pay-meta" style="color:#ef4444;margin-top:4px;">Reason: ${p.failure_reason}</div>` : '';
+
+    return '<div class="pay-card ' + cardClass + '" onclick="openPaymentModalDetail(' + p.id + ')" style="cursor:pointer;animation-delay:' + (i * 0.04) + 's">'
       + '<div class="pay-info">'
-      + '<div class="pay-name">' + name + '</div>'
-      + '<div class="pay-meta">' + phone + ' · ' + service + '</div>'
-      + '<div class="pay-meta" style="margin-top:2px;">Order: ' + orderId + '</div>'
-      + '<div class="pay-meta" style="margin-top:2px;">Payment: ' + paymentId + '</div>'
+      + '<div class="pay-name">' + name + ' <span style="font-size:0.75rem;font-weight:400;color:var(--text-muted);">(' + (p.client_email || 'No email') + ')</span></div>'
+      + '<div class="pay-meta">' + phone + ' · <strong style="color:var(--white);">' + (p.plan_name || service) + '</strong></div>'
+      + failureReason
       + '<div class="pay-meta" style="margin-top:2px;">' + date + '</div>'
       + '</div>'
       + '<div style="text-align:right;">'
-      + '<div class="pay-amount">' + amount + '<small>' + (p.plan_name || service) + '</small></div>'
+      + '<div class="pay-amount">' + amount + '<small style="margin-top:4px;color:var(--text-muted);">Click to view details</small></div>'
       + '<div style="margin-top:8px;"><span class="pay-status ' + statusClass + '">' + status.toUpperCase() + '</span></div>'
       + '</div>'
       + '</div>';
   }).join('');
+}
+
+function openPaymentModalDetail(id) {
+  const p = allPayments.find(x => x.id === id);
+  if (!p) return;
+
+  const status = (p.status || 'pending').toLowerCase();
+  const statusColor = status === 'paid' ? '#22c55e' : status === 'failed' ? '#ef4444' : '#f0a500';
+  const amount = p.amount ? '₹' + (p.amount / 100).toLocaleString('en-IN') : '—';
+  const service = (p.service || '').replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+  const date = p.created_at ? new Date(p.created_at).toLocaleString('en-IN') : '—';
+
+  document.getElementById('mAvatar').textContent = initials(p.client_name || '?');
+  document.getElementById('mAvatar').style.background = 'linear-gradient(135deg,#f0a500,#ff8c00)';
+  document.getElementById('mName').textContent = p.client_name || 'Unknown Client';
+  document.getElementById('mSub').textContent = p.client_phone || '—';
+  document.getElementById('mTimestamp').textContent = 'Created: ' + date;
+
+  document.getElementById('mBody').innerHTML = `
+    <div class="detail-section">
+      <div class="detail-section-title">Client Details</div>
+      <div class="detail-grid">
+        <div class="detail-field"><label>Full Name</label><p>${p.client_name || 'Not provided'}</p></div>
+        <div class="detail-field"><label>Phone Number</label><p style="color:var(--gold);">${p.client_phone || 'Not provided'}</p></div>
+        <div class="detail-field full"><label>Email Address</label><p>${p.client_email || 'Not provided'}</p></div>
+      </div>
+    </div>
+    
+    <div class="detail-section">
+      <div class="detail-section-title">Payment & Subscription Info</div>
+      <div class="detail-grid">
+        <div class="detail-field"><label>Status</label><p style="color:${statusColor};font-weight:700;text-transform:uppercase;">${status}</p></div>
+        <div class="detail-field"><label>Amount</label><p style="color:var(--white);font-weight:700;font-size:1.1rem;">${amount}</p></div>
+        <div class="detail-field"><label>Plan Enrolled</label><p style="color:var(--white);">${p.plan_name || service}</p></div>
+        <div class="detail-field"><label>Service Code</label><p>${p.service || '—'}</p></div>
+        <div class="detail-field full"><label>Razorpay Order ID</label><p style="font-family:'Space Mono',monospace;">${p.razorpay_order_id || '—'}</p></div>
+        <div class="detail-field full"><label>Razorpay Payment ID</label><p style="font-family:'Space Mono',monospace;">${p.razorpay_payment_id || '—'}</p></div>
+        ${p.failure_reason ? `<div class="detail-field full"><label>Failure Reason</label><p style="color:#ef4444;background:rgba(239,68,68,0.1);padding:8px 12px;border:1px solid rgba(239,68,68,0.3);border-radius:4px;">${p.failure_reason}</p></div>` : ''}
+      </div>
+    </div>
+  `;
+
+  document.getElementById('mDeleteBtn').style.display = 'none'; // Hide delete button for payments
+  document.getElementById('overlay').classList.add('show');
+  document.getElementById('detailModal').classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('overlay').classList.remove('show');
+  document.getElementById('detailModal').classList.remove('show');
+  document.body.style.overflow = '';
+  document.getElementById('mDeleteBtn').style.display = 'flex'; // Reset display
 }
 
 function startPaymentsLive() {
