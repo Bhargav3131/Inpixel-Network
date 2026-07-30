@@ -1,11 +1,23 @@
 // assets/js/checkout.js
 
-// Ensure Razorpay script is loaded
-if (!document.querySelector('script[src="https://checkout.razorpay.com/v1/checkout.js"]')) {
-  const script = document.createElement('script');
-  script.src = "https://checkout.razorpay.com/v1/checkout.js";
-  document.head.appendChild(script);
+// Ensure Razorpay script is loaded reliably
+function loadRazorpaySDK() {
+  return new Promise((resolve) => {
+    if (typeof window.Razorpay === 'function') {
+      return resolve(true);
+    }
+    let script = document.querySelector('script[src="https://checkout.razorpay.com/v1/checkout.js"]');
+    if (!script) {
+      script = document.createElement('script');
+      script.src = "https://checkout.razorpay.com/v1/checkout.js";
+      script.async = true;
+      document.head.appendChild(script);
+    }
+    script.onload = () => resolve(true);
+    script.onerror = () => resolve(false);
+  });
 }
+loadRazorpaySDK();
 
 // Basic CSS for the modal if not present
 const style = document.createElement('style');
@@ -233,6 +245,13 @@ function openPaymentModal(service, planName, amount) {
         prefill: { name: client_name, email: client_email, contact: client_phone },
         theme: { color: '#f0a500' }
       };
+
+      const loaded = await loadRazorpaySDK();
+      if (!loaded || typeof window.Razorpay !== 'function') {
+        throw new Error('Razorpay SDK failed to load. Please disable any ad-blockers and try again.');
+      }
+
+      const rzp = new window.Razorpay(options);
       
       rzp.on('payment.failed', function (response) {
         const err = response && response.error;

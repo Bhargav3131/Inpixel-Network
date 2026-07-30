@@ -9,6 +9,8 @@ document.getElementById('gateEmail').addEventListener('keydown', e => {
   if (e.key === 'Enter') checkGate();
 });
 
+function esc(s) { const d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
+
 async function checkGate() {
   const email = document.getElementById('gateEmail').value;
   const password = document.getElementById('gateInput').value;
@@ -143,9 +145,9 @@ function formatDate(iso) { const d = new Date(iso); return d.toLocaleDateString(
 
 function cardHTML(s, idx) {
   const chips = [];
-  if (s.websiteTypes?.length) chips.push(...s.websiteTypes.slice(0,2).map(t => '<span class="chip">'+t+'</span>'));
-  if (s.budget) chips.push('<span class="chip grey">'+s.budget+'</span>');
-  return '<div class="sub-card" onclick="openModal('+s.id+')" style="animation-delay:'+idx*0.05+'s"><div class="card-top"><div class="card-avatar">'+initials(s.user?.name)+'</div><div class="card-date">'+formatDate(s.submittedAt)+'</div></div><div class="card-name">'+(s.user?.name||'—')+'</div><div class="card-contact"><span>'+(s.user?.email||'—')+'</span><span>'+(s.user?.phone||'—')+'</span></div><div class="card-chips">'+(chips.join('')||'<span class="chip grey">No type</span>')+'</div><div class="card-footer"><div class="card-business"><strong>'+(s.businessName||'No business name')+'</strong> · '+(s.industry||'—')+'</div><div class="view-btn">View <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div></div></div>';
+  if (s.websiteTypes?.length) chips.push(...s.websiteTypes.slice(0,2).map(t => '<span class="chip">'+esc(t)+'</span>'));
+  if (s.budget) chips.push('<span class="chip grey">'+esc(s.budget)+'</span>');
+  return '<div class="sub-card" onclick="openModal('+s.id+')" style="animation-delay:'+idx*0.05+'s"><div class="card-top"><div class="card-avatar">'+initials(s.user?.name)+'</div><div class="card-date">'+formatDate(s.submittedAt)+'</div></div><div class="card-name">'+(esc(s.user?.name)||'—')+'</div><div class="card-contact"><span>'+(esc(s.user?.email)||'—')+'</span><span>'+(esc(s.user?.phone)||'—')+'</span></div><div class="card-chips">'+(chips.join('')||'<span class="chip grey">No type</span>')+'</div><div class="card-footer"><div class="card-business"><strong>'+(esc(s.businessName)||'No business name')+'</strong> · '+(esc(s.industry)||'—')+'</div><div class="view-btn">View <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div></div></div>';
 }
 
 function openModal(id) {
@@ -156,9 +158,9 @@ function openModal(id) {
   document.getElementById('mName').textContent = s.user?.name || '—';
   document.getElementById('mSub').textContent = (s.user?.email||'') + ' · ' + (s.user?.phone||'');
   document.getElementById('mTimestamp').textContent = 'Submitted: ' + new Date(s.submittedAt).toLocaleString('en-IN');
-  const tagList = arr => arr?.length ? '<div class="tag-list">'+arr.map(t=>'<span class="tag">'+t+'</span>').join('')+'</div>' : '<p class="empty">None selected</p>';
-  const val = v => v ? '<p>'+v+'</p>' : '<p class="empty">Not provided</p>';
-  document.getElementById('mBody').innerHTML = '<div class="detail-section"><div class="detail-section-title">Contact</div><div class="detail-grid"><div class="detail-field"><label>Name</label>'+val(s.user?.name)+'</div><div class="detail-field"><label>Phone</label>'+val(s.user?.phone)+'</div><div class="detail-field full"><label>Email</label>'+val(s.user?.email)+'</div></div></div><div class="detail-section"><div class="detail-section-title">Business</div><div class="detail-grid"><div class="detail-field"><label>Business Name</label>'+val(s.businessName)+'</div><div class="detail-field"><label>Industry</label>'+val(s.industry)+'</div><div class="detail-field"><label>Location</label>'+val(s.location)+'</div><div class="detail-field"><label>Source</label>'+val(s.hearAboutUs)+'</div><div class="detail-field full"><label>Description</label>'+val(s.description)+'</div></div></div><div class="detail-section"><div class="detail-section-title">Website Requirements</div><div class="detail-grid"><div class="detail-field full"><label>Types</label>'+tagList(s.websiteTypes)+'</div><div class="detail-field full"><label>Features</label>'+tagList(s.features)+'</div><div class="detail-field full"><label>Pages</label>'+val(s.pages)+'</div></div></div><div class="detail-section"><div class="detail-section-title">Design</div><div class="detail-grid"><div class="detail-field"><label>Style</label>'+val(s.designStyle)+'</div><div class="detail-field"><label>Colors</label>'+val(s.colorTheme)+'</div><div class="detail-field"><label>Has Logo</label>'+val(s.hasLogo)+'</div><div class="detail-field"><label>Content</label>'+val(s.contentProvided)+'</div><div class="detail-field full"><label>References</label>'+val(s.referenceWebsites)+'</div></div></div><div class="detail-section"><div class="detail-section-title">Technical & Budget</div><div class="detail-grid"><div class="detail-field"><label>Domain?</label>'+val(s.hasDomain)+'</div><div class="detail-field"><label>Domain Name</label>'+val(s.domainName)+'</div><div class="detail-field"><label>Hosting?</label>'+val(s.hasHosting)+'</div><div class="detail-field"><label>Budget</label>'+val(s.budget)+'</div><div class="detail-field"><label>Timeline</label>'+val(s.timeline)+'</div></div></div>'+(s.extraNotes?'<div class="detail-section"><div class="detail-section-title">Notes</div><div class="detail-field"><p>'+s.extraNotes+'</p></div></div>':'');
+  const tagList = arr => arr?.length ? '<div class="tag-list">'+arr.map(t=>'<span class="tag">'+esc(t)+'</span>').join('')+'</div>' : '<p class="empty">None selected</p>';
+  const val = v => v ? '<p>'+esc(v)+'</p>' : '<p class="empty">Not provided</p>';
+  document.getElementById('mBody').innerHTML = '<div class="detail-section"><div class="detail-section-title">Contact</div><div class="detail-grid"><div class="detail-field"><label>Name</label>'+val(s.user?.name)+'</div><div class="detail-field"><label>Phone</label>'+val(s.user?.phone)+'</div><div class="detail-field full"><label>Email</label>'+val(s.user?.email)+'</div></div></div><div class="detail-section"><div class="detail-section-title">Business</div><div class="detail-grid"><div class="detail-field"><label>Business Name</label>'+val(s.businessName)+'</div><div class="detail-field"><label>Industry</label>'+val(s.industry)+'</div><div class="detail-field"><label>Location</label>'+val(s.location)+'</div><div class="detail-field"><label>Source</label>'+val(s.hearAboutUs)+'</div><div class="detail-field full"><label>Description</label>'+val(s.description)+'</div></div></div><div class="detail-section"><div class="detail-section-title">Website Requirements</div><div class="detail-grid"><div class="detail-field full"><label>Types</label>'+tagList(s.websiteTypes)+'</div><div class="detail-field full"><label>Features</label>'+tagList(s.features)+'</div><div class="detail-field full"><label>Pages</label>'+val(s.pages)+'</div></div></div><div class="detail-section"><div class="detail-section-title">Design</div><div class="detail-grid"><div class="detail-field"><label>Style</label>'+val(s.designStyle)+'</div><div class="detail-field"><label>Colors</label>'+val(s.colorTheme)+'</div><div class="detail-field"><label>Has Logo</label>'+val(s.hasLogo)+'</div><div class="detail-field"><label>Content</label>'+val(s.contentProvided)+'</div><div class="detail-field full"><label>References</label>'+val(s.referenceWebsites)+'</div></div></div><div class="detail-section"><div class="detail-section-title">Technical & Budget</div><div class="detail-grid"><div class="detail-field"><label>Domain?</label>'+val(s.hasDomain)+'</div><div class="detail-field"><label>Domain Name</label>'+val(s.domainName)+'</div><div class="detail-field"><label>Hosting?</label>'+val(s.hasHosting)+'</div><div class="detail-field"><label>Budget</label>'+val(s.budget)+'</div><div class="detail-field"><label>Timeline</label>'+val(s.timeline)+'</div></div></div>'+(s.extraNotes?'<div class="detail-section"><div class="detail-section-title">Notes</div><div class="detail-field"><p>'+esc(s.extraNotes)+'</p></div></div>':'');
   document.getElementById('mDeleteBtn').onclick = () => deleteEntry(id);
   document.getElementById('overlay').classList.add('show');
   document.getElementById('detailModal').classList.add('show');
@@ -238,7 +240,7 @@ function renderAiAdsCards() {
 
 function aiCardHTML(s, idx) {
   const preview = (s['Script']||'').slice(0, 80) + ((s['Script']||'').length > 80 ? '…' : '');
-  return '<div class="sub-card" onclick="openAiModal('+s.id+')" style="animation-delay:'+idx*0.05+'s"><div class="card-top"><div class="card-avatar" style="background:linear-gradient(135deg,#7c3aed,#a855f7)">'+initials(s['Name'])+'</div><div class="card-date">'+formatDate(s['Submitted At'])+'</div></div><div class="card-name">'+(s['Name']||'—')+'</div><div class="card-contact"><span>'+(s['Phone']||'—')+'</span></div><div class="card-chips"><span class="chip" style="background:rgba(168,85,247,0.12);border-color:rgba(168,85,247,0.3);color:#a855f7;">Model '+(s['Model No']||'—')+'</span></div><div class="card-footer"><div class="card-business" style="font-size:0.8rem;color:var(--text-muted)">'+(preview||'No script')+'</div><div class="view-btn">View <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div></div></div>';
+  return '<div class="sub-card" onclick="openAiModal('+s.id+')" style="animation-delay:'+idx*0.05+'s"><div class="card-top"><div class="card-avatar" style="background:linear-gradient(135deg,#7c3aed,#a855f7)">'+initials(s['Name'])+'</div><div class="card-date">'+formatDate(s['Submitted At'])+'</div></div><div class="card-name">'+(esc(s['Name'])||'—')+'</div><div class="card-contact"><span>'+(esc(s['Phone'])||'—')+'</span></div><div class="card-chips"><span class="chip" style="background:rgba(168,85,247,0.12);border-color:rgba(168,85,247,0.3);color:#a855f7;">Model '+(esc(s['Model No'])||'—')+'</span></div><div class="card-footer"><div class="card-business" style="font-size:0.8rem;color:var(--text-muted)">'+(esc(preview)||'No script')+'</div><div class="view-btn">View <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div></div></div>';
 }
 
 function openAiModal(id) {
@@ -248,7 +250,7 @@ function openAiModal(id) {
   document.getElementById('mName').textContent = s['Name'] || '—';
   document.getElementById('mSub').textContent = s['Phone'] || '—';
   document.getElementById('mTimestamp').textContent = 'Submitted: ' + new Date(s['Submitted At']).toLocaleString('en-IN');
-  document.getElementById('mBody').innerHTML = '<div class="detail-section"><div class="detail-section-title">Client Info</div><div class="detail-grid"><div class="detail-field"><label>Name</label><p>'+(s['Name']||'—')+'</p></div><div class="detail-field"><label>Phone</label><p>'+(s['Phone']||'—')+'</p></div></div></div><div class="detail-section"><div class="detail-section-title">AI Ad Details</div><div class="detail-grid"><div class="detail-field"><label>Selected Model</label><p style="color:#a855f7;font-family:\'Syne\',sans-serif;font-weight:700;font-size:1.1rem;">Model '+(s['Model No']||'—')+'</p></div><div class="detail-field full"><label>Ad Script</label><p style="white-space:pre-wrap;line-height:1.7">'+(s['Script']||'—')+'</p></div></div></div>';
+  document.getElementById('mBody').innerHTML = '<div class="detail-section"><div class="detail-section-title">Client Info</div><div class="detail-grid"><div class="detail-field"><label>Name</label><p>'+(esc(s['Name'])||'—')+'</p></div><div class="detail-field"><label>Phone</label><p>'+(esc(s['Phone'])||'—')+'</p></div></div></div><div class="detail-section"><div class="detail-section-title">AI Ad Details</div><div class="detail-grid"><div class="detail-field"><label>Selected Model</label><p style="color:#a855f7;font-family:\'Syne\',sans-serif;font-weight:700;font-size:1.1rem;">Model '+(esc(s['Model No'])||'—')+'</p></div><div class="detail-field full"><label>Ad Script</label><p style="white-space:pre-wrap;line-height:1.7">'+(esc(s['Script'])||'—')+'</p></div></div></div>';
   document.getElementById('mDeleteBtn').onclick = async () => {
     if (!confirm('Delete this entry?')) return;
     try {
@@ -315,13 +317,13 @@ function metaCardHTML(s, idx) {
   const preview = (s['What Advertising']||'').slice(0, 80) + ((s['What Advertising']||'').length > 80 ? '…' : '');
   return '<div class="sub-card" onclick="openMetaModal(' + s.id + ')" style="animation-delay:' + idx*0.05 + 's">'
     + '<div class="card-top"><div class="card-avatar" style="background:linear-gradient(135deg,#1565d8,#1877f2)">' + initials(s['Name']) + '</div><div class="card-date">' + formatDate(s['Submitted At']) + '</div></div>'
-    + '<div class="card-name">' + (s['Name']||'—') + '</div>'
-    + '<div class="card-contact"><span>' + (s['Phone']||'—') + '</span></div>'
+    + '<div class="card-name">' + (esc(s['Name'])||'—') + '</div>'
+    + '<div class="card-contact"><span>' + (esc(s['Phone'])||'—') + '</span></div>'
     + '<div class="card-chips">'
-      + '<span class="chip" style="background:rgba(24,119,242,0.12);border-color:rgba(24,119,242,0.3);color:#6aabff;">' + (s['Campaign Objective']||'—') + '</span>'
-      + (s['Daily Budget'] ? '<span class="chip grey">₹' + s['Daily Budget'] + '/day</span>' : '')
+      + '<span class="chip" style="background:rgba(24,119,242,0.12);border-color:rgba(24,119,242,0.3);color:#6aabff;">' + (esc(s['Campaign Objective'])||'—') + '</span>'
+      + (s['Daily Budget'] ? '<span class="chip grey">₹' + esc(s['Daily Budget']) + '/day</span>' : '')
     + '</div>'
-    + '<div class="card-footer"><div class="card-business" style="font-size:0.8rem;color:var(--text-muted)">' + (s['Business Name']||'—') + ' · ' + (preview||'No details') + '</div><div class="view-btn">View <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div></div>'
+    + '<div class="card-footer"><div class="card-business" style="font-size:0.8rem;color:var(--text-muted)">' + (esc(s['Business Name'])||'—') + ' · ' + (esc(preview)||'No details') + '</div><div class="view-btn">View <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div></div>'
     + '</div>';
 }
 
@@ -333,7 +335,7 @@ function openMetaModal(id) {
   document.getElementById('mSub').textContent = s['Phone'] || '—';
   const ts = s['Submitted At'] ? new Date(s['Submitted At']) : null;
   document.getElementById('mTimestamp').textContent = 'Submitted: ' + (ts && !isNaN(ts) ? ts.toLocaleString('en-IN') : '—');
-  const val = v => (v && String(v).trim()) ? '<p>' + String(v) + '</p>' : '<p class="empty">Not provided</p>';
+  const val = v => (v && String(v).trim()) ? '<p>' + esc(String(v)) + '</p>' : '<p class="empty">Not provided</p>';
   document.getElementById('mBody').innerHTML =
     '<div class="detail-section"><div class="detail-section-title">Client Info</div><div class="detail-grid">'
     + '<div class="detail-field"><label>Name</label>' + val(s['Name']) + '</div>'
@@ -343,11 +345,11 @@ function openMetaModal(id) {
     + '<div class="detail-field"><label>Business Name</label>' + val(s['Business Name']) + '</div>'
     + '<div class="detail-field"><label>Campaign Objective</label>'
       + (s['Campaign Objective'] && String(s['Campaign Objective']).trim()
-        ? '<p style="color:#6aabff;font-family:\'Syne\',sans-serif;font-weight:700;">' + s['Campaign Objective'] + '</p>'
+        ? '<p style="color:#6aabff;font-family:\'Syne\',sans-serif;font-weight:700;">' + esc(s['Campaign Objective']) + '</p>'
         : '<p class="empty">Not provided</p>') + '</div>'
     + '<div class="detail-field"><label>Daily Budget</label>'
       + (s['Daily Budget'] && String(s['Daily Budget']).trim()
-        ? '<p>₹' + s['Daily Budget'] + ' / day</p>'
+        ? '<p>₹' + esc(s['Daily Budget']) + ' / day</p>'
         : '<p class="empty">Not provided</p>') + '</div>'
     + '<div class="detail-field"><label>Lead Destination</label>' + val(s['Lead Destination']) + '</div>'
     + '<div class="detail-field full"><label>Website / Link</label>' + val(s['Website Link']) + '</div>'
@@ -431,7 +433,7 @@ function renderClientsList() {
     const phone   = String(c.phone);
     return '<div class="client-row" style="animation-delay:'+i*0.04+'s">'
       + '<div class="client-avatar">'+initials(c.name)+'</div>'
-      + '<div class="client-info"><div class="client-name">'+c.name+'</div><div class="client-phone">'+phone+'</div></div>'
+      + '<div class="client-info"><div class="client-name">'+esc(c.name)+'</div><div class="client-phone">'+esc(phone)+'</div></div>'
       + '<div style="display:flex;gap:6px;flex-shrink:0;flex-wrap:wrap;">'
         + (hasWeb  ? '<span style="font-family:\'Space Mono\',monospace;font-size:0.6rem;padding:3px 8px;background:rgba(240,165,0,0.1);border:1px solid rgba(240,165,0,0.3);color:var(--gold);">WEBSITE</span>' : '')
         + (hasAi   ? '<span style="font-family:\'Space Mono\',monospace;font-size:0.6rem;padding:3px 8px;background:rgba(168,85,247,0.1);border:1px solid rgba(168,85,247,0.3);color:#a855f7;">AI ADS</span>' : '')
@@ -439,7 +441,7 @@ function renderClientsList() {
       + '</div>'
       + '<div class="client-added">'+(c.addedAt ? formatDate(c.addedAt) : 'Recently')+'</div>'
       + '<div class="client-status-dot"></div>'
-      + '<button onclick="deactivateClient(\''+phone+'\')" style="background:transparent;border:1px solid rgba(255,68,68,0.3);color:#ff6666;font-family:\'Space Mono\',monospace;font-size:0.6rem;padding:4px 8px;cursor:pointer;flex-shrink:0;transition:all 0.2s;" onmouseover="this.style.borderColor=\'#ff4444\';this.style.background=\'rgba(255,68,68,0.08)\'" onmouseout="this.style.borderColor=\'rgba(255,68,68,0.3)\';this.style.background=\'transparent\'">Remove</button>'
+      + '<button onclick="deactivateClient(\''+esc(phone)+'\')" style="background:transparent;border:1px solid rgba(255,68,68,0.3);color:#ff6666;font-family:\'Space Mono\',monospace;font-size:0.6rem;padding:4px 8px;cursor:pointer;flex-shrink:0;transition:all 0.2s;" onmouseover="this.style.borderColor=\'#ff4444\';this.style.background=\'rgba(255,68,68,0.08)\'" onmouseout="this.style.borderColor=\'rgba(255,68,68,0.3)\';this.style.background=\'transparent\'">Remove</button>'
       + '</div>';
   }).join('');
 }
@@ -558,13 +560,13 @@ function renderPayments() {
     const date = p.created_at ? new Date(p.created_at).toLocaleString('en-IN') : '—';
     const name = p.client_name || 'Unknown';
     const phone = p.client_phone || '—';
-    const failureReason = p.failure_reason ? `<div class="pay-meta" style="color:#ef4444;margin-top:4px;">Reason: ${p.failure_reason}</div>` : '';
+    const failureReason = p.failure_reason ? `<div class="pay-meta" style="color:#ef4444;margin-top:4px;">Reason: ${esc(p.failure_reason)}</div>` : '';
 
     const payIdStr = String(p.id).replace(/'/g, "\\'");
     return '<div class="pay-card ' + cardClass + '" onclick="openPaymentModalDetail(\'' + payIdStr + '\')" style="cursor:pointer;animation-delay:' + (i * 0.04) + 's">'
       + '<div class="pay-info">'
-      + '<div class="pay-name">' + name + ' <span style="font-size:0.75rem;font-weight:400;color:var(--text-muted);">(' + (p.client_email || 'No email') + ')</span></div>'
-      + '<div class="pay-meta">' + phone + ' · <strong style="color:var(--white);">' + (p.plan_name || service) + '</strong></div>'
+      + '<div class="pay-name">' + esc(name) + ' <span style="font-size:0.75rem;font-weight:400;color:var(--text-muted);">(' + esc(p.client_email || 'No email') + ')</span></div>'
+      + '<div class="pay-meta">' + esc(phone) + ' · <strong style="color:var(--white);">' + esc(p.plan_name || service) + '</strong></div>'
       + failureReason
       + '<div class="pay-meta" style="margin-top:2px;">' + date + '</div>'
       + '</div>'
@@ -596,9 +598,9 @@ function openPaymentModalDetail(id) {
     <div class="detail-section">
       <div class="detail-section-title">Client Details</div>
       <div class="detail-grid">
-        <div class="detail-field"><label>Full Name</label><p>${p.client_name || 'Not provided'}</p></div>
-        <div class="detail-field"><label>Phone Number</label><p style="color:var(--gold);">${p.client_phone || 'Not provided'}</p></div>
-        <div class="detail-field full"><label>Email Address</label><p>${p.client_email || 'Not provided'}</p></div>
+        <div class="detail-field"><label>Full Name</label><p>${esc(p.client_name) || 'Not provided'}</p></div>
+        <div class="detail-field"><label>Phone Number</label><p style="color:var(--gold);">${esc(p.client_phone) || 'Not provided'}</p></div>
+        <div class="detail-field full"><label>Email Address</label><p>${esc(p.client_email) || 'Not provided'}</p></div>
       </div>
     </div>
     
@@ -607,11 +609,11 @@ function openPaymentModalDetail(id) {
       <div class="detail-grid">
         <div class="detail-field"><label>Status</label><p style="color:${statusColor};font-weight:700;text-transform:uppercase;">${status}</p></div>
         <div class="detail-field"><label>Amount</label><p style="color:var(--white);font-weight:700;font-size:1.1rem;">${amount}</p></div>
-        <div class="detail-field"><label>Plan Enrolled</label><p style="color:var(--white);">${p.plan_name || service}</p></div>
-        <div class="detail-field"><label>Service Code</label><p>${p.service || '—'}</p></div>
-        <div class="detail-field full"><label>Razorpay Order ID</label><p style="font-family:'Space Mono',monospace;">${p.razorpay_order_id || '—'}</p></div>
-        <div class="detail-field full"><label>Razorpay Payment ID</label><p style="font-family:'Space Mono',monospace;">${p.razorpay_payment_id || '—'}</p></div>
-        ${p.failure_reason ? `<div class="detail-field full"><label>Failure Reason</label><p style="color:#ef4444;background:rgba(239,68,68,0.1);padding:8px 12px;border:1px solid rgba(239,68,68,0.3);border-radius:4px;">${p.failure_reason}</p></div>` : ''}
+        <div class="detail-field"><label>Plan Enrolled</label><p style="color:var(--white);">${esc(p.plan_name) || esc(service)}</p></div>
+        <div class="detail-field"><label>Service Code</label><p>${esc(p.service) || '—'}</p></div>
+        <div class="detail-field full"><label>Razorpay Order ID</label><p style="font-family:'Space Mono',monospace;">${esc(p.razorpay_order_id) || '—'}</p></div>
+        <div class="detail-field full"><label>Razorpay Payment ID</label><p style="font-family:'Space Mono',monospace;">${esc(p.razorpay_payment_id) || '—'}</p></div>
+        ${p.failure_reason ? `<div class="detail-field full"><label>Failure Reason</label><p style="color:#ef4444;background:rgba(239,68,68,0.1);padding:8px 12px;border:1px solid rgba(239,68,68,0.3);border-radius:4px;">${esc(p.failure_reason)}</p></div>` : ''}
       </div>
     </div>
   `;
