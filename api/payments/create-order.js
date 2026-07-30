@@ -21,7 +21,7 @@ module.exports = async function (req, res) {
       'socialmedia': 99900,
       'webdevelopment-starter': 299900,
       'webdevelopment-pro': 599900,
-      'aivideos': 100,
+      'aivideos': 99900,
       'metaads': 199900
     };
 
