@@ -18,7 +18,7 @@ module.exports = async function (req, res) {
     const { plan, service, amount, client_name, client_phone, client_email } = req.body || {};
 
     const expectedAmounts = {
-      'socialmedia': 99900,
+      'socialmedia': 100,
       'webdevelopment-starter': 299900,
       'webdevelopment-pro': 599900,
       'aivideos': 99900,
