@@ -93,10 +93,11 @@ async function loadSubmissions() {
     const data = await res.json();
     if (!res.ok) throw new Error();
     
-    allSubmissions = (data.submissions || []).map(r => ({
+    const list = data.data || data.submissions || [];
+    allSubmissions = list.map(r => ({
       id: r.id,
       submittedAt: r.submitted_at || new Date().toISOString(),
-      user: { name: r.client_name || '', email: r.client_email || '', phone: String(r.client_phone || '') },
+      user: { name: r.client_name || r.name || '', email: r.client_email || r.email || '', phone: String(r.client_phone || r.phone || '') },
       businessName: r.business_name || '', industry: r.industry || '', location: r.location || '',
       description: r.description || '',
       websiteTypes: (r.services || '').split(',').map(s => s.trim()).filter(Boolean),
@@ -113,29 +114,19 @@ async function loadSubmissions() {
 }
 
 function updateStats() {
-  const now = new Date(), todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const weekStart = new Date(now); weekStart.setDate(now.getDate() - 7);
   document.getElementById('statTotal').textContent = allSubmissions.length;
+  const todayStart = new Date(); todayStart.setHours(0,0,0,0);
   document.getElementById('statToday').textContent = allSubmissions.filter(s => new Date(s.submittedAt) >= todayStart).length;
-  document.getElementById('statWeek').textContent  = allSubmissions.filter(s => new Date(s.submittedAt) >= weekStart).length;
-}
-
-function getFiltered() {
-  const now = new Date(), todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const weekStart = new Date(now); weekStart.setDate(now.getDate() - 7);
-  let list = allSubmissions;
-  if (currentFilter === 'today') list = list.filter(s => new Date(s.submittedAt) >= todayStart);
-  if (currentFilter === 'week')  list = list.filter(s => new Date(s.submittedAt) >= weekStart);
-  if (currentSearch) {
-    const q = currentSearch.toLowerCase();
-    list = list.filter(s => (s.user?.name||'').toLowerCase().includes(q) || (s.user?.email||'').toLowerCase().includes(q) || (s.user?.phone||'').toLowerCase().includes(q) || (s.businessName||'').toLowerCase().includes(q));
-  }
-  return list;
 }
 
 function renderCards() {
   const container = document.getElementById('cardsContainer');
-  const list = getFiltered();
+  let list = allSubmissions;
+  if (currentFilter !== 'all') list = list.filter(s => s.websiteTypes.includes(currentFilter));
+  if (currentSearch) {
+    const q = currentSearch.toLowerCase();
+    list = list.filter(s => (s.user?.name||'').toLowerCase().includes(q) || (s.user?.phone||'').toLowerCase().includes(q) || (s.businessName||'').toLowerCase().includes(q));
+  }
   if (!list.length) { container.innerHTML = '<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><h3>No Submissions Yet</h3><p>Once clients fill the form, their entries appear here.</p></div>'; return; }
   container.innerHTML = '<div class="cards-grid">' + list.map((s, i) => cardHTML(s, i)).join('') + '</div>';
 }
@@ -144,14 +135,13 @@ function initials(name) { if (!name) return '?'; return name.trim().split(' ').m
 function formatDate(iso) { const d = new Date(iso); return d.toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' }); }
 
 function cardHTML(s, idx) {
-  const chips = [];
-  if (s.websiteTypes?.length) chips.push(...s.websiteTypes.slice(0,2).map(t => '<span class="chip">'+esc(t)+'</span>'));
-  if (s.budget) chips.push('<span class="chip grey">'+esc(s.budget)+'</span>');
-  return '<div class="sub-card" onclick="openModal('+s.id+')" style="animation-delay:'+idx*0.05+'s"><div class="card-top"><div class="card-avatar">'+initials(s.user?.name)+'</div><div class="card-date">'+formatDate(s.submittedAt)+'</div></div><div class="card-name">'+(esc(s.user?.name)||'—')+'</div><div class="card-contact"><span>'+(esc(s.user?.email)||'—')+'</span><span>'+(esc(s.user?.phone)||'—')+'</span></div><div class="card-chips">'+(chips.join('')||'<span class="chip grey">No type</span>')+'</div><div class="card-footer"><div class="card-business"><strong>'+(esc(s.businessName)||'No business name')+'</strong> · '+(esc(s.industry)||'—')+'</div><div class="view-btn">View <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div></div></div>';
+  const tags = s.websiteTypes.map(t => '<span class="chip">'+esc(t)+'</span>').join('');
+  const sid = String(s.id).replace(/'/g, "\\'");
+  return '<div class="sub-card" onclick="openModal(\''+sid+'\')" style="animation-delay:'+idx*0.05+'s"><div class="card-top"><div class="card-avatar">'+initials(s.user?.name)+'</div><div class="card-date">'+formatDate(s.submittedAt)+'</div></div><div class="card-name">'+(esc(s.user?.name)||'—')+'</div><div class="card-contact"><span>'+(esc(s.user?.phone)||'—')+'</span></div><div class="card-chips">'+tags+'</div><div class="card-footer"><div class="card-business">'+(esc(s.businessName)||'No business name')+'</div><div class="view-btn">View <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div></div></div>';
 }
 
 function openModal(id) {
-  const s = allSubmissions.find(x => x.id === id); if (!s) return;
+  const s = allSubmissions.find(x => String(x.id) === String(id)); if (!s) return;
   currentOpenId = id;
   document.getElementById('mAvatar').textContent = initials(s.user?.name);
   document.getElementById('mAvatar').style.background = '';
@@ -209,7 +199,8 @@ async function loadAiAdsSubmissions() {
     const data = await res.json();
     if (!res.ok) throw new Error();
     
-    allAiAds = (data.submissions || []).map(r => ({
+    const list = data.data || data.submissions || [];
+    allAiAds = list.map(r => ({
       id: r.id,
       'Name': r.name || '',
       'Phone': r.phone || '',
@@ -240,11 +231,12 @@ function renderAiAdsCards() {
 
 function aiCardHTML(s, idx) {
   const preview = (s['Script']||'').slice(0, 80) + ((s['Script']||'').length > 80 ? '…' : '');
-  return '<div class="sub-card" onclick="openAiModal('+s.id+')" style="animation-delay:'+idx*0.05+'s"><div class="card-top"><div class="card-avatar" style="background:linear-gradient(135deg,#7c3aed,#a855f7)">'+initials(s['Name'])+'</div><div class="card-date">'+formatDate(s['Submitted At'])+'</div></div><div class="card-name">'+(esc(s['Name'])||'—')+'</div><div class="card-contact"><span>'+(esc(s['Phone'])||'—')+'</span></div><div class="card-chips"><span class="chip" style="background:rgba(168,85,247,0.12);border-color:rgba(168,85,247,0.3);color:#a855f7;">Model '+(esc(s['Model No'])||'—')+'</span></div><div class="card-footer"><div class="card-business" style="font-size:0.8rem;color:var(--text-muted)">'+(esc(preview)||'No script')+'</div><div class="view-btn">View <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div></div></div>';
+  const sid = String(s.id).replace(/'/g, "\\'");
+  return '<div class="sub-card" onclick="openAiModal(\''+sid+'\')" style="animation-delay:'+idx*0.05+'s"><div class="card-top"><div class="card-avatar" style="background:linear-gradient(135deg,#7c3aed,#a855f7)">'+initials(s['Name'])+'</div><div class="card-date">'+formatDate(s['Submitted At'])+'</div></div><div class="card-name">'+(esc(s['Name'])||'—')+'</div><div class="card-contact"><span>'+(esc(s['Phone'])||'—')+'</span></div><div class="card-chips"><span class="chip" style="background:rgba(168,85,247,0.12);border-color:rgba(168,85,247,0.3);color:#a855f7;">Model '+(esc(s['Model No'])||'—')+'</span></div><div class="card-footer"><div class="card-business" style="font-size:0.8rem;color:var(--text-muted)">'+(esc(preview)||'No script')+'</div><div class="view-btn">View <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div></div></div>';
 }
 
 function openAiModal(id) {
-  const s = allAiAds.find(x => x.id === id); if (!s) return;
+  const s = allAiAds.find(x => String(x.id) === String(id)); if (!s) return;
   document.getElementById('mAvatar').textContent = initials(s['Name']);
   document.getElementById('mAvatar').style.background = 'linear-gradient(135deg,#7c3aed,#a855f7)';
   document.getElementById('mName').textContent = s['Name'] || '—';
@@ -260,7 +252,7 @@ function openAiModal(id) {
         body: JSON.stringify({ type: 'aiads', id })
       });
       if (!res.ok) throw new Error();
-      allAiAds = allAiAds.filter(x => x.id !== id); closeModal(); renderAiAdsCards(); updateAiAdsStats();
+      allAiAds = allAiAds.filter(x => String(x.id) !== String(id)); closeModal(); renderAiAdsCards(); updateAiAdsStats();
     } catch (err) {
       alert('Failed to delete.');
     }
@@ -278,7 +270,8 @@ async function loadMetaAdsSubmissions() {
     const data = await res.json();
     if (!res.ok) throw new Error();
     
-    allMetaAds = (data.submissions || []).map(r => ({
+    const list = data.data || data.submissions || [];
+    allMetaAds = list.map(r => ({
       id: r.id,
       'Name': r.name || '',
       'Phone': r.phone || '',
@@ -315,7 +308,8 @@ function renderMetaAdsCards() {
 
 function metaCardHTML(s, idx) {
   const preview = (s['What Advertising']||'').slice(0, 80) + ((s['What Advertising']||'').length > 80 ? '…' : '');
-  return '<div class="sub-card" onclick="openMetaModal(' + s.id + ')" style="animation-delay:' + idx*0.05 + 's">'
+  const sid = String(s.id).replace(/'/g, "\\'");
+  return '<div class="sub-card" onclick="openMetaModal(\'' + sid + '\')" style="animation-delay:' + idx*0.05 + 's">'
     + '<div class="card-top"><div class="card-avatar" style="background:linear-gradient(135deg,#1565d8,#1877f2)">' + initials(s['Name']) + '</div><div class="card-date">' + formatDate(s['Submitted At']) + '</div></div>'
     + '<div class="card-name">' + (esc(s['Name'])||'—') + '</div>'
     + '<div class="card-contact"><span>' + (esc(s['Phone'])||'—') + '</span></div>'
@@ -328,7 +322,7 @@ function metaCardHTML(s, idx) {
 }
 
 function openMetaModal(id) {
-  const s = allMetaAds.find(x => x.id === id); if (!s) return;
+  const s = allMetaAds.find(x => String(x.id) === String(id)); if (!s) return;
   document.getElementById('mAvatar').textContent = initials(s['Name'] || '?');
   document.getElementById('mAvatar').style.background = 'linear-gradient(135deg,#1565d8,#1877f2)';
   document.getElementById('mName').textContent = s['Name'] || '—';
