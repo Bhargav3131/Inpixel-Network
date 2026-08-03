@@ -1,5 +1,5 @@
 User-agent: *
-Allow: /
+Allow: /khggy
 Disallow: /adminpanel/
 Disallow: /userlogin/
 
