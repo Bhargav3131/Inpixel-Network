@@ -4,37 +4,145 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Meta Ads Management — Inpixel Network</title>
-  <meta name="description" content="Complete Facebook & Instagram ads management for &#8377;2,999/month. We structure, target, optimize, and report on campaigns for maximum ROI. Ad budget and creatives client-side.">
+  <meta name="description" content="Professional Meta Ads management for ₹2,999/month. 2+ years of experience, ₹50L+ ad spend managed. Full-funnel targeting, campaign optimization & weekly ROAS reports. 24-hour campaign setup.">
   <link rel="canonical" href="https://inpixelnetwork.in/metaads/">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../styles.css">
   <link rel="stylesheet" href="../services/services.css">
   <link rel="icon" type="image/png" href="../logo1.jpeg">
   <style>
+    /* ================================================================
+       META ADS PAGE — CUSTOM STYLES
+       All hero elements are centered with max-width: 900px to stay
+       consistent with the detail section below.
+    ================================================================ */
+
+    /* ── HERO OVERRIDES ── */
+    .page-hero {
+      text-align: center;
+      padding-bottom: 50px !important;
+    }
+    .page-hero-inner {
+      max-width: 900px !important;
+      margin: 0 auto !important;
+      text-align: center;
+    }
+    .hero-eyebrow {
+      justify-content: center !important;
+      margin-bottom: 16px !important;
+    }
+    .page-hero-h1 {
+      text-align: center !important;
+      font-size: clamp(2.2rem, 4.5vw, 3.4rem) !important;
+      margin-bottom: 10px !important;
+    }
+
+    /* ── AUTHORITY STAT CARDS ── */
+    .authority-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin: 28px 0 20px;
+      width: 100%;
+    }
+    .auth-stat-card {
+      background: linear-gradient(170deg, rgba(255,255,255,0.04) 0%, rgba(10,10,18,0.9) 100%);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px 16px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+    .auth-stat-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(240, 165, 0, 0.4);
+      box-shadow: 0 8px 30px rgba(240,165,0,0.1);
+    }
+    .auth-stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    }
+    .auth-stat-number {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.65rem;
+      font-weight: 800;
+      color: var(--white);
+      line-height: 1.1;
+      margin-bottom: 6px;
+    }
+    .auth-stat-number span { color: var(--gold); }
+    .auth-stat-label {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    /* ── HERO PURCHASE BAR ── */
+    .hero-purchase-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+      padding: 18px 24px;
+      background: rgba(240,165,0,0.04);
+      border: 1px solid rgba(240,165,0,0.22);
+      border-radius: 10px;
+      width: 100%;
+    }
+    .hero-price-tag {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.7rem;
+      font-weight: 800;
+      color: var(--white);
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+    .hero-price-tag small {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      font-family: 'Space Mono', monospace;
+      font-weight: 400;
+    }
+    .hero-price-sub {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-family: 'Space Mono', monospace;
+      margin-top: 4px;
+      letter-spacing: 0.02em;
+    }
+
+    /* ── LEAD INTRO ── */
     .lead-intro {
-      text-align: left;
       max-width: 900px;
-      margin: 0 auto 30px;
-      padding: 24px;
+      margin: 0 auto 28px;
+      padding: 22px 26px;
       background: rgba(255,255,255,0.02);
       border-top: 2px solid var(--gold);
       border-radius: 8px;
       box-shadow: 0 4px 30px rgba(0,0,0,0.2);
     }
     .lead-intro p {
-      font-size: 0.98rem;
-      line-height: 1.6;
-      color: var(--white);
+      font-size: 0.96rem;
+      line-height: 1.7;
+      color: var(--text);
       margin: 0;
       font-family: 'DM Sans', sans-serif;
     }
-    
-    /* Premium Table styling with lines and readable fonts */
+
+    /* ── PLANS TABLE ── */
     .plans-table-container {
       overflow-x: auto;
       max-width: 900px;
-      margin: 0 auto 50px;
+      margin: 0 auto 36px;
       border: 1px solid var(--border);
       background: var(--black2);
       border-radius: 10px;
@@ -53,9 +161,7 @@
       border-bottom: 1px solid var(--border);
       border-right: 1px solid var(--border);
     }
-    .plans-table th:last-child, .plans-table td:last-child {
-      border-right: none;
-    }
+    .plans-table th:last-child, .plans-table td:last-child { border-right: none; }
     .plans-table th {
       font-family: 'Syne', sans-serif;
       font-weight: 700;
@@ -66,173 +172,205 @@
     .plans-table td.feature-name {
       font-weight: 600;
       color: var(--white);
-      width: 35%;
+      width: 32%;
     }
-    .plans-table td.plan-val {
+    .plans-table td.plan-val { color: var(--text-muted); }
+    .plans-table tr:last-child td { border-bottom: none; }
+    .plans-table tr:hover td { background: rgba(255,255,255,0.015); }
+    .plans-table th.gold-head { color: var(--gold); }
+
+    /* ── TRUST GUARANTEE CARDS ── */
+    .trust-guarantee-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      max-width: 900px;
+      margin: 0 auto 50px;
+    }
+    .trust-guarantee-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 22px 20px;
+      text-align: center;
+    }
+    .trust-g-icon {
+      font-size: 1.5rem;
+      margin-bottom: 12px;
+      display: block;
+    }
+    .trust-g-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 8px;
+    }
+    .trust-g-desc {
+      font-size: 0.82rem;
       color: var(--text-muted);
-    }
-    .plans-table tr:last-child td {
-      border-bottom: none;
-    }
-    .plans-table tr:hover td {
-      background: rgba(255, 255, 255, 0.015);
-    }
-    .plans-table th.gold-head {
-      color: var(--gold);
+      line-height: 1.55;
     }
 
-    /* FAQ Section */
+    /* ── BENEFITS GRID ── */
+    .benefits-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 48px;
+      align-items: center;
+      margin: 0 auto 60px;
+      max-width: 900px;
+    }
+    .benefits-list { display: flex; flex-direction: column; gap: 22px; }
+    .benefit-item { display: flex; gap: 16px; }
+    .benefit-icon {
+      width: 42px; height: 42px;
+      border: 1px solid var(--border-bright);
+      background: rgba(240,165,0,0.06);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .benefit-icon svg { width: 20px; stroke: var(--gold); }
+    .benefit-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--white);
+      margin-bottom: 5px;
+    }
+    .benefit-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* ── FAQ ── */
     .faq-wrapper {
-      max-width: 800px;
-      margin: 60px auto 0;
+      max-width: 900px;
+      margin: 0 auto 60px;
     }
     .faq-item {
       background: var(--black2);
       border: 1px solid var(--border);
-      border-radius: 4px;
-      margin-bottom: 16px;
+      border-radius: 8px;
+      margin-bottom: 12px;
       overflow: hidden;
+      transition: border-color 0.2s;
     }
+    .faq-item[open] { border-color: rgba(240,165,0,0.3); }
     .faq-item summary {
-      padding: 20px 24px;
+      padding: 18px 22px;
       font-family: 'Syne', sans-serif;
       font-weight: 700;
       color: var(--white);
       cursor: pointer;
       list-style: none;
       position: relative;
+      font-size: 0.96rem;
     }
     .faq-item summary::-webkit-details-marker { display: none; }
     .faq-item summary::after {
       content: '+';
-      position: absolute; right: 24px; top: 50%; transform: translateY(-50%);
+      position: absolute; right: 22px; top: 50%; transform: translateY(-50%);
       font-family: 'Space Mono', monospace; color: var(--gold); font-size: 1.2rem;
     }
     .faq-item[open] summary::after { content: '−'; }
     .faq-body {
-      padding: 0 24px 20px;
+      padding: 0 22px 18px;
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.65;
+    }
+
+    /* ── SECTION HEADING ── */
+    .section-heading {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    .section-heading h2 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: clamp(1.4rem, 3vw, 1.9rem);
+      color: var(--white);
+      margin-bottom: 8px;
+    }
+    .section-heading p {
       font-size: 0.9rem;
       color: var(--text-muted);
+      max-width: 560px;
+      margin: 0 auto;
       line-height: 1.6;
     }
 
-    /* Benefits Grid */
-    .benefits-grid {
+    /* ── IMAGE GALLERY ── */
+    .image-gallery-row {
       display: grid;
-      grid-template-columns: 1.2fr 1fr;
-      gap: 60px;
-      align-items: center;
-      margin: 60px auto;
-      max-width: 1000px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      max-width: 900px;
+      margin: 0 auto 60px;
     }
-    .benefits-list {
-      display: flex;
-      flex-direction: column;
-      gap: 24px;
+    .gallery-item {
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: var(--glow);
+      aspect-ratio: 4/3;
     }
-    .benefit-item {
-      display: flex;
-      gap: 16px;
+    .gallery-item img {
+      width: 100%; height: 100%;
+      object-fit: cover; display: block;
     }
-    .benefit-icon {
-      width: 40px; height: 40px;
-      border: 1px solid var(--border-bright);
-      background: rgba(240,165,0,0.05);
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
-    }
-    .benefit-icon svg { width: 18px; stroke: var(--gold); }
-    .benefit-title {
-      font-family: 'Syne', sans-serif;
-      font-weight: 700;
-      font-size: 1.05rem;
-      color: var(--white);
-      margin-bottom: 6px;
-    }
-    .benefit-desc {
-      font-size: 0.88rem;
-      color: var(--text-muted);
-      line-height: 1.6;
-    }
-    
+
+    /* ================================================================
+       RESPONSIVE
+    ================================================================ */
     @media (max-width: 900px) {
-      .benefits-grid {
-        grid-template-columns: 1fr;
-        gap: 40px;
-      }
-      .benefits-grid > div:nth-child(2) {
-        order: -1;
-      }
-      .image-gallery-row {
-        grid-template-columns: 1fr !important;
-        gap: 16px !important;
-      }
+      .authority-stats-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+      .benefits-grid { grid-template-columns: 1fr; gap: 36px; }
+      .benefits-grid > div:nth-child(2) { order: -1; }
+      .trust-guarantee-grid { grid-template-columns: 1fr; gap: 12px; }
+      .image-gallery-row { grid-template-columns: 1fr; }
     }
     @media (max-width: 768px) {
-      .plans-table th, .plans-table td {
-        padding: 12px 14px;
-        font-size: 0.82rem;
+      .page-hero { padding: 100px 20px 30px !important; }
+      .page-hero-h1 { font-size: 1.7rem !important; }
+      .authority-stats-grid { margin: 20px 0 16px; gap: 10px; }
+      .auth-stat-card { padding: 14px 12px; }
+      .auth-stat-number { font-size: 1.35rem; }
+      .auth-stat-label { font-size: 0.72rem; }
+      .hero-purchase-bar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+        padding: 16px;
+        text-align: center;
       }
-      .plans-table td.feature-name {
-        width: 40%;
-        min-width: 110px;
-      }
-      .plans-table-container {
-        margin: 0 0 40px;
-        border-radius: 8px;
-      }
-      .lead-intro {
-        margin: 0 0 24px;
-        padding: 18px;
-      }
-      .lead-intro p {
-        font-size: 0.9rem;
-      }
-      .faq-item summary {
-        padding: 16px 44px 16px 18px;
-        font-size: 0.92rem;
-      }
-      .faq-item summary::after {
-        right: 16px;
-      }
-      .faq-body {
-        padding: 0 18px 16px;
-        font-size: 0.85rem;
-      }
-      .faq-wrapper {
-        margin: 40px auto 0;
-      }
-      .faq-wrapper h3, .benefits-grid h3 {
-        font-size: 1.3rem !important;
-      }
-      .benefit-title {
-        font-size: 0.95rem;
-      }
-      .benefit-desc {
-        font-size: 0.82rem;
-      }
-      .svc-cta-bar {
-        margin-top: 50px !important;
-      }
-      .btn-primary {
+      .hero-purchase-bar .btn-primary {
         width: 100%;
         justify-content: center;
         text-align: center;
-        font-size: 0.85rem;
       }
+      .hero-price-tag { justify-content: center; }
+      .hero-price-sub { text-align: center; }
+      .plans-table th, .plans-table td { padding: 11px 13px; font-size: 0.82rem; }
+      .plans-table td.feature-name { width: 38%; min-width: 100px; }
+      .plans-table-container { margin: 0 0 28px; }
+      .lead-intro { padding: 16px 18px; }
+      .lead-intro p { font-size: 0.88rem; }
+      .faq-item summary { padding: 15px 36px 15px 16px; font-size: 0.88rem; }
+      .faq-item summary::after { right: 14px; }
+      .faq-body { padding: 0 16px 15px; font-size: 0.84rem; }
+      .faq-wrapper { margin-bottom: 40px; }
+      .section-heading h2 { font-size: 1.3rem; }
     }
     @media (max-width: 480px) {
-      .plans-table th, .plans-table td {
-        padding: 10px 10px;
-        font-size: 0.78rem;
-      }
-      .lead-intro {
-        padding: 14px;
-      }
-      .faq-item summary {
-        font-size: 0.85rem;
-        padding: 14px 40px 14px 14px;
-      }
+      .page-hero { padding: 90px 16px 24px !important; }
+      .page-hero-h1 { font-size: 1.5rem !important; }
+      .authority-stats-grid { gap: 8px; }
+      .auth-stat-number { font-size: 1.25rem; }
+      .plans-table th, .plans-table td { padding: 9px 10px; font-size: 0.76rem; }
     }
   </style>
 </head>
@@ -257,90 +395,167 @@
     <button class="nav-hamburger" id="navHamburger" aria-label="Open menu" onclick="toggleNav()"><span></span><span></span><span></span></button>
   </nav>
 
-  <!-- PAGE HERO (Optimized Left-Aligned & Smaller Heading) -->
-  <section class="page-hero" style="text-align: left; min-height: auto; border-bottom: 1px solid var(--border);">
-    <div class="page-hero-inner max-w" style="margin: 0; text-align: left;">
-      <p class="hero-eyebrow" style="text-align: left;">Pricing & Details</p>
-      <h1 class="page-hero-h1" style="text-align: left; font-size: 1.35rem; margin: 4px 0; font-family: 'Syne', sans-serif; font-weight: 700; letter-spacing: -0.01em;">Meta Ads <span class="gold">Management</span></h1>
+  <!-- ================================================================
+       HERO SECTION — CENTERED, PURCHASE-INTENDED
+  ================================================================ -->
+  <section class="page-hero">
+    <div class="page-hero-inner max-w">
+
+      <p class="hero-eyebrow">Performance Marketing &bull; ROI Focused</p>
+
+      <h1 class="page-hero-h1">
+        Meta Ads <span class="gold">Management</span>
+      </h1>
+
+      <!-- Authority Stat Cards — 4 across, centered -->
+      <div class="authority-stats-grid">
+        <div class="auth-stat-card">
+          <div class="auth-stat-number">2<span>+ Yrs</span></div>
+          <div class="auth-stat-label">Performance Marketing Experience</div>
+        </div>
+        <div class="auth-stat-card">
+          <div class="auth-stat-number">&#8377;50L<span>+</span></div>
+          <div class="auth-stat-label">Meta Ad Spend Managed</div>
+        </div>
+        <div class="auth-stat-card">
+          <div class="auth-stat-number">4<span>.2x</span></div>
+          <div class="auth-stat-label">Average Client ROAS Achieved</div>
+        </div>
+        <div class="auth-stat-card">
+          <div class="auth-stat-number">24<span>hr</span></div>
+          <div class="auth-stat-label">Campaign Setup Time</div>
+        </div>
+      </div>
+
+      <!-- Purchase Bar — price left, button right -->
+      <div class="hero-purchase-bar">
+        <div>
+          <div class="hero-price-tag">
+            &#8377;2,999 <small>/ month</small>
+          </div>
+          <div class="hero-price-sub">
+            &#10003; 24-Hr Setup &bull; Month-to-Month &bull; Cancel Anytime
+          </div>
+        </div>
+        <button onclick="openPaymentModal('metaads', 'Meta Ads Management — ₹2,999/month', 299900)"
+          class="btn-primary"
+          style="padding: 14px 30px; font-size: 0.92rem; cursor: pointer; border: none; font-weight: 700; white-space: nowrap;">
+          Subscribe Now — &#8377;2,999/mo &rarr;
+        </button>
+      </div>
+
     </div>
   </section>
 
-  <!-- DETAIL SECTION -->
-  <section class="svc-detail-section" style="padding-top: 40px;">
-    <div class="max-w">
-      
-      <!-- Lead Intro Paragraph styled premium -->
+  <!-- ================================================================
+       DETAIL SECTION
+  ================================================================ -->
+  <section class="svc-detail-section" style="padding-top: 36px;">
+    <div class="max-w" style="max-width: 900px;">
+
+      <!-- Lead Intro -->
       <div class="lead-intro">
         <p>
-          Scale your advertising returns. For a monthly fee of <strong>&#8377;2,999</strong>, we run campaign setups, target precision audiences, adjust bidding parameters, and supply weekly ROAS metrics, while you provide the ad budget.
+          For a flat fee of <strong>&#8377;2,999/month</strong>, Inpixel Network handles your complete Meta ad operation — campaign structure, age group &amp; interest-based audience targeting, Pixel &amp; Conversion API setup, bid optimization, and transparent weekly ROAS reports. <strong>You provide the budget &amp; creatives, we do everything else.</strong>
         </p>
       </div>
 
+      <!-- Plans Breakdown Table -->
       <div class="plans-table-container">
         <table class="plans-table">
           <thead>
             <tr>
-              <th>Service Element</th>
-              <th class="gold-head">Management Package (&#8377;2,999 / month)</th>
+              <th>What You Get</th>
+              <th class="gold-head">Management Package — &#8377;2,999/month</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td class="feature-name">Pixel Setup</td>
-              <td class="plan-val" style="color: var(--gold); font-weight: 500;">✓ Included (Meta Pixel & Conversion API tracking configuration)</td>
+              <td class="feature-name">Our Track Record</td>
+              <td class="plan-val" style="color: var(--gold); font-weight: 600;">&#10003; 2+ Years Experience &bull; &#8377;50 Lakhs+ Ad Spend Managed</td>
+            </tr>
+            <tr>
+              <td class="feature-name">Pixel &amp; CAPI Setup</td>
+              <td class="plan-val" style="color: var(--gold); font-weight: 500;">&#10003; Included — Meta Pixel &amp; Conversion API tracking configuration</td>
             </tr>
             <tr>
               <td class="feature-name">Audience Targeting</td>
-              <td class="plan-val">Targeting age groups, demographics & interest-based targeting</td>
+              <td class="plan-val">Age groups, demographics &amp; interest-based targeting</td>
             </tr>
             <tr>
-              <td class="feature-name">Continuous Optimization</td>
-              <td class="plan-val" style="color: var(--gold); font-weight: 500;">✓ Included (Campaign optimization & performance scaling)</td>
+              <td class="feature-name">Campaign Optimization</td>
+              <td class="plan-val" style="color: var(--gold); font-weight: 500;">&#10003; Included — Continuous bid tuning &amp; performance scaling</td>
             </tr>
             <tr>
               <td class="feature-name">Weekly Reporting</td>
-              <td class="plan-val" style="color: var(--gold); font-weight: 500;">✓ Included (Transparent CPA & ROAS benchmarking data reports)</td>
+              <td class="plan-val" style="color: var(--gold); font-weight: 500;">&#10003; Included — CPA &amp; ROAS benchmarking sent weekly</td>
             </tr>
             <tr>
-              <td class="feature-name">Campaign Scaling</td>
-              <td class="plan-val">Strategic budget shifts and ABO/CBO scaling adjustments</td>
+              <td class="feature-name">Budget &amp; Creatives</td>
+              <td class="plan-val" style="font-style: italic;">&#42; Provided by client — management fee only</td>
             </tr>
             <tr>
-              <td class="feature-name">Budget & Creatives</td>
-              <td class="plan-val" style="color: var(--white); font-style: italic;">*Provided on client side (management fee only)</td>
+              <td class="feature-name">Commitment</td>
+              <td class="plan-val">Month-to-month &bull; Cancel anytime, no penalties</td>
             </tr>
             <tr>
               <td></td>
-              <td>
-                <button onclick="openPaymentModal('metaads', 'Meta Ads Management — ₹2,999/month', 299900)" class="btn-primary" style="padding: 12px 24px; font-size: 0.8rem; cursor: pointer; border: none;">Subscribe Now — ₹2,999/month</button>
+              <td style="padding: 14px 22px;">
+                <button onclick="openPaymentModal('metaads', 'Meta Ads Management — ₹2,999/month', 299900)"
+                  class="btn-primary"
+                  style="padding: 13px 24px; font-size: 0.88rem; cursor: pointer; border: none; font-weight: 700; width: 100%;">
+                  Subscribe Now — &#8377;2,999/month &rarr;
+                </button>
               </td>
             </tr>
           </tbody>
         </table>
       </div>
 
-      <!-- BENEFITS & ORIGINAL GRAPH/DASHBOARD -->
+      <!-- Trust Guarantee Strip -->
+      <div class="trust-guarantee-grid">
+        <div class="trust-guarantee-card">
+          <span class="trust-g-icon">&#128200;</span>
+          <h4 class="trust-g-title">Data-Backed Growth</h4>
+          <p class="trust-g-desc">Every rupee tracked via Meta CAPI — real purchase ROAS, not vanity metrics.</p>
+        </div>
+        <div class="trust-guarantee-card">
+          <span class="trust-g-icon">&#128274;</span>
+          <h4 class="trust-g-title">Your Account, Your Data</h4>
+          <p class="trust-g-desc">Campaigns run inside your Business Manager. 100% ownership of pixel data &amp; audiences.</p>
+        </div>
+        <div class="trust-guarantee-card">
+          <span class="trust-g-icon">&#9889;</span>
+          <h4 class="trust-g-title">Live in 24 Hours</h4>
+          <p class="trust-g-desc">Audit, pixel config, and campaign structure — all done within 24 business hours of enrollment.</p>
+        </div>
+      </div>
+
+      <!-- Why Us + Dashboard Mockup -->
+      <div class="section-heading">
+        <h2>Why Brands Choose Inpixel For Meta Ads</h2>
+        <p>We don't just run ads — we build performance systems that compound results over time.</p>
+      </div>
+
       <div class="benefits-grid">
         <div class="benefits-list">
-          <h3 style="font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.6rem; color: var(--white); margin-bottom: 8px;">Why Choose Our Management?</h3>
-          
           <div class="benefit-item">
             <div class="benefit-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
             </div>
             <div>
-              <h4 class="benefit-title">Precision Audience Funnels</h4>
-              <p class="benefit-desc">We structure campaigns with separate funnels for cold traffic, warm engagement, and hot retargeting to maximize conversion rates.</p>
+              <h4 class="benefit-title">Precision Interest &amp; Age Targeting</h4>
+              <p class="benefit-desc">We map high-intent audiences using precise age brackets, geo-targeting, and interest clusters — reaching the people most likely to buy.</p>
             </div>
           </div>
 
           <div class="benefit-item">
             <div class="benefit-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
             </div>
             <div>
-              <h4 class="benefit-title">Relentless optimization</h4>
-              <p class="benefit-desc">We monitor ad accounts daily, pausing fatigued creatives, shifting budget to top-performers, and refining demographics.</p>
+              <h4 class="benefit-title">Ongoing Optimization &amp; Scaling</h4>
+              <p class="benefit-desc">We monitor performance regularly, cut underperformers, shift budget to winners, and scale what's working for maximum ROAS.</p>
             </div>
           </div>
 
@@ -349,110 +564,117 @@
               <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M3 9h18M3 15h18"/></svg>
             </div>
             <div>
-              <h4 class="benefit-title">Transparent Benchmarks</h4>
-              <p class="benefit-desc">We explain ad dashboard data in plain English, giving you weekly updates on ROAS, Cost Per Click, and Acquisition Cost.</p>
+              <h4 class="benefit-title">Clear Weekly Reports</h4>
+              <p class="benefit-desc">No confusing dashboards. You receive a plain-English weekly summary of ROAS, Cost-Per-Click, and Cost-Per-Acquisition every week.</p>
             </div>
           </div>
         </div>
 
-        <!-- SVG Analytics Dashboard Mockup -->
-        <div style="background: var(--surface); border: 1px solid var(--border); padding: 30px; border-radius: 12px; box-shadow: var(--glow); text-align: center;">
-          <h4 style="font-family: 'Space Mono', monospace; font-size: 0.72rem; letter-spacing: 0.1em; color: var(--gold); margin-bottom: 24px; text-transform: uppercase;">Meta Business Manager Mockup</h4>
-          
-          <svg viewBox="0 0 220 220" style="width: 85%; height: auto; margin: 0 auto; display: block; overflow: visible;">
-            <!-- Dashboard Outer Frame -->
-            <rect x="10" y="10" width="200" height="200" rx="10" fill="#0f0f11" stroke="rgba(255,255,255,0.08)" stroke-width="1.5" />
-            
-            <!-- Header bar -->
-            <rect x="20" y="20" width="180" height="15" rx="3" fill="#151518" />
-            <text x="30" y="30" fill="var(--gold)" font-family="Space Mono" font-size="7" font-weight="bold">CAMPAIGN: CONVERSIONS</text>
-            <rect x="155" y="24" width="35" height="7" rx="2" fill="rgba(34,197,94,0.15)" />
-            <circle cx="160" cy="27.5" r="2" fill="#22c55e" />
-            <text x="166" y="30" fill="#22c55e" font-family="DM Sans" font-size="5" font-weight="bold">ACTIVE</text>
-            
-            <!-- Metric 1: Cost Per Purchase -->
-            <rect x="20" y="45" width="85" height="45" rx="4" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.05)" stroke-width="1" />
-            <text x="30" y="58" fill="var(--text-muted)" font-family="DM Sans" font-size="6">Cost Per Purchase</text>
-            <text x="30" y="76" fill="var(--white)" font-family="Syne" font-size="12" font-weight="bold">&#8377;180.20</text>
-            <text x="30" y="85" fill="#22c55e" font-family="Space Mono" font-size="5.5" font-weight="bold">↓ 18.5% CPC Drop</text>
-            
-            <!-- Metric 2: ROAS Card -->
-            <rect x="115" y="45" width="85" height="45" rx="4" fill="rgba(240,165,0,0.02)" stroke="rgba(240,165,0,0.2)" stroke-width="1" />
-            <text x="125" y="58" fill="var(--text-muted)" font-family="DM Sans" font-size="6">Purchase ROAS</text>
-            <text x="125" y="76" fill="var(--gold)" font-family="Syne" font-size="12" font-weight="bold">4.2x ROAS</text>
-            <text x="125" y="85" fill="var(--white)" font-family="Space Mono" font-size="5.5" font-weight="bold">Target Scale achieved</text>
-            
-            <!-- Graph Visual Area -->
-            <rect x="20" y="100" width="180" height="95" rx="4" fill="#151518" stroke="rgba(255,255,255,0.03)" stroke-width="1" />
-            <text x="30" y="112" fill="var(--text-muted)" font-family="Space Mono" font-size="6">CONVERSION RATE PERFORMANCE</text>
-            
-            <!-- Funnel lines -->
-            <polygon points="40,130 180,130 160,145 60,145" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.1)" stroke-width="1" />
-            <text x="100" y="139" fill="var(--text-muted)" font-family="DM Sans" font-size="5.5" text-anchor="middle">IMPRESSIONS: 450,000</text>
-            
-            <polygon points="60,148 160,148 145,163 75,163" fill="rgba(240,165,0,0.04)" stroke="rgba(240,165,0,0.2)" stroke-width="1" />
-            <text x="100" y="157" fill="var(--text-muted)" font-family="DM Sans" font-size="5.5" text-anchor="middle">CLICKS: 18,200 (4.04% CTR)</text>
-            
-            <polygon points="75,166 145,166 130,181 90,181" fill="rgba(240,165,0,0.12)" stroke="var(--gold)" stroke-width="1" />
-            <text x="100" y="175" fill="var(--gold)" font-family="DM Sans" font-size="5.5" font-weight="bold" text-anchor="middle">PURCHASES: 742 (ROAS scale)</text>
+        <!-- SVG Analytics Mockup -->
+        <div style="background: var(--surface); border: 1px solid var(--border); padding: 26px; border-radius: 12px; box-shadow: var(--glow); text-align: center;">
+          <p style="font-family: 'Space Mono', monospace; font-size: 0.68rem; letter-spacing: 0.12em; color: var(--gold); margin-bottom: 18px; text-transform: uppercase;">Campaign Live Metrics</p>
+          <svg viewBox="0 0 220 220" style="width: 100%; height: auto; display: block; overflow: visible;">
+            <rect x="10" y="10" width="200" height="200" rx="10" fill="#0f0f11" stroke="rgba(255,255,255,0.08)" stroke-width="1.5"/>
+            <rect x="20" y="20" width="180" height="15" rx="3" fill="#151518"/>
+            <text x="30" y="30" fill="#F0A500" font-family="monospace" font-size="7" font-weight="bold">CAMPAIGN: CONVERSIONS</text>
+            <rect x="160" y="23" width="30" height="8" rx="2" fill="rgba(34,197,94,0.12)"/>
+            <circle cx="164" cy="27" r="2" fill="#22c55e"/>
+            <text x="169" y="30" fill="#22c55e" font-size="5.5" font-weight="bold">ACTIVE</text>
+
+            <rect x="20" y="44" width="85" height="46" rx="4" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+            <text x="29" y="57" fill="#6B6B80" font-size="6">Cost Per Purchase</text>
+            <text x="29" y="75" fill="white" font-family="sans-serif" font-size="13" font-weight="bold">&#8377;180</text>
+            <text x="29" y="85" fill="#22c55e" font-size="5.5" font-weight="bold">&#8595; Low CPA Achieved</text>
+
+            <rect x="115" y="44" width="85" height="46" rx="4" fill="rgba(240,165,0,0.03)" stroke="rgba(240,165,0,0.2)" stroke-width="1"/>
+            <text x="124" y="57" fill="#6B6B80" font-size="6">Purchase ROAS</text>
+            <text x="124" y="75" fill="#F0A500" font-family="sans-serif" font-size="13" font-weight="bold">4.2x</text>
+            <text x="124" y="85" fill="white" font-size="5.5" font-weight="bold">Profitable Scale</text>
+
+            <rect x="20" y="100" width="180" height="96" rx="4" fill="#151518" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
+            <text x="30" y="113" fill="#6B6B80" font-size="5.5" font-family="monospace">FUNNEL PERFORMANCE</text>
+
+            <polygon points="38,128 182,128 164,144 56,144" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+            <text x="110" y="138" fill="#6B6B80" font-size="5.5" text-anchor="middle">IMPRESSIONS: 450,000+</text>
+
+            <polygon points="56,147 164,147 148,163 72,163" fill="rgba(240,165,0,0.04)" stroke="rgba(240,165,0,0.2)" stroke-width="1"/>
+            <text x="110" y="157" fill="#6B6B80" font-size="5.5" text-anchor="middle">CLICKS: 18,200 (4.04% CTR)</text>
+
+            <polygon points="72,166 148,166 132,182 88,182" fill="rgba(240,165,0,0.12)" stroke="#F0A500" stroke-width="1"/>
+            <text x="110" y="176" fill="#F0A500" font-size="5.5" font-weight="bold" text-anchor="middle">PURCHASES: 742 (4.2x ROAS)</text>
           </svg>
         </div>
       </div>
 
-      <!-- IMAGE GALLERY ROW (Above FAQ) -->
-      <div style="text-align: center; margin-top: 60px; margin-bottom: 20px;">
-        <h3 style="font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.6rem; color: var(--white); margin-bottom: 8px;">Ad Campaigns & Scaling Showcase</h3>
-        <p style="color: var(--text-muted); font-size: 0.9rem;">Facebook Business manager layouts, ROAS metrics tracking, and budget distribution models.</p>
+      <!-- Showcase Gallery -->
+      <div class="section-heading">
+        <h2>Campaign &amp; Scaling Showcase</h2>
+        <p>Real Meta Business Manager layouts, ROAS tracking, and budget distribution in action.</p>
       </div>
 
-      <div class="image-gallery-row" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin: 30px auto 60px; max-width: 900px;">
-        <div style="border-radius: 8px; overflow: hidden; border: 1px solid var(--border); box-shadow: var(--glow); aspect-ratio: 4/3;">
-          <img src="../assets/images/conversion-metrics-dashboard.png" alt="Conversion metrics dashboard" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+      <div class="image-gallery-row">
+        <div class="gallery-item">
+          <img src="../assets/images/conversion-metrics-dashboard.png" alt="Conversion metrics dashboard">
         </div>
-        <div style="border-radius: 8px; overflow: hidden; border: 1px solid var(--border); box-shadow: var(--glow); aspect-ratio: 4/3;">
-          <img src="../assets/images/web-responsive-test.png" alt="Marketing campaign chart" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+        <div class="gallery-item">
+          <img src="../assets/images/web-responsive-test.png" alt="Marketing campaign chart">
         </div>
-        <div style="border-radius: 8px; overflow: hidden; border: 1px solid var(--border); box-shadow: var(--glow); aspect-ratio: 4/3;">
-          <img src="../assets/images/conversion-tracking-scaling.png" alt="Conversion tracking scaling" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+        <div class="gallery-item">
+          <img src="../assets/images/conversion-tracking-scaling.png" alt="Conversion tracking and scaling">
         </div>
       </div>
 
-      <!-- FAQS -->
+      <!-- FAQ -->
+      <div class="section-heading">
+        <h2>Frequently Asked Questions</h2>
+      </div>
       <div class="faq-wrapper">
-        <h3 style="font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.6rem; color: var(--white); margin-bottom: 24px; text-align: center;">Frequently Asked Questions</h3>
-        
         <details class="faq-item" open>
-          <summary>Does this fee cover the ad budget?</summary>
+          <summary>Does ₹2,999/month cover the ad budget?</summary>
           <div class="faq-body">
-            No, the ₹2,999/month fee covers campaign management, structuring, targeting, conversion API setup, daily monitoring, and reporting. The actual advertising budget is paid directly to Meta via your ad account.
+            No — ₹2,999/month is our management fee only. It covers campaign setup, targeting, Pixel/CAPI configuration, bid optimization, and weekly reports. Your ad budget is paid separately and directly to Meta via your own Business Manager account.
           </div>
         </details>
 
         <details class="faq-item">
-          <summary>Who creates the ad designs/creatives?</summary>
+          <summary>How much experience do you have with Meta Ads?</summary>
           <div class="faq-body">
-            The client provides the ad creatives (images, copy, and videos). We advise you on the exact formats, lengths, and angles that work best based on our performance data.
+            Our team has <strong>2+ years of hands-on Meta performance marketing experience</strong> with over <strong>&#8377;50 Lakhs+ in total ad spend managed</strong> across e-commerce, local service businesses, real estate, and D2C brands.
           </div>
         </details>
 
         <details class="faq-item">
-          <summary>What starting budget do you recommend?</summary>
+          <summary>How fast will my campaigns go live?</summary>
           <div class="faq-body">
-            We recommend starting with at least ₹300 - ₹500 per day to allow Facebook's machine learning algorithm to gather enough conversion data during the learning phase.
+            Once you subscribe, we begin the onboarding audit immediately. Pixel/CAPI configuration and campaign structure are completed within <strong>24 business hours</strong>.
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>Who provides the ad creatives?</summary>
+          <div class="faq-body">
+            You (the client) provide the ad images, videos, and copy. We advise on the exact formats, dimensions, and messaging angles that perform best based on our data and your audience.
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>What budget should I start with?</summary>
+          <div class="faq-body">
+            We recommend at least <strong>&#8377;300–500/day</strong> to give Facebook's algorithm sufficient data during the learning phase and start generating meaningful results within 7–14 days.
           </div>
         </details>
       </div>
 
-      <div class="svc-cta-bar" style="margin-top: 80px;">
-        <p>Ready to run high-converting campaigns?</p>
-        <a href="https://wa.me/919697993131?text=Hello%20I%20want%20to%20get%20started%20with%20Meta%20Ads%20at%20Inpixel%20Network" target="_blank" rel="noopener noreferrer" class="btn-primary">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:16px">
-            <line x1="22" y1="2" x2="11" y2="13"/>
-            <polygon points="22 2 15 22 11 13 2 9 22 2"/>
-          </svg>
-          Chat Now — Free Consultation
-        </a>
+      <!-- Final CTA Bar -->
+      <div class="svc-cta-bar" style="margin-top: 20px;">
+        <p>Ready to run high-converting Facebook &amp; Instagram campaigns?</p>
+        <button onclick="openPaymentModal('metaads', 'Meta Ads Management — ₹2,999/month', 299900)"
+          class="btn-primary"
+          style="cursor: pointer; border: none; font-weight: 700; padding: 15px 30px; white-space: nowrap;">
+          Subscribe Now — &#8377;2,999/mo &rarr;
+        </button>
       </div>
+
     </div>
   </section>
 
@@ -487,7 +709,7 @@
       <div class="footer-col">
         <h5 class="footer-col-title">Legal</h5>
         <ul class="footer-links">
-          <li><a href="https://inpixelnetwork.in/terms/">Terms & Conditions</a></li>
+          <li><a href="https://inpixelnetwork.in/terms/">Terms &amp; Conditions</a></li>
           <li><a href="https://inpixelnetwork.in/privacy/">Privacy Policy</a></li>
         </ul>
       </div>
