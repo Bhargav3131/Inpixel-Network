@@ -108,7 +108,7 @@
     /* ── VIDEO HERO ── */
     .video-hero-wrap {
       max-width: 920px;
-      margin: 40px auto 0;
+      margin: 16px auto 0;
       position: relative;
       border-radius: 14px;
       overflow: hidden;
@@ -122,18 +122,19 @@
       border-radius: 14px;
     }
     .video-overlay-label {
-      position: absolute;
-      top: 16px; left: 16px;
-      background: rgba(0,0,0,0.7);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(240,165,0,0.08);
       border: 1px solid rgba(240,165,0,0.3);
-      border-radius: 6px;
-      padding: 5px 12px;
+      border-radius: 20px;
+      padding: 6px 14px;
       font-family: 'Space Mono', monospace;
-      font-size: 0.68rem;
+      font-size: 0.72rem;
       color: var(--gold);
-      letter-spacing: 0.08em;
+      letter-spacing: 0.06em;
       text-transform: uppercase;
-      backdrop-filter: blur(8px);
+      margin-top: 12px;
     }
 
     /* ── FEATURE CARDS ── */
@@ -371,9 +372,10 @@
         Inpixel <span class="gold">Quotation</span> Software
       </h1>
 
-      <!-- Demo Video — immediately below heading, audio on -->
+      <!-- Demo Label & Video -->
+      <span class="video-overlay-label">&#9654; Live Software Demo</span>
+
       <div class="video-hero-wrap">
-        <span class="video-overlay-label">&#9654; Live Software Demo</span>
         <video
           src="../assets/demo-quotation.mp4"
           controls
