@@ -108,18 +108,19 @@
     /* ── VIDEO HERO ── */
     .video-hero-wrap {
       max-width: 920px;
-      margin: 16px auto 0;
+      margin: 18px auto 0;
       position: relative;
-      border-radius: 14px;
-      overflow: hidden;
-      border: 1px solid var(--border);
-      box-shadow: 0 0 60px rgba(240,165,0,0.12), 0 24px 64px rgba(0,0,0,0.5);
-      background: #000;
+      border-radius: 16px;
+      padding: 6px;
+      background: linear-gradient(145deg, rgba(240,165,0,0.35) 0%, rgba(20,20,28,0.9) 50%, rgba(240,165,0,0.2) 100%);
+      border: 1.5px solid rgba(240, 165, 0, 0.45);
+      box-shadow: 0 0 50px rgba(240, 165, 0, 0.22), 0 20px 60px rgba(0, 0, 0, 0.85);
     }
     .video-hero-wrap video {
       width: 100%;
       display: block;
-      border-radius: 14px;
+      border-radius: 10px;
+      box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
     }
     .video-overlay-label {
       display: inline-flex;
@@ -381,50 +382,34 @@
           src="../assets/demo-quotation.mp4"
           controls
           autoplay
+          muted
           loop
           playsinline
-          preload="auto"
-          style="cursor: pointer;">
+          preload="auto">
           Your browser does not support the video tag.
         </video>
       </div>
 
-      <!-- Script for Video Click Play/Pause & Autoplay Audio Handling -->
+      <!-- Script for Unmuting Audio on User Interaction -->
       <script>
         document.addEventListener('DOMContentLoaded', function() {
           const video = document.getElementById('demoVideo');
           if (!video) return;
 
-          // 1. Click on video to toggle Play / Pause
-          video.addEventListener('click', function(e) {
-            // Prevent conflict if user clicks native controls bar
-            if (e.offsetY > video.clientHeight - 50) return;
-            if (video.paused) {
-              video.play();
-            } else {
-              video.pause();
+          // Attempt initial play
+          video.play().catch(function() {});
+
+          // Unmute on first user click/tap anywhere on the page
+          function enableAudio() {
+            if (video) {
+              video.muted = false;
             }
-          });
-
-          // 2. Programmatic Autoplay with Audio
-          video.muted = false;
-          const playPromise = video.play();
-          if (playPromise !== undefined) {
-            playPromise.catch(function(error) {
-              // If browser blocks unmuted autoplay, play muted & unmute on first user click anywhere
-              video.muted = true;
-              video.play();
-
-              function unmuteOnInteraction() {
-                video.muted = false;
-                video.play();
-                document.removeEventListener('click', unmuteOnInteraction);
-                document.removeEventListener('touchstart', unmuteOnInteraction);
-              }
-              document.addEventListener('click', unmuteOnInteraction);
-              document.addEventListener('touchstart', unmuteOnInteraction);
-            });
+            document.removeEventListener('click', enableAudio);
+            document.removeEventListener('touchstart', enableAudio);
           }
+
+          document.addEventListener('click', enableAudio);
+          document.addEventListener('touchstart', enableAudio);
         });
       </script>
 
