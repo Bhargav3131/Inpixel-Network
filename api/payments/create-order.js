@@ -22,7 +22,8 @@ module.exports = async function (req, res) {
       'webdevelopment-starter': 299900,
       'webdevelopment-pro': 599900,
       'aivideos': 99900,
-      'metaads': 299900
+      'metaads': 299900,
+      'quotation': 299900
     };
 
     let validAmount = false;

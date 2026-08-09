@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quotation Software — Inpixel Network | Lifetime Access ₹2,999</title>
+  <meta name="description" content="Inpixel Quotation Software — create professional branded quotations in seconds. One-time lifetime purchase for ₹2,999. No recurring fees, no subscriptions, ever.">
+  <link rel="canonical" href="https://inpixelnetwork.in/quotation/">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="../services/services.css">
+  <link rel="icon" type="image/png" href="../logo1.jpeg">
+  <style>
+    /* ================================================================
+       QUOTATION PAGE — CUSTOM STYLES
+    ================================================================ */
+
+    .page-hero {
+      padding-bottom: 50px !important;
+      text-align: center;
+    }
+    .page-hero-inner {
+      max-width: 920px !important;
+      margin: 0 auto !important;
+      text-align: center;
+    }
+    .hero-eyebrow { justify-content: center !important; }
+    .page-hero-h1 {
+      text-align: center !important;
+      font-size: clamp(2.2rem, 5vw, 3.6rem) !important;
+      margin-bottom: 12px !important;
+    }
+    .hero-sub-desc {
+      font-size: 1rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+      max-width: 640px;
+      margin: 0 auto 28px;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    /* ── ONE-TIME BADGE ── */
+    .one-time-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 18px;
+      background: rgba(240,165,0,0.10);
+      border: 1px solid rgba(240,165,0,0.35);
+      border-radius: 30px;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: var(--gold);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    .one-time-badge-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--gold);
+      box-shadow: 0 0 8px var(--gold);
+    }
+
+    /* ── HERO PURCHASE BAR ── */
+    .hero-purchase-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin: 20px auto 0;
+      padding: 18px 26px;
+      background: rgba(240,165,0,0.04);
+      border: 1px solid rgba(240,165,0,0.25);
+      border-radius: 10px;
+      width: 100%;
+    }
+    .hero-price-tag {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--white);
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+    .hero-price-tag .one-time-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 400;
+      color: var(--gold);
+      background: rgba(240,165,0,0.1);
+      border: 1px solid rgba(240,165,0,0.25);
+      border-radius: 4px;
+      padding: 2px 8px;
+      letter-spacing: 0.05em;
+    }
+    .hero-price-sub {
+      font-size: 0.74rem;
+      color: var(--text-muted);
+      font-family: 'Space Mono', monospace;
+      margin-top: 4px;
+    }
+
+    /* ── VIDEO HERO ── */
+    .video-hero-wrap {
+      max-width: 920px;
+      margin: 40px auto 0;
+      position: relative;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: 0 0 60px rgba(240,165,0,0.12), 0 24px 64px rgba(0,0,0,0.5);
+      background: #000;
+    }
+    .video-hero-wrap video {
+      width: 100%;
+      display: block;
+      border-radius: 14px;
+    }
+    .video-overlay-label {
+      position: absolute;
+      top: 16px; left: 16px;
+      background: rgba(0,0,0,0.7);
+      border: 1px solid rgba(240,165,0,0.3);
+      border-radius: 6px;
+      padding: 5px 12px;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--gold);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      backdrop-filter: blur(8px);
+    }
+
+    /* ── FEATURE CARDS ── */
+    .feature-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      max-width: 920px;
+      margin: 0 auto 40px;
+    }
+    .feature-card {
+      background: linear-gradient(160deg, rgba(255,255,255,0.03) 0%, var(--black2) 100%);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 24px 22px;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      transition: border-color 0.25s ease, transform 0.25s ease;
+    }
+    .feature-card:hover {
+      border-color: rgba(240,165,0,0.35);
+      transform: translateY(-2px);
+    }
+    .feature-card-icon {
+      width: 44px; height: 44px;
+      border-radius: 8px;
+      background: rgba(240,165,0,0.08);
+      border: 1px solid rgba(240,165,0,0.2);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      font-size: 1.2rem;
+    }
+    .feature-card-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--white);
+      margin-bottom: 6px;
+    }
+    .feature-card-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* ── PRICING BOX ── */
+    .pricing-box {
+      max-width: 920px;
+      margin: 0 auto 50px;
+      background: linear-gradient(145deg, rgba(240,165,0,0.06) 0%, var(--black2) 60%);
+      border: 1px solid rgba(240,165,0,0.3);
+      border-radius: 14px;
+      padding: 40px 40px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .pricing-box::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    }
+    .pricing-box-eyebrow {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+    .pricing-box-price {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2.8rem, 6vw, 4rem);
+      font-weight: 800;
+      color: var(--white);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .pricing-box-price span { color: var(--gold); }
+    .pricing-box-sub {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--gold);
+      letter-spacing: 0.08em;
+      margin-bottom: 28px;
+    }
+    .pricing-checklist {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-width: 420px;
+      margin: 0 auto 28px;
+      text-align: left;
+    }
+    .pricing-check-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.92rem;
+      color: var(--text);
+      line-height: 1.5;
+    }
+    .pricing-check-item .check {
+      color: var(--gold);
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .pricing-disclaimer {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 16px;
+      font-family: 'Space Mono', monospace;
+    }
+
+    /* ── FAQ ── */
+    .faq-wrapper {
+      max-width: 920px;
+      margin: 0 auto 60px;
+    }
+    .faq-item {
+      background: var(--black2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 12px;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .faq-item[open] { border-color: rgba(240,165,0,0.3); }
+    .faq-item summary {
+      padding: 18px 22px;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      color: var(--white);
+      cursor: pointer;
+      list-style: none;
+      position: relative;
+      font-size: 0.96rem;
+    }
+    .faq-item summary::-webkit-details-marker { display: none; }
+    .faq-item summary::after {
+      content: '+';
+      position: absolute; right: 22px; top: 50%; transform: translateY(-50%);
+      font-family: 'Space Mono', monospace; color: var(--gold); font-size: 1.2rem;
+    }
+    .faq-item[open] summary::after { content: '−'; }
+    .faq-body {
+      padding: 0 22px 18px;
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.65;
+    }
+
+    /* ── SECTION HEADING ── */
+    .section-heading {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .section-heading h2 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      color: var(--white);
+      margin-bottom: 8px;
+    }
+    .section-heading p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .page-hero { padding: 100px 20px 30px !important; }
+      .page-hero-h1 { font-size: 1.9rem !important; }
+      .hero-sub-desc { font-size: 0.9rem; }
+      .hero-purchase-bar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+        padding: 16px;
+        text-align: center;
+      }
+      .hero-purchase-bar .btn-primary {
+        width: 100%;
+        justify-content: center;
+        text-align: center;
+      }
+      .hero-price-tag { justify-content: center; }
+      .hero-price-sub { text-align: center; }
+      .feature-cards-grid { grid-template-columns: 1fr; }
+      .pricing-box { padding: 28px 20px; }
+      .video-hero-wrap { margin: 28px 0 0; border-radius: 10px; }
+      .video-hero-wrap video { border-radius: 10px; }
+    }
+    @media (max-width: 480px) {
+      .page-hero { padding: 90px 16px 24px !important; }
+      .page-hero-h1 { font-size: 1.65rem !important; }
+      .pricing-box-price { font-size: 2.8rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="grid-bg"></div>
+
+  <!-- NAV -->
+  <nav id="nav">
+    <a class="nav-logo" href="https://inpixelnetwork.in/">
+      <img src="../logo.jpeg" alt="Inpixel Network">
+      <span>Inpixel Network</span>
+    </a>
+    <div class="nav-links" id="navLinks">
+      <a href="https://inpixelnetwork.in/webdevelopment/">Websites</a>
+      <a href="https://inpixelnetwork.in/aivideos/">AI Videos</a>
+      <a href="https://inpixelnetwork.in/metaads/">Meta Ads</a>
+      <a href="https://inpixelnetwork.in/socialmedia/">Social Media</a>
+      <a href="https://inpixelnetwork.in/#contact">Contact</a>
+      <button class="btn-nav" onclick="window.location.href='https://inpixelnetwork.in/#contact'">Get Started</button>
+    </div>
+    <button class="nav-hamburger" id="navHamburger" aria-label="Open menu" onclick="toggleNav()"><span></span><span></span><span></span></button>
+  </nav>
+
+  <!-- ================================================================
+       HERO SECTION
+  ================================================================ -->
+  <section class="page-hero">
+    <div class="page-hero-inner max-w">
+
+      <!-- One-Time Badge -->
+      <div style="margin-bottom: 16px;">
+        <span class="one-time-badge">
+          <span class="one-time-badge-dot"></span>
+          One-Time Purchase — No Recurring Fees
+        </span>
+      </div>
+
+      <p class="hero-eyebrow">Business Tool &bull; Lifetime Access</p>
+
+      <h1 class="page-hero-h1">
+        Inpixel <span class="gold">Quotation</span> Software
+      </h1>
+
+      <p class="hero-sub-desc">
+        Stop wasting time building quotes manually. Generate professional, branded quotations in seconds — pay once and use it forever.
+      </p>
+
+      <!-- Purchase Bar -->
+      <div class="hero-purchase-bar">
+        <div>
+          <div class="hero-price-tag">
+            &#8377;2,999 <span class="one-time-label">ONE-TIME</span>
+          </div>
+          <div class="hero-price-sub">
+            &#10003; Lifetime Access &bull; No Subscriptions &bull; Instant Delivery
+          </div>
+        </div>
+        <button onclick="openPaymentModal('quotation', 'Inpixel Quotation Software — ₹2,999 Lifetime', 299900)"
+          class="btn-primary"
+          style="padding: 15px 32px; font-size: 0.95rem; cursor: pointer; border: none; font-weight: 700; white-space: nowrap;">
+          Buy Now — &#8377;2,999 Lifetime &rarr;
+        </button>
+      </div>
+
+      <!-- Demo Video -->
+      <div class="video-hero-wrap">
+        <span class="video-overlay-label">&#9654; Live Software Demo</span>
+        <video
+          src="../assets/demo-quotation.mp4"
+          controls
+          autoplay
+          muted
+          loop
+          playsinline
+          preload="metadata"
+          poster="">
+          Your browser does not support the video tag.
+        </video>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================================================================
+       FEATURES SECTION
+  ================================================================ -->
+  <section class="svc-detail-section" style="padding-top: 60px;">
+    <div class="max-w" style="max-width: 920px;">
+
+      <!-- Features Grid -->
+      <div class="section-heading">
+        <h2>Everything You Get — For Life</h2>
+        <p>One payment unlocks everything. No hidden charges, no annual renewals, no surprises.</p>
+      </div>
+
+      <div class="feature-cards-grid">
+        <div class="feature-card">
+          <div class="feature-card-icon">&#9889;</div>
+          <div>
+            <h3 class="feature-card-title">Automated Quotation Generation</h3>
+            <p class="feature-card-desc">Create complete, professional quotations in seconds — just fill in the details and the software handles formatting, calculations, and layout instantly.</p>
+          </div>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-card-icon">&#127775;</div>
+          <div>
+            <h3 class="feature-card-title">Branded Output</h3>
+            <p class="feature-card-desc">Every quote is customized with your business name, logo, and branding. Every client-facing document looks polished and professional.</p>
+          </div>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-card-icon">&#128274;</div>
+          <div>
+            <h3 class="feature-card-title">Lifetime Access — Pay Once</h3>
+            <p class="feature-card-desc">No monthly fees. No annual subscriptions. Pay ₹2,999 once and use the software forever. All future updates included.</p>
+          </div>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-card-icon">&#128200;</div>
+          <div>
+            <h3 class="feature-card-title">Saves Time on Every Quote</h3>
+            <p class="feature-card-desc">What used to take 15–30 minutes of manual work now takes under 60 seconds. Free up time to focus on closing deals, not formatting documents.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pricing Box -->
+      <div class="section-heading">
+        <h2>Simple, Honest Pricing</h2>
+      </div>
+
+      <div class="pricing-box">
+        <p class="pricing-box-eyebrow">&#9733; Lifetime Deal — Limited Time</p>
+        <div class="pricing-box-price">&#8377;2,999<span>/-</span></div>
+        <p class="pricing-box-sub">ONE-TIME PAYMENT &bull; NO RECURRING FEES</p>
+
+        <div class="pricing-checklist">
+          <div class="pricing-check-item">
+            <span class="check">&#10003;</span>
+            <span>Automated quotation generation in seconds</span>
+          </div>
+          <div class="pricing-check-item">
+            <span class="check">&#10003;</span>
+            <span>Branded output customized with your business identity</span>
+          </div>
+          <div class="pricing-check-item">
+            <span class="check">&#10003;</span>
+            <span>Lifetime access — pay once, use forever</span>
+          </div>
+          <div class="pricing-check-item">
+            <span class="check">&#10003;</span>
+            <span>No monthly fees, no annual renewals, no subscriptions</span>
+          </div>
+          <div class="pricing-check-item">
+            <span class="check">&#10003;</span>
+            <span>Instant access after payment</span>
+          </div>
+        </div>
+
+        <button onclick="openPaymentModal('quotation', 'Inpixel Quotation Software — ₹2,999 Lifetime', 299900)"
+          class="btn-primary"
+          style="padding: 16px 40px; font-size: 1rem; cursor: pointer; border: none; font-weight: 700;">
+          Buy Now — &#8377;2,999 Lifetime &rarr;
+        </button>
+
+        <p class="pricing-disclaimer">Secure payment via Razorpay &bull; UPI, Cards, NetBanking accepted</p>
+      </div>
+
+      <!-- FAQ -->
+      <div class="section-heading">
+        <h2>Frequently Asked Questions</h2>
+      </div>
+
+      <div class="faq-wrapper">
+        <details class="faq-item" open>
+          <summary>Is this really a one-time payment with no recurring fees?</summary>
+          <div class="faq-body">
+            Yes — ₹2,999 is a <strong>one-time lifetime purchase</strong>. There are no monthly fees, annual renewals, or hidden charges. Pay once and use it forever.
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>How do I get access after purchasing?</summary>
+          <div class="faq-body">
+            After successful payment, you'll receive access details via the contact information you provide. Our team will reach out within a few business hours to get you set up.
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>Can I customize it with my own branding?</summary>
+          <div class="faq-body">
+            Absolutely. The software supports your business name, logo, and branding — every quotation generated will have your professional look and feel.
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>What kind of businesses is this suitable for?</summary>
+          <div class="faq-body">
+            Any business that sends quotes to clients — freelancers, agencies, consultants, contractors, retailers, service businesses. If you currently create quotes manually, this tool will save you significant time.
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>Do future updates cost extra?</summary>
+          <div class="faq-body">
+            No. Your one-time purchase includes all future updates to the software at no additional cost.
+          </div>
+        </details>
+      </div>
+
+      <!-- Bottom CTA Bar -->
+      <div class="svc-cta-bar" style="margin-top: 10px;">
+        <p>Ready to make every quote professional &amp; instant?</p>
+        <button onclick="openPaymentModal('quotation', 'Inpixel Quotation Software — ₹2,999 Lifetime', 299900)"
+          class="btn-primary"
+          style="cursor: pointer; border: none; font-weight: 700; padding: 15px 30px; white-space: nowrap;">
+          Buy Now — &#8377;2,999 Lifetime &rarr;
+        </button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-inner max-w">
+      <div class="footer-brand">
+        <a href="https://inpixelnetwork.in/" class="footer-logo">
+          <img src="../logo.jpeg" alt="Inpixel Network">
+          <span>Inpixel Network</span>
+        </a>
+        <p class="footer-brand-desc">Transforming digital presence, one pixel at a time. Pune's go-to agency for growth-driven brands.</p>
+        <a href="https://instagram.com/inpixel_network" target="_blank" rel="noopener noreferrer" class="footer-social" aria-label="Instagram">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8">
+            <rect x="2" y="2" width="20" height="20" rx="5"/>
+            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+          </svg>
+          @inpixel_network
+        </a>
+      </div>
+      <div class="footer-col">
+        <h5 class="footer-col-title">Quick Links</h5>
+        <ul class="footer-links">
+          <li><a href="https://inpixelnetwork.in/">Home</a></li>
+          <li><a href="https://inpixelnetwork.in/services/">Services</a></li>
+          <li><a href="https://inpixelnetwork.in/#about">About Us</a></li>
+          <li><a href="https://inpixelnetwork.in/#contact">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5 class="footer-col-title">Legal</h5>
+        <ul class="footer-links">
+          <li><a href="https://inpixelnetwork.in/terms/">Terms &amp; Conditions</a></li>
+          <li><a href="https://inpixelnetwork.in/privacy/">Privacy Policy</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5 class="footer-col-title">Contact</h5>
+        <ul class="footer-links footer-contact">
+          <li>
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            <a href="mailto:supportinpixelnetwork@gmail.com">supportinpixelnetwork@gmail.com</a>
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <span>Pune, Maharashtra, India</span>
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <span>Mon–Sat, 9 AM – 6 PM</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="max-w footer-bottom-inner">
+        <span>© 2026 Inpixel Network. All rights reserved.</span>
+        <span class="footer-bottom-links">
+          <a href="https://inpixelnetwork.in/terms/">Terms</a>
+          <span>·</span>
+          <a href="https://inpixelnetwork.in/privacy/">Privacy</a>
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../services/services.js"></script>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script src="../assets/js/checkout.js"></script>
+</body>
+</html>
