@@ -374,51 +374,39 @@
         </span>
       </div>
 
-      <p class="hero-eyebrow">Business Tool &bull; Lifetime Access</p>
-
       <h1 class="page-hero-h1">
         Inpixel <span class="gold">Quotation</span> Software
       </h1>
 
-      <p class="hero-sub-desc">
-        Stop wasting time building quotes manually. Generate professional, branded quotations in seconds — pay once and use it forever.
-      </p>
-
-      <!-- Purchase Bar -->
-      <div class="hero-purchase-bar">
-        <div>
-          <div class="hero-price-tag">
-            &#8377;2,999 <span class="one-time-label">ONE-TIME</span>
-          </div>
-          <div class="hero-price-sub">
-            &#10003; Lifetime Access &bull; No Subscriptions &bull; Instant Delivery
-          </div>
-        </div>
-        <button onclick="openPaymentModal('quotation', 'Inpixel Quotation Software — ₹2,999 Lifetime', 299900)"
-          class="btn-primary"
-          style="padding: 15px 32px; font-size: 0.95rem; cursor: pointer; border: none; font-weight: 700; white-space: nowrap;">
-          Buy Now — &#8377;2,999 Lifetime &rarr;
-        </button>
-      </div>
-
-      <!-- Demo Video -->
+      <!-- Demo Video — immediately below heading, audio on -->
       <div class="video-hero-wrap">
         <span class="video-overlay-label">&#9654; Live Software Demo</span>
         <video
           src="../assets/demo-quotation.mp4"
           controls
           autoplay
-          muted
           loop
           playsinline
-          preload="metadata"
-          poster="">
+          preload="auto">
           Your browser does not support the video tag.
         </video>
       </div>
 
+      <!-- Buy Now — directly below video -->
+      <div style="margin-top: 28px; display: flex; flex-direction: column; align-items: center; gap: 10px;">
+        <button onclick="openPaymentModal('quotation', 'Inpixel Quotation Software — ₹2,999 Lifetime', 299900)"
+          class="btn-primary"
+          style="padding: 16px 44px; font-size: 1.05rem; cursor: pointer; border: none; font-weight: 700; white-space: nowrap;">
+          Buy Now — &#8377;2,999 Lifetime &rarr;
+        </button>
+        <p style="font-family: 'Space Mono', monospace; font-size: 0.72rem; color: var(--text-muted); margin: 0;">
+          &#10003; One-time &bull; No subscriptions &bull; Lifetime access
+        </p>
+      </div>
+
     </div>
   </section>
+
 
   <!-- ================================================================
        FEATURES SECTION
