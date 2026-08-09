@@ -377,15 +377,56 @@
 
       <div class="video-hero-wrap">
         <video
+          id="demoVideo"
           src="../assets/demo-quotation.mp4"
           controls
           autoplay
           loop
           playsinline
-          preload="auto">
+          preload="auto"
+          style="cursor: pointer;">
           Your browser does not support the video tag.
         </video>
       </div>
+
+      <!-- Script for Video Click Play/Pause & Autoplay Audio Handling -->
+      <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          const video = document.getElementById('demoVideo');
+          if (!video) return;
+
+          // 1. Click on video to toggle Play / Pause
+          video.addEventListener('click', function(e) {
+            // Prevent conflict if user clicks native controls bar
+            if (e.offsetY > video.clientHeight - 50) return;
+            if (video.paused) {
+              video.play();
+            } else {
+              video.pause();
+            }
+          });
+
+          // 2. Programmatic Autoplay with Audio
+          video.muted = false;
+          const playPromise = video.play();
+          if (playPromise !== undefined) {
+            playPromise.catch(function(error) {
+              // If browser blocks unmuted autoplay, play muted & unmute on first user click anywhere
+              video.muted = true;
+              video.play();
+
+              function unmuteOnInteraction() {
+                video.muted = false;
+                video.play();
+                document.removeEventListener('click', unmuteOnInteraction);
+                document.removeEventListener('touchstart', unmuteOnInteraction);
+              }
+              document.addEventListener('click', unmuteOnInteraction);
+              document.addEventListener('touchstart', unmuteOnInteraction);
+            });
+          }
+        });
+      </script>
 
       <!-- Buy Now — directly below video -->
       <div style="margin-top: 28px; display: flex; flex-direction: column; align-items: center; gap: 10px;">
