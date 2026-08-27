@@ -399,7 +399,7 @@ async function loadClients() {
     const res = await fetch('/api/admin/clients', { headers: authHeaders() });
     const data = await res.json();
     if (!res.ok) throw new Error();
-    allClients = (data.clients || []).map(r => ({
+    allClients = (data.data || []).map(r => ({
       name: r.name,
       phone: r.phone,
       services: r.services || 'website',
