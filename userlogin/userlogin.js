@@ -101,13 +101,18 @@ function applyServiceLocks() {
 
 async function checkPhoneInSheet(phone) {
   const normalized = phone.replace(/[\s\-\(\)]/g, '');
-  const { data, error } = await db
-    .from('clients')
-    .select('name, services')
-    .eq('phone', normalized)
-    .maybeSingle();
-  if (error || !data) return { approved: false, name: '', services: 'website' };
-  return { approved: true, name: data.name || '', services: data.services || 'website' };
+  try {
+    const res = await fetch('/api/auth/check-client', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ phone: normalized })
+    });
+    const data = await res.json();
+    if (!res.ok || !data.approved) return { approved: false, name: '', services: 'website' };
+    return { approved: true, name: data.name || '', services: data.services || 'website' };
+  } catch (err) {
+    return { approved: false, name: '', services: 'website' };
+  }
 }
 
 // ── Service Dashboard: open a section ───────────────────────
