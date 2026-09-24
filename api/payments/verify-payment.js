@@ -16,7 +16,7 @@ const SERVICE_INFO = {
   'webdevelopment-starter': { name: 'Website Development — Starter', price: '₹2,999' },
   'webdevelopment-pro': { name: 'Website Development — Pro', price: '₹5,999' },
   'aivideos': { name: 'AI Video Ads', price: '₹999' },
-  'metaads': { name: 'Meta Ads Management', price: '₹1' },
+  'metaads': { name: 'Meta Ads Management', price: '₹2,999/mo' },
   'quotation': { name: 'Inpixel Quotation Software — Lifetime', price: '₹2,999' }
 };
 
