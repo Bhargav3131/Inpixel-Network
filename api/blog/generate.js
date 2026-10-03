@@ -29,14 +29,69 @@ function escapeXml(unsafe) {
   });
 }
 
+function wrapText(text, maxCharsPerLine = 32) {
+  const words = text.split(' ');
+  const lines = [];
+  let currentLine = '';
+
+  for (const word of words) {
+    if ((currentLine + ' ' + word).trim().length <= maxCharsPerLine) {
+      currentLine = (currentLine + ' ' + word).trim();
+    } else {
+      if (currentLine) lines.push(currentLine);
+      currentLine = word;
+    }
+  }
+  if (currentLine) lines.push(currentLine);
+  return lines.slice(0, 3); // Max 3 lines
+}
+
 function generateThumbnailSVG(title, category) {
+  const lines = wrapText(title, 28);
+  const startY = lines.length === 1 ? 300 : lines.length === 2 ? 270 : 235;
+  const lineSvg = lines.map((line, idx) => 
+    `<text x="100" y="${startY + (idx * 64)}" fill="#ffffff" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="48" font-weight="800" letter-spacing="-0.02em">${escapeXml(line)}</text>`
+  ).join('\n');
+
   return `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
-    <rect width="1200" height="630" fill="#060608"/>
-    <rect x="40" y="40" width="1120" height="550" rx="16" fill="#101018" stroke="rgba(240,165,0,0.2)" stroke-width="2"/>
-    <text x="600" y="250" text-anchor="middle" fill="#f0a500" font-family="Arial,sans-serif" font-size="42" font-weight="700">${escapeXml(title.substring(0, 50))}</text>
-    ${title.length > 50 ? `<text x="600" y="310" text-anchor="middle" fill="#f0a500" font-family="Arial,sans-serif" font-size="42" font-weight="700">${escapeXml(title.substring(50, 100))}</text>` : ''}
-    <text x="600" y="420" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-family="Arial,sans-serif" font-size="22" text-transform="uppercase" letter-spacing="3">${escapeXml(category.toUpperCase())}</text>
-    <text x="600" y="540" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-family="Arial,sans-serif" font-size="18">inpixelnetwork.in</text>
+    <defs>
+      <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#0b0b10"/>
+        <stop offset="50%" stop-color="#060608"/>
+        <stop offset="100%" stop-color="#121118"/>
+      </linearGradient>
+      <radialGradient id="glow" cx="85%" cy="20%" r="60%">
+        <stop offset="0%" stop-color="#f0a500" stop-opacity="0.25"/>
+        <stop offset="100%" stop-color="#060608" stop-opacity="0"/>
+      </radialGradient>
+      <radialGradient id="glow2" cx="15%" cy="80%" r="50%">
+        <stop offset="0%" stop-color="#f0a500" stop-opacity="0.12"/>
+        <stop offset="100%" stop-color="#060608" stop-opacity="0"/>
+      </radialGradient>
+    </defs>
+
+    <!-- Background -->
+    <rect width="1200" height="630" fill="url(#bg)"/>
+    <rect width="1200" height="630" fill="url(#glow)"/>
+    <rect width="1200" height="630" fill="url(#glow2)"/>
+
+    <!-- Outer Card Frame -->
+    <rect x="50" y="50" width="1100" height="530" rx="20" fill="none" stroke="rgba(240,165,0,0.18)" stroke-width="1.5"/>
+
+    <!-- Category Pill Badge -->
+    <g transform="translate(100, 110)">
+      <rect width="220" height="38" rx="19" fill="rgba(240,165,0,0.12)" stroke="rgba(240,165,0,0.4)" stroke-width="1"/>
+      <circle cx="20" cy="19" r="4" fill="#f0a500"/>
+      <text x="34" y="24" fill="#f0a500" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="13" font-weight="700" letter-spacing="0.08em" text-transform="uppercase">${escapeXml(category.toUpperCase().substring(0, 22))}</text>
+    </g>
+
+    <!-- Title Lines (Wrapped Cleanly) -->
+    ${lineSvg}
+
+    <!-- Bottom Meta & Branding -->
+    <line x1="100" y1="500" x2="1100" y2="500" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+    <text x="100" y="534" fill="#f0a500" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="16" font-weight="700" letter-spacing="0.05em">INPIXEL NETWORK</text>
+    <text x="1100" y="534" text-anchor="end" fill="rgba(255,255,255,0.4)" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="14">inpixelnetwork.in/blog</text>
   </svg>`;
 }
 
@@ -88,6 +143,7 @@ module.exports = async function (req, res) {
          - "excerpt": A 2-3 sentence summary.
          - "meta_description": SEO meta description under 160 chars.
          - "category": The category name.
+         - "image_prompt": A vivid, artistic text-to-image prompt (30-50 words) depicting this subject in a sleek, cinematic, 3D futuristic digital art style with dark moody background, glowing golden neon details, 8k resolution, minimalist agency aesthetic. Do NOT include any text, letters, or words in the image.
       3. Brand Mention: Naturally mention Inpixel Network's services (web development, AI videos, meta ads, social media management, quotation software) where relevant, without sounding too salesy.
     `;
 
@@ -125,20 +181,79 @@ module.exports = async function (req, res) {
       return res.status(500).json({ success: false, message: 'AI returned invalid JSON format. Please try again.' });
     }
 
-    // Generate Thumbnail
-    const svgContent = generateThumbnailSVG(blogData.title, blogData.category);
-    let fileName = `${blogData.slug}-${Date.now()}.svg`;
+    // 1. Ask Gemini to write an image generation prompt in the JSON response
+    const imagePrompt = blogData.image_prompt || `Ultra-modern cinematic 3D digital graphic representing ${blogData.category}, ${blogData.title}, glowing golden accents, minimalist dark luxury aesthetic, 8k resolution, photorealistic, professional agency banner`;
 
+    let thumbnailUrl = '';
+    let imageBuffer = null;
+    let imageContentType = 'image/png';
+    let fileExt = 'png';
+
+    // Try Google Imagen 3 first
+    try {
+      const imagenUrl = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${process.env.GEMINI_API_KEY}`;
+      const imagenRes = await fetch(imagenUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          instances: [{ prompt: imagePrompt }],
+          parameters: {
+            sampleCount: 1,
+            aspectRatio: "16:9",
+            outputOptions: { mimeType: "image/png" }
+          }
+        })
+      });
+
+      const imagenData = await imagenRes.json();
+      if (imagenData.predictions && imagenData.predictions[0]?.bytesBase64Encoded) {
+        imageBuffer = Buffer.from(imagenData.predictions[0].bytesBase64Encoded, 'base64');
+      } else if (imagenData.error) {
+        console.warn("Imagen 3 error, falling back to DALL-E / SVG:", imagenData.error);
+      }
+    } catch (imgErr) {
+      console.warn("Failed calling Imagen 3:", imgErr);
+    }
+
+    // Try OpenAI DALL-E 3 fallback if OpenAI key exists and Imagen 3 was skipped
+    if (!imageBuffer && process.env.OPENAI_API_KEY) {
+      try {
+        const OpenAI = require('openai');
+        const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+        const dallRes = await openai.images.generate({
+          model: "dall-e-3",
+          prompt: imagePrompt + ", 16:9 aspect ratio, no text in image, dark aesthetic with gold accents",
+          n: 1,
+          size: "1024x1024",
+          response_format: "b64_json"
+        });
+        if (dallRes.data && dallRes.data[0]?.b64_json) {
+          imageBuffer = Buffer.from(dallRes.data[0].b64_json, 'base64');
+        }
+      } catch (dallErr) {
+        console.warn("Failed calling DALL-E:", dallErr);
+      }
+    }
+
+    // If both AI image APIs failed, generate a high-end designer SVG poster
+    if (!imageBuffer) {
+      const svgContent = generateThumbnailSVG(blogData.title, blogData.category);
+      imageBuffer = Buffer.from(svgContent);
+      imageContentType = 'image/svg+xml';
+      fileExt = 'svg';
+    }
+
+    let fileName = `${blogData.slug}-${Date.now()}.${fileExt}`;
     const { data: uploadData, error: uploadError } = await supabase.storage
       .from('blog-thumbnails')
-      .upload(fileName, Buffer.from(svgContent), { contentType: 'image/svg+xml', upsert: true });
+      .upload(fileName, imageBuffer, { contentType: imageContentType, upsert: true });
 
     if (uploadError) {
       console.error("Storage upload error:", uploadError);
-      return res.status(500).json({ success: false, message: 'Storage upload error' });
+      return res.status(500).json({ success: false, message: 'Storage upload error: ' + uploadError.message });
     }
 
-    const thumbnailUrl = `${process.env.SUPABASE_URL}/storage/v1/object/public/blog-thumbnails/${fileName}`;
+    thumbnailUrl = `${process.env.SUPABASE_URL}/storage/v1/object/public/blog-thumbnails/${fileName}`;
 
     // Check duplicate slug
     let finalSlug = blogData.slug;
