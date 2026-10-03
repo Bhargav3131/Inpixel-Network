@@ -147,54 +147,39 @@ module.exports = async function (req, res) {
       3. Brand Mention: Naturally mention Inpixel Network's services (web development, AI videos, meta ads, social media management, quotation software) where relevant, without sounding too salesy.
     `;
 
-    const modelsToTry = [
-      'gemini-3.8-flash',
-      'gemini-1.5-flash-latest',
-      'gemini-1.5-pro-latest'
-    ];
-
+    let text = '';
     let lastError = null;
-    let data = null;
 
-    // 1. Try Google Gemini models
-    for (const modelName of modelsToTry) {
-      try {
-        const g_url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${process.env.GEMINI_API_KEY}`;
-        const response = await fetch(g_url, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: prompt }] }],
-            generationConfig: { 
-              temperature: 0.8, 
-              maxOutputTokens: 4096,
-              responseMimeType: "application/json"
-            }
-          })
-        });
+    // 1. First step: Try Google Gemini 3.8 Flash
+    try {
+      const g_url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${process.env.GEMINI_API_KEY}`;
+      const response = await fetch(g_url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: { 
+            temperature: 0.8, 
+            maxOutputTokens: 4096,
+            responseMimeType: "application/json"
+          }
+        })
+      });
 
-        const resJson = await response.json();
-        if (resJson.error) {
-          console.warn(`Model ${modelName} error:`, resJson.error);
-          lastError = resJson.error;
-          continue;
-        }
-
-        if (resJson.candidates && resJson.candidates[0]?.content?.parts?.[0]?.text) {
-          data = resJson;
-          break; // Success with Gemini!
-        }
-      } catch (err) {
-        console.warn(`Model ${modelName} fetch failed:`, err);
-        lastError = err;
+      const resJson = await response.json();
+      if (resJson.candidates && resJson.candidates[0]?.content?.parts?.[0]?.text) {
+        text = resJson.candidates[0].content.parts[0].text;
+      } else {
+        lastError = resJson.error || new Error('Gemini empty response');
+        console.warn("Gemini 3.8 Flash failed, falling back to OpenAI ChatGPT:", lastError);
       }
+    } catch (gErr) {
+      lastError = gErr;
+      console.warn("Gemini fetch error, falling back to OpenAI ChatGPT:", gErr);
     }
 
-    // 2. If Gemini is temporarily experiencing spikes or unavailable, use OpenAI gpt-4o-mini seamlessly
-    let text = '';
-    if (data) {
-      text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-    } else if (process.env.OPENAI_API_KEY) {
+    // 2. Second step: If Gemini fails, immediately generate with OpenAI ChatGPT (gpt-4o-mini)
+    if (!text && process.env.OPENAI_API_KEY) {
       try {
         const OpenAI = require('openai');
         const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
@@ -208,7 +193,8 @@ module.exports = async function (req, res) {
         });
         text = comp.choices[0]?.message?.content || '';
       } catch (oaiErr) {
-        console.warn("OpenAI fallback failed:", oaiErr);
+        console.error("OpenAI ChatGPT fallback error:", oaiErr);
+        lastError = oaiErr;
       }
     }
 
