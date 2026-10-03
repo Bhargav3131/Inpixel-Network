@@ -148,64 +148,74 @@ module.exports = async function (req, res) {
     `;
 
     const modelsToTry = [
-      'gemini-2.5-flash',
       'gemini-3.8-flash',
-      'gemini-1.5-flash'
+      'gemini-1.5-flash-latest',
+      'gemini-1.5-pro-latest'
     ];
 
     let lastError = null;
     let data = null;
-    const MAX_OVERALL_ATTEMPTS = 5;
-    const retryDelays = [1000, 2000, 3000, 4000]; // 1s, 2s, 3s, 4s backoff
 
-    for (let attempt = 1; attempt <= MAX_OVERALL_ATTEMPTS; attempt++) {
-      for (const modelName of modelsToTry) {
-        try {
-          const g_url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${process.env.GEMINI_API_KEY}`;
-          const response = await fetch(g_url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              contents: [{ parts: [{ text: prompt }] }],
-              generationConfig: { 
-                temperature: 0.8, 
-                maxOutputTokens: 4096,
-                responseMimeType: "application/json"
-              }
-            })
-          });
+    // 1. Try Google Gemini models
+    for (const modelName of modelsToTry) {
+      try {
+        const g_url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${process.env.GEMINI_API_KEY}`;
+        const response = await fetch(g_url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: { 
+              temperature: 0.8, 
+              maxOutputTokens: 4096,
+              responseMimeType: "application/json"
+            }
+          })
+        });
 
-          const resJson = await response.json();
-          if (resJson.error) {
-            console.warn(`Attempt ${attempt} - Model ${modelName} error:`, resJson.error);
-            lastError = resJson.error;
-            continue;
-          }
-
-          if (resJson.candidates && resJson.candidates[0]?.content?.parts?.[0]?.text) {
-            data = resJson;
-            break; // Success!
-          }
-        } catch (err) {
-          console.warn(`Attempt ${attempt} - Model ${modelName} fetch failed:`, err);
-          lastError = err;
+        const resJson = await response.json();
+        if (resJson.error) {
+          console.warn(`Model ${modelName} error:`, resJson.error);
+          lastError = resJson.error;
+          continue;
         }
-      }
 
-      if (data) break; // Break out of overall attempts if successful
-
-      if (attempt < MAX_OVERALL_ATTEMPTS) {
-        const waitMs = retryDelays[attempt - 1] || 3000;
-        await new Promise(r => setTimeout(r, waitMs));
+        if (resJson.candidates && resJson.candidates[0]?.content?.parts?.[0]?.text) {
+          data = resJson;
+          break; // Success with Gemini!
+        }
+      } catch (err) {
+        console.warn(`Model ${modelName} fetch failed:`, err);
+        lastError = err;
       }
     }
 
-    if (!data) {
-      const errMsg = lastError?.message || JSON.stringify(lastError) || 'Gemini service unavailable after 5 attempts';
-      return res.status(500).json({ success: false, message: `Gemini API Error (after 5 retries): ${errMsg}`, error: lastError });
+    // 2. If Gemini is temporarily experiencing spikes or unavailable, use OpenAI gpt-4o-mini seamlessly
+    let text = '';
+    if (data) {
+      text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    } else if (process.env.OPENAI_API_KEY) {
+      try {
+        const OpenAI = require('openai');
+        const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+        const comp = await openai.chat.completions.create({
+          model: "gpt-4o-mini",
+          response_format: { type: "json_object" },
+          messages: [
+            { role: "system", content: "You are an expert marketing blogger. Output only valid JSON." },
+            { role: "user", content: prompt }
+          ]
+        });
+        text = comp.choices[0]?.message?.content || '';
+      } catch (oaiErr) {
+        console.warn("OpenAI fallback failed:", oaiErr);
+      }
     }
 
-    let text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    if (!text) {
+      const errMsg = lastError?.message || JSON.stringify(lastError) || 'AI generation service temporarily busy';
+      return res.status(500).json({ success: false, message: `AI Service Error: ${errMsg}`, error: lastError });
+    }
     text = text.replace(/```json/gi, '').replace(/```/g, '').trim();
 
     let blogData;
