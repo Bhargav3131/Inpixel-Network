@@ -1,16 +1,17 @@
 const Razorpay = require('razorpay');
 const { createClient } = require('@supabase/supabase-js');
 
-const ALLOWED_ORIGIN = 'https://inpixelnetwork.in';
+const ALLOWED_ORIGINS = ['https://inpixelnetwork.in', 'https://www.inpixelnetwork.in'];
 
-function setCors(res) {
-  res.setHeader('Access-Control-Allow-Origin', ALLOWED_ORIGIN);
+function setCors(req, res) {
+  const origin = req.headers.origin || '';
+  res.setHeader('Access-Control-Allow-Origin', ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0]);
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 }
 
 module.exports = async function (req, res) {
-  setCors(res);
+  setCors(req, res);
   if (req.method === 'OPTIONS') return res.status(200).end();
 
   if (req.method !== 'POST') {
@@ -22,7 +23,7 @@ module.exports = async function (req, res) {
 
     // Validate service↔amount pair (not just amount)
     const expectedAmounts = {
-      'socialmedia': 99900,
+      'socialmedia': 100,  // ₹1 for testing (restore to 99900 after)
       'webdevelopment-starter': 299900,
       'webdevelopment-pro': 599900,
       'aivideos': 99900,

@@ -2,10 +2,11 @@ const { createClient } = require('@supabase/supabase-js');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 
-const ALLOWED_ORIGIN = 'https://inpixelnetwork.in';
+const ALLOWED_ORIGINS = ['https://inpixelnetwork.in', 'https://www.inpixelnetwork.in'];
 
-function setCors(res) {
-  res.setHeader('Access-Control-Allow-Origin', ALLOWED_ORIGIN);
+function setCors(req, res) {
+  const origin = req.headers.origin || '';
+  res.setHeader('Access-Control-Allow-Origin', ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0]);
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 }
@@ -88,7 +89,7 @@ async function sendReceiptEmail({ to, clientName, serviceName, servicePrice, pay
 }
 
 module.exports = async function (req, res) {
-  setCors(res);
+  setCors(req, res);
   if (req.method === 'OPTIONS') return res.status(200).end();
 
   if (req.method !== 'POST') {
