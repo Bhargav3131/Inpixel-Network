@@ -24,27 +24,47 @@ module.exports = async function (req, res) {
   const MAX_POSTS = 5;
 
   for (let i = 0; i < MAX_POSTS; i++) {
-    try {
-      const randomCategory = CATEGORIES[Math.floor(Math.random() * CATEGORIES.length)];
-      
-      const response = await fetch(generateUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.CRON_SECRET}`
-        },
-        body: JSON.stringify({ category: randomCategory })
-      });
+    const randomCategory = CATEGORIES[Math.floor(Math.random() * CATEGORIES.length)];
+    let success = false;
+    let attempts = 0;
+    const MAX_RETRIES = 3;
 
-      const data = await response.json();
-      results.push({ attempt: i + 1, category: randomCategory, result: data });
-      
-      if (i < MAX_POSTS - 1) {
-        await delay(3000);
+    while (!success && attempts < MAX_RETRIES) {
+      attempts++;
+      try {
+        const response = await fetch(generateUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${process.env.CRON_SECRET}`
+          },
+          body: JSON.stringify({ category: randomCategory })
+        });
+
+        const data = await response.json();
+        if (response.ok && data.success) {
+          results.push({ post: i + 1, status: 'success', category: randomCategory, title: data.title });
+          success = true;
+        } else {
+          console.warn(`Post ${i + 1} attempt ${attempts} failed:`, data.message);
+          if (attempts < MAX_RETRIES) {
+            await delay(4000 * attempts); // Wait 4s, then 8s before retrying
+          } else {
+            results.push({ post: i + 1, status: 'failed', error: data.message });
+          }
+        }
+      } catch (error) {
+        console.error(`Post ${i + 1} attempt ${attempts} error:`, error.message);
+        if (attempts < MAX_RETRIES) {
+          await delay(4000 * attempts);
+        } else {
+          results.push({ post: i + 1, status: 'failed', error: error.message });
+        }
       }
-    } catch (error) {
-      console.error(`Error generating post ${i + 1}:`, error);
-      results.push({ attempt: i + 1, error: error.message });
+    }
+
+    if (i < MAX_POSTS - 1) {
+      await delay(2000); // 2 second pause before next post
     }
   }
 

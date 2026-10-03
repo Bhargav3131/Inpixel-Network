@@ -143,31 +143,66 @@ module.exports = async function (req, res) {
          - "excerpt": A 2-3 sentence summary.
          - "meta_description": SEO meta description under 160 chars.
          - "category": The category name.
-         - "image_prompt": A vivid, artistic text-to-image prompt (30-50 words) depicting this subject in a sleek, cinematic, 3D futuristic digital art style with dark moody background, glowing golden neon details, 8k resolution, minimalist agency aesthetic. Do NOT include any text, letters, or words in the image.
+         - "image_prompt": A natural, catchy, realistic photographic prompt (30-50 words) depicting this topic (e.g. creative team in a sleek studio, hands typing on modern laptop with glowing dashboards, modern tech office, camera equipment, elegant commercial photography, warm cinematic natural lighting, shallow depth of field, 4k). Strict rule: absolutely NO text, NO letters, NO words in the image.
       3. Brand Mention: Naturally mention Inpixel Network's services (web development, AI videos, meta ads, social media management, quotation software) where relevant, without sounding too salesy.
     `;
 
-    const g_url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${process.env.GEMINI_API_KEY}`;
-    
-    const response = await fetch(g_url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: { 
-          temperature: 0.8, 
-          maxOutputTokens: 4096,
-          responseMimeType: "application/json"
-        }
-      })
-    });
+    const modelsToTry = [
+      'gemini-2.5-flash',
+      'gemini-3.8-flash',
+      'gemini-1.5-flash'
+    ];
 
-    const data = await response.json();
-    
-    if (data.error) {
-       console.error("Gemini API Error:", data.error);
-       const errMsg = data.error.message || JSON.stringify(data.error);
-       return res.status(500).json({ success: false, message: `Gemini API Error: ${errMsg}`, error: data.error });
+    let lastError = null;
+    let data = null;
+    const MAX_OVERALL_ATTEMPTS = 5;
+    const retryDelays = [1000, 2000, 3000, 4000]; // 1s, 2s, 3s, 4s backoff
+
+    for (let attempt = 1; attempt <= MAX_OVERALL_ATTEMPTS; attempt++) {
+      for (const modelName of modelsToTry) {
+        try {
+          const g_url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${process.env.GEMINI_API_KEY}`;
+          const response = await fetch(g_url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: prompt }] }],
+              generationConfig: { 
+                temperature: 0.8, 
+                maxOutputTokens: 4096,
+                responseMimeType: "application/json"
+              }
+            })
+          });
+
+          const resJson = await response.json();
+          if (resJson.error) {
+            console.warn(`Attempt ${attempt} - Model ${modelName} error:`, resJson.error);
+            lastError = resJson.error;
+            continue;
+          }
+
+          if (resJson.candidates && resJson.candidates[0]?.content?.parts?.[0]?.text) {
+            data = resJson;
+            break; // Success!
+          }
+        } catch (err) {
+          console.warn(`Attempt ${attempt} - Model ${modelName} fetch failed:`, err);
+          lastError = err;
+        }
+      }
+
+      if (data) break; // Break out of overall attempts if successful
+
+      if (attempt < MAX_OVERALL_ATTEMPTS) {
+        const waitMs = retryDelays[attempt - 1] || 3000;
+        await new Promise(r => setTimeout(r, waitMs));
+      }
+    }
+
+    if (!data) {
+      const errMsg = lastError?.message || JSON.stringify(lastError) || 'Gemini service unavailable after 5 attempts';
+      return res.status(500).json({ success: false, message: `Gemini API Error (after 5 retries): ${errMsg}`, error: lastError });
     }
 
     let text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
@@ -182,34 +217,49 @@ module.exports = async function (req, res) {
     }
 
     // 1. Ask Gemini to write an image generation prompt in the JSON response
-    const imagePrompt = blogData.image_prompt || `Ultra-modern cinematic 3D digital graphic representing ${blogData.category}, ${blogData.title}, glowing golden accents, minimalist dark luxury aesthetic, 8k resolution, photorealistic, professional agency banner`;
+    const imagePrompt = blogData.image_prompt || `High-end editorial photograph illustrating ${blogData.category}, natural ambient lighting, candid executive workspace, modern tech environment, cinematic depth of field, 35mm lens, award-winning photography, no text`;
 
     let thumbnailUrl = '';
     let imageBuffer = null;
     let imageContentType = 'image/png';
     let fileExt = 'png';
 
-    // Try Google Imagen 3 first
+    // Try Google Imagen 3 (try generateImages endpoint first, then predict)
     try {
-      const imagenUrl = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${process.env.GEMINI_API_KEY}`;
-      const imagenRes = await fetch(imagenUrl, {
+      const gImgUrl = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:generateImages?key=${process.env.GEMINI_API_KEY}`;
+      const imgRes = await fetch(gImgUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          instances: [{ prompt: imagePrompt }],
-          parameters: {
-            sampleCount: 1,
-            aspectRatio: "16:9",
-            outputOptions: { mimeType: "image/png" }
-          }
+          prompt: imagePrompt,
+          numberOfImages: 1,
+          aspectRatio: "16:9",
+          outputMimeType: "image/png"
         })
       });
 
-      const imagenData = await imagenRes.json();
-      if (imagenData.predictions && imagenData.predictions[0]?.bytesBase64Encoded) {
-        imageBuffer = Buffer.from(imagenData.predictions[0].bytesBase64Encoded, 'base64');
-      } else if (imagenData.error) {
-        console.warn("Imagen 3 error, falling back to DALL-E / SVG:", imagenData.error);
+      const imgData = await imgRes.json();
+      if (imgData.generatedImages && imgData.generatedImages[0]?.image?.imageBytes) {
+        imageBuffer = Buffer.from(imgData.generatedImages[0].image.imageBytes, 'base64');
+      } else if (imgData.predictions && imgData.predictions[0]?.bytesBase64Encoded) {
+        imageBuffer = Buffer.from(imgData.predictions[0].bytesBase64Encoded, 'base64');
+      } else {
+        // Fallback predict endpoint
+        const predictUrl = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${process.env.GEMINI_API_KEY}`;
+        const pRes = await fetch(predictUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            instances: [{ prompt: imagePrompt }],
+            parameters: { sampleCount: 1, aspectRatio: "16:9", outputOptions: { mimeType: "image/png" } }
+          })
+        });
+        const pData = await pRes.json();
+        if (pData.predictions && pData.predictions[0]?.bytesBase64Encoded) {
+          imageBuffer = Buffer.from(pData.predictions[0].bytesBase64Encoded, 'base64');
+        } else {
+          console.warn("Imagen 3 endpoints failed, trying DALL-E:", imgData.error || pData.error);
+        }
       }
     } catch (imgErr) {
       console.warn("Failed calling Imagen 3:", imgErr);
