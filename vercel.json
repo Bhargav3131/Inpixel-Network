@@ -15,6 +15,14 @@
   },
   "rewrites": [
     {
+      "source": "/blogs",
+      "destination": "/blog/"
+    },
+    {
+      "source": "/blogs/",
+      "destination": "/blog/"
+    },
+    {
       "source": "/blog/:slug((?!^$).+)",
       "destination": "/api/blog/post?slug=:slug"
     }
