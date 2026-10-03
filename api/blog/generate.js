@@ -98,7 +98,11 @@ module.exports = async function (req, res) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: { temperature: 0.8, maxOutputTokens: 4096 }
+        generationConfig: { 
+          temperature: 0.8, 
+          maxOutputTokens: 4096,
+          responseMimeType: "application/json"
+        }
       })
     });
 
@@ -106,13 +110,20 @@ module.exports = async function (req, res) {
     
     if (data.error) {
        console.error("Gemini API Error:", data.error);
-       return res.status(500).json({ success: false, message: 'Gemini API Error', error: data.error });
+       const errMsg = data.error.message || JSON.stringify(data.error);
+       return res.status(500).json({ success: false, message: `Gemini API Error: ${errMsg}`, error: data.error });
     }
 
-    let text = data.candidates[0].content.parts[0].text;
-    text = text.replace(/^```json/g, '').replace(/```$/g, '').trim();
+    let text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    text = text.replace(/```json/gi, '').replace(/```/g, '').trim();
 
-    const blogData = JSON.parse(text);
+    let blogData;
+    try {
+      blogData = JSON.parse(text);
+    } catch(parseErr) {
+      console.error("Failed to parse AI output:", text);
+      return res.status(500).json({ success: false, message: 'AI returned invalid JSON format. Please try again.' });
+    }
 
     // Generate Thumbnail
     const svgContent = generateThumbnailSVG(blogData.title, blogData.category);
