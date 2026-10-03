@@ -150,12 +150,13 @@ module.exports = async function (req, res) {
     let text = '';
     let lastError = null;
 
-    // Use models directly confirmed available in your Google account
+    // Multi-model cascade using verified active models in your account
     const modelsToTry = [
-      'gemini-2.5-flash',
-      'gemini-flash-latest',
       'gemini-3.8-flash',
-      'gemini-2.5-flash-lite'
+      'gemini-3.5-flash',
+      'gemini-3-flash-preview',
+      'gemini-2.5-flash-lite',
+      'gemini-flash-latest'
     ];
 
     for (const modelName of modelsToTry) {
