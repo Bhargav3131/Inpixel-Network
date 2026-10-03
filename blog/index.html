@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog - Insights on digital marketing & web development | Inpixel Network</title>
+  <meta name="description" content="Insights on digital marketing, web development & growing your business online. Read the latest articles from Inpixel Network.">
+  <link rel="canonical" href="https://inpixelnetwork.in/blog/">
+  <!-- Open Graph -->
+  <meta property="og:title" content="Blog - Insights on digital marketing & web development | Inpixel Network">
+  <meta property="og:description" content="Insights on digital marketing, web development & growing your business online.">
+  <meta property="og:url" content="https://inpixelnetwork.in/blog/">
+  <meta property="og:type" content="website">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="icon" type="image/png" href="../logo1.jpeg">
+  
+  <!-- Supabase JS -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    /* Blog Specific Styles */
+    .blog-hero {
+      text-align: center;
+      padding: 140px 20px 80px;
+      border-bottom: 1px solid var(--border);
+    }
+    .blog-hero h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 20px;
+      color: var(--white);
+    }
+    .blog-hero p {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+    
+    .blog-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 60px 24px;
+    }
+    
+    .blog-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 30px;
+    }
+    
+    .blog-card {
+      display: flex;
+      flex-direction: column;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      height: 100%;
+    }
+    .blog-card:hover {
+      border-color: var(--gold);
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(240,165,0,0.1);
+    }
+    
+    .blog-card-img {
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: var(--black2);
+      overflow: hidden;
+      position: relative;
+    }
+    .blog-card-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+    .blog-card:hover .blog-card-img img {
+      transform: scale(1.05);
+    }
+    
+    .blog-card-body {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+    }
+    
+    .blog-card-cat {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--gold);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 12px;
+      font-weight: 700;
+    }
+    
+    .blog-card-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 12px;
+      line-height: 1.4;
+    }
+    
+    .blog-card-excerpt {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 24px;
+      flex-grow: 1;
+    }
+    
+    .blog-card-meta {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: auto;
+      border-top: 1px solid var(--border);
+      padding-top: 16px;
+    }
+    .blog-card-meta .read-more {
+      color: var(--gold);
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: gap 0.3s;
+    }
+    .blog-card:hover .read-more {
+      gap: 10px;
+    }
+    
+    .load-more-container {
+      text-align: center;
+      margin-top: 60px;
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      grid-column: 1 / -1;
+    }
+
+    /* Skeleton Loading */
+    .skeleton-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+    .skeleton-img {
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: var(--black2);
+      animation: pulse 1.5s infinite;
+    }
+    .skeleton-body {
+      padding: 24px;
+    }
+    .skeleton-line {
+      height: 12px;
+      background: var(--black2);
+      margin-bottom: 12px;
+      border-radius: 4px;
+      animation: pulse 1.5s infinite;
+    }
+    .skeleton-line.short { width: 40%; }
+    .skeleton-line.title { height: 24px; margin-bottom: 16px; }
+
+    @keyframes pulse {
+      0% { opacity: 0.6; }
+      50% { opacity: 1; }
+      100% { opacity: 0.6; }
+    }
+
+    @media (max-width: 900px) {
+      .blog-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 600px) {
+      .blog-grid { grid-template-columns: 1fr; }
+      .blog-hero h1 { font-size: 2.2rem; }
+    }
+
+    /* Standard Footer Base styles to copy over */
+    .site-footer {
+      border-top: 1px solid var(--border);
+      background: var(--black);
+      padding: 60px 48px 20px;
+    }
+    .footer-inner {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1.5fr;
+      gap: 40px;
+      margin-bottom: 40px;
+    }
+    .footer-brand-desc {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      line-height: 1.6;
+      margin: 16px 0;
+    }
+    .footer-social {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--white);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+    .footer-social:hover { color: var(--gold); }
+    .footer-social svg { width: 20px; stroke: currentColor; }
+    .footer-col-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.1rem;
+      color: var(--white);
+      margin-bottom: 20px;
+    }
+    .footer-links {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .footer-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.3s;
+      font-size: 0.9rem;
+    }
+    .footer-links a:hover { color: var(--gold); }
+    .footer-contact li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+    .footer-contact svg {
+      width: 18px;
+      stroke: var(--gold);
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .footer-bottom {
+      border-top: 1px solid var(--border);
+      padding-top: 20px;
+    }
+    .footer-bottom-inner {
+      display: flex;
+      justify-content: space-between;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+    .footer-bottom-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+    }
+    .footer-bottom-links a:hover { color: var(--gold); }
+    @media (max-width: 900px) {
+      .footer-inner { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 600px) {
+      .footer-inner { grid-template-columns: 1fr; }
+      .site-footer { padding: 40px 20px 20px; }
+      .footer-bottom-inner { flex-direction: column; text-align: center; gap: 10px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="grid-bg"></div>
+
+  <!-- NAV -->
+  <nav id="nav">
+    <a class="nav-logo" href="https://inpixelnetwork.in/">
+      <img src="../logo.jpeg" alt="Inpixel Network">
+      <span>Inpixel Network</span>
+    </a>
+    <div class="nav-links" id="navLinks">
+      <a href="https://inpixelnetwork.in/webdevelopment/">Websites</a>
+      <a href="https://inpixelnetwork.in/aivideos/">AI Videos</a>
+      <a href="https://inpixelnetwork.in/metaads/">Meta Ads</a>
+      <a href="https://inpixelnetwork.in/socialmedia/">Social Media</a>
+      <a href="https://inpixelnetwork.in/quotation/">Quotation</a>
+      <a href="https://inpixelnetwork.in/#contact">Contact</a>
+    </div>
+    <button class="nav-hamburger" id="navHamburger" aria-label="Open menu" onclick="toggleNav()"><span></span><span></span><span></span></button>
+  </nav>
+
+  <!-- HERO -->
+  <section class="blog-hero">
+    <h1>Blog</h1>
+    <p>Insights on digital marketing, web development & growing your business online.</p>
+  </section>
+
+  <!-- BLOG GRID -->
+  <main class="blog-container">
+    <div class="blog-grid" id="blogGrid">
+      <!-- Skeletons initially -->
+      <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line short"></div><div class="skeleton-line title"></div><div class="skeleton-line"></div><div class="skeleton-line"></div></div></div>
+      <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line short"></div><div class="skeleton-line title"></div><div class="skeleton-line"></div><div class="skeleton-line"></div></div></div>
+      <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line short"></div><div class="skeleton-line title"></div><div class="skeleton-line"></div><div class="skeleton-line"></div></div></div>
+    </div>
+    
+    <div class="load-more-container" id="loadMoreContainer" style="display: none;">
+      <button class="btn-primary" id="loadMoreBtn" onclick="loadBlogs()">Load More</button>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-inner max-w">
+      <div class="footer-brand">
+        <a href="https://inpixelnetwork.in/" class="footer-logo">
+          <img src="../logo.jpeg" alt="Inpixel Network">
+          <span>Inpixel Network</span>
+        </a>
+        <p class="footer-brand-desc">Transforming digital presence, one pixel at a time. Pune's go-to agency for growth-driven brands.</p>
+        <a href="https://instagram.com/inpixel_network" target="_blank" rel="noopener noreferrer" class="footer-social" aria-label="Instagram">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8">
+            <rect x="2" y="2" width="20" height="20" rx="5"/>
+            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+          </svg>
+          @inpixel_network
+        </a>
+      </div>
+      <div class="footer-col">
+        <h5 class="footer-col-title">Quick Links</h5>
+        <ul class="footer-links">
+          <li><a href="https://inpixelnetwork.in/">Home</a></li>
+          <li><a href="https://inpixelnetwork.in/services/">Services</a></li>
+          <li><a href="https://inpixelnetwork.in/#about">About Us</a></li>
+          <li><a href="https://inpixelnetwork.in/#process">Our Process</a></li>
+          <li><a href="https://inpixelnetwork.in/#contact">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5 class="footer-col-title">Legal</h5>
+        <ul class="footer-links">
+          <li><a href="https://inpixelnetwork.in/terms/">Terms & Conditions</a></li>
+          <li><a href="https://inpixelnetwork.in/privacy/">Privacy Policy</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5 class="footer-col-title">Contact</h5>
+        <ul class="footer-links footer-contact">
+          <li>
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            <a href="mailto:supportinpixelnetwork@gmail.com">supportinpixelnetwork@gmail.com</a>
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <span>Pune, Maharashtra, India</span>
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <span>Mon–Sat, 9 AM – 6 PM</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="max-w footer-bottom-inner">
+        <span>© 2026 Inpixel Network. All rights reserved.</span>
+        <span class="footer-bottom-links">
+          <a href="https://inpixelnetwork.in/terms/">Terms</a>
+          <span>·</span>
+          <a href="https://inpixelnetwork.in/privacy/">Privacy</a>
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Nav Toggle logic
+    function toggleNav() {
+      const links = document.getElementById('navLinks');
+      const hamburger = document.getElementById('navHamburger');
+      if(links.style.display === 'flex') {
+        links.style.display = 'none';
+        hamburger.classList.remove('active');
+      } else {
+        links.style.display = 'flex';
+        links.style.flexDirection = 'column';
+        links.style.position = 'absolute';
+        links.style.top = '100%';
+        links.style.left = '0';
+        links.style.right = '0';
+        links.style.background = 'var(--black)';
+        links.style.padding = '20px';
+        hamburger.classList.add('active');
+      }
+    }
+    
+    // Scroll logic for nav
+    window.addEventListener('scroll', () => {
+      if(window.scrollY > 50) {
+        document.getElementById('nav').classList.add('scrolled');
+      } else {
+        document.getElementById('nav').classList.remove('scrolled');
+      }
+    });
+
+    // Supabase Config
+    const supabaseUrl = 'https://xcsdnrkgqkacmqdmedju.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhjc2RucmtncWthY21xZG1lZGp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NzI2NzYsImV4cCI6MjA5NjE0ODY3Nn0.8X_Jr8JQmO3lojcxoG-hhz6FEPCOiqf3EQ4QR5vNRFI';
+    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+    const LIMIT = 12;
+    let offset = 0;
+    
+    // Escaping function for XSS protection
+    function esc(str) {
+      if (!str) return '';
+      return String(str).replace(/[&<>'"]/g, 
+        tag => ({
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            "'": '&#39;',
+            '"': '&quot;'
+        }[tag] || tag)
+      );
+    }
+    
+    function formatDate(dateString) {
+      const options = { year: 'numeric', month: 'short', day: 'numeric' };
+      return new Date(dateString).toLocaleDateString('en-US', options);
+    }
+
+    async function loadBlogs() {
+      const grid = document.getElementById('blogGrid');
+      const loadMoreBtn = document.getElementById('loadMoreBtn');
+      const loadMoreContainer = document.getElementById('loadMoreContainer');
+      
+      try {
+        if(offset === 0) grid.innerHTML = ''; // clear skeletons
+        
+        loadMoreBtn.innerText = 'Loading...';
+        loadMoreBtn.disabled = true;
+
+        const { data, error } = await supabase
+          .from('blogs')
+          .select('*')
+          .eq('status', 'published')
+          .order('created_at', { ascending: false })
+          .range(offset, offset + LIMIT - 1);
+
+        if (error) throw error;
+        
+        if (data.length === 0 && offset === 0) {
+          grid.innerHTML = '<div class="empty-state">No blog posts yet. Check back soon!</div>';
+          loadMoreContainer.style.display = 'none';
+          return;
+        }
+
+        let html = '';
+        data.forEach(blog => {
+          const formatted_date = formatDate(blog.created_at);
+          // Estimate reading time (roughly 200 words per minute)
+          const wordCount = blog.content ? blog.content.replace(/<[^>]*>?/gm, '').split(/\s+/).length : 0;
+          const reading_time = Math.max(1, Math.ceil(wordCount / 200));
+          
+          let excerpt = blog.excerpt || '';
+          if(!excerpt && blog.content) {
+            excerpt = blog.content.replace(/<[^>]*>?/gm, '').substring(0, 120) + '...';
+          } else if(excerpt.length > 120) {
+            excerpt = excerpt.substring(0, 120) + '...';
+          }
+          
+          const thumbUrl = blog.thumbnail_url || 'https://via.placeholder.com/800x450/101018/f0a500?text=Inpixel+Blog';
+
+          html += `
+            <a href="/blog/${esc(blog.slug)}" class="blog-card">
+              <div class="blog-card-img"><img src="${esc(thumbUrl)}" alt="${esc(blog.title)}" loading="lazy"></div>
+              <div class="blog-card-body">
+                <span class="blog-card-cat">${esc(blog.category || 'Uncategorized')}</span>
+                <h3 class="blog-card-title">${esc(blog.title)}</h3>
+                <p class="blog-card-excerpt">${esc(excerpt)}</p>
+                <div class="blog-card-meta">
+                  <span>${esc(formatted_date)} · ${reading_time} min read</span>
+                  <span class="read-more">Read More →</span>
+                </div>
+              </div>
+            </a>
+          `;
+        });
+        
+        grid.innerHTML += html;
+        offset += data.length;
+        
+        if (data.length < LIMIT) {
+          loadMoreContainer.style.display = 'none';
+        } else {
+          loadMoreContainer.style.display = 'block';
+          loadMoreBtn.innerText = 'Load More';
+          loadMoreBtn.disabled = false;
+        }
+
+      } catch (err) {
+        console.error('Error fetching blogs:', err);
+        if(offset === 0) {
+          grid.innerHTML = '<div class="empty-state">Failed to load blogs. Please try again later.</div>';
+        }
+      }
+    }
+
+    // Initial load
+    document.addEventListener('DOMContentLoaded', loadBlogs);
+  </script>
+</body>
+</html>

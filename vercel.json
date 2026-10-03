@@ -1,10 +1,30 @@
 {
   "functions": {
+    "api/blog/generate.js": {
+      "memory": 512,
+      "maxDuration": 30
+    },
+    "api/blog/cron.js": {
+      "memory": 512,
+      "maxDuration": 60
+    },
     "api/**/*.js": {
       "memory": 256,
       "maxDuration": 10
     }
   },
+  "rewrites": [
+    {
+      "source": "/blog/:slug",
+      "destination": "/api/blog/post?slug=:slug"
+    }
+  ],
+  "crons": [
+    {
+      "path": "/api/blog/cron",
+      "schedule": "0 6,18 * * *"
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",

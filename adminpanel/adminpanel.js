@@ -68,8 +68,8 @@ function authHeaders() {
   };
 }
 
-let allSubmissions = [], allAiAds = [], allMetaAds = [], allClients = [], allPayments = [];
-let currentFilter = 'all', currentSearch = '', currentOpenId = null;
+let allSubmissions = [], allAiAds = [], allMetaAds = [], allClients = [], allPayments = [], allBlogs = [];
+let currentFilter = 'all', currentSearch = '', currentOpenId = null, currentBlogFilter = 'all';
 
 // ── TAB SWITCHER ─────────────────────────────────────────────
 function switchTab(tab) {
@@ -77,12 +77,20 @@ function switchTab(tab) {
   document.getElementById('tabAiAds').classList.toggle('tab-active',   tab === 'aiads');
   document.getElementById('tabMetaAds').classList.toggle('tab-active', tab === 'metaads');
   document.getElementById('tabPayments').classList.toggle('tab-active', tab === 'payments');
+  const blogTab = document.getElementById('tabBlog');
+  if (blogTab) blogTab.classList.toggle('tab-active', tab === 'blog');
+
   document.getElementById('websitePanel').style.display  = tab === 'website'  ? 'block' : 'none';
   document.getElementById('aiAdsPanel').style.display    = tab === 'aiads'    ? 'block' : 'none';
   document.getElementById('metaAdsPanel').style.display  = tab === 'metaads'  ? 'block' : 'none';
   document.getElementById('paymentsPanel').style.display = tab === 'payments' ? 'block' : 'none';
+  const blogPanel = document.getElementById('blogPanel');
+  if (blogPanel) blogPanel.style.display = tab === 'blog' ? 'block' : 'none';
+
   if (tab === 'payments') { startPaymentsLive(); }
   else if (payRefreshInterval) { clearInterval(payRefreshInterval); payRefreshInterval = null; }
+
+  if (tab === 'blog') { loadBlogs(); }
 }
 
 // ── WEBSITE SUBMISSIONS ──────────────────────────────────────
@@ -629,6 +637,143 @@ function startPaymentsLive() {
   if (payRefreshInterval) clearInterval(payRefreshInterval);
   loadPayments();
   payRefreshInterval = setInterval(loadPayments, 15000); // refresh every 15 seconds
+}
+
+// ── BLOG MANAGEMENT ──────────────────────────────────────────
+async function loadBlogs() {
+  const container = document.getElementById('blogsContainer');
+  if (!container) return;
+  container.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text-muted);font-family:\'Space Mono\',monospace;font-size:0.8rem;">Loading blogs...</div>';
+
+  try {
+    const res = await fetch('/api/blog/manage', { headers: authHeaders() });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || 'Failed to fetch');
+    allBlogs = data.blogs || [];
+    renderBlogs();
+  } catch (err) {
+    container.innerHTML = '<div style="text-align:center;padding:30px;color:#ef4444;font-family:\'Space Mono\',monospace;font-size:0.8rem;">Failed to load blogs.</div>';
+  }
+}
+
+function setBlogFilter(filter, btn) {
+  currentBlogFilter = filter;
+  document.getElementById('blogFilterAll').classList.toggle('active', filter === 'all');
+  document.getElementById('blogFilterPub').classList.toggle('active', filter === 'published');
+  document.getElementById('blogFilterDraft').classList.toggle('active', filter === 'draft');
+  renderBlogs();
+}
+
+function renderBlogs() {
+  const container = document.getElementById('blogsContainer');
+  if (!container) return;
+
+  const filtered = allBlogs.filter(b => {
+    if (currentBlogFilter === 'all') return true;
+    return b.status === currentBlogFilter;
+  });
+
+  if (!filtered.length) {
+    container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-muted);font-family:\'Space Mono\',monospace;font-size:0.8rem;">No blogs found. Click "Generate AI Blog" to create one.</div>';
+    return;
+  }
+
+  container.innerHTML = filtered.map(b => {
+    const isPub = b.status === 'published';
+    const statusBadge = isPub 
+      ? '<span style="background:rgba(34,197,94,0.12); color:#22c55e; border:1px solid rgba(34,197,94,0.3); font-size:0.65rem; padding:3px 8px; border-radius:3px; font-family:\'Space Mono\',monospace; text-transform:uppercase;">Published</span>'
+      : '<span style="background:rgba(240,165,0,0.12); color:#f0a500; border:1px solid rgba(240,165,0,0.3); font-size:0.65rem; padding:3px 8px; border-radius:3px; font-family:\'Space Mono\',monospace; text-transform:uppercase;">Draft</span>';
+    const dateStr = b.created_at ? new Date(b.created_at).toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric' }) : '—';
+    const publicUrl = '/blog/' + encodeURIComponent(b.slug);
+
+    return `
+      <div class="blog-item-card">
+        <div style="display:flex; align-items:center; gap:16px; min-width:0; flex:1;">
+          ${b.thumbnail_url ? `<img src="${esc(b.thumbnail_url)}" alt="thumbnail" style="width:58px; height:38px; object-fit:cover; border-radius:4px; border:1px solid var(--border); flex-shrink:0;">` : ''}
+          <div style="min-width:0; flex:1;">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px; flex-wrap:wrap;">
+              ${statusBadge}
+              <span style="font-family:'Space Mono',monospace; font-size:0.7rem; color:var(--text-muted);">${esc(b.category || 'General')} · ${dateStr}</span>
+            </div>
+            <div style="font-family:'Syne',sans-serif; font-weight:700; color:var(--white); font-size:0.95rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+              ${esc(b.title)}
+            </div>
+          </div>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; flex-shrink:0;">
+          <a href="${publicUrl}" target="_blank" class="blog-action-btn" style="text-decoration:none;">View</a>
+          <button class="blog-action-btn" onclick="toggleBlogStatus('${b.id}', '${isPub ? 'draft' : 'published'}')">${isPub ? 'Make Draft' : 'Publish'}</button>
+          <button class="blog-action-btn del" onclick="deleteBlog('${b.id}')">Delete</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+async function toggleBlogStatus(id, newStatus) {
+  try {
+    const res = await fetch('/api/blog/manage', {
+      method: 'PATCH',
+      headers: authHeaders(),
+      body: JSON.stringify({ id, status: newStatus })
+    });
+    if (!res.ok) throw new Error();
+    loadBlogs();
+  } catch (err) {
+    alert('Failed to update blog status');
+  }
+}
+
+async function deleteBlog(id) {
+  if (!confirm('Are you sure you want to delete this blog post?')) return;
+  try {
+    const res = await fetch('/api/blog/manage', {
+      method: 'DELETE',
+      headers: authHeaders(),
+      body: JSON.stringify({ id })
+    });
+    if (!res.ok) throw new Error();
+    loadBlogs();
+  } catch (err) {
+    alert('Failed to delete blog post');
+  }
+}
+
+async function triggerGenerateBlog() {
+  const topicInput = document.getElementById('customBlogTopic');
+  const statusEl = document.getElementById('blogGenStatus');
+  const btn = document.getElementById('btnGenBlog');
+  const topic = topicInput ? topicInput.value.trim() : '';
+
+  btn.disabled = true;
+  btn.textContent = 'Generating with AI...';
+  if (statusEl) {
+    statusEl.textContent = '🤖 Calling Gemini AI & generating SVG thumbnail... this takes ~10-15s';
+    statusEl.style.display = 'block';
+  }
+
+  try {
+    const res = await fetch('/api/blog/generate', {
+      method: 'POST',
+      headers: authHeaders(),
+      body: JSON.stringify(topic ? { topic } : {})
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || (data.error && data.error.message) || 'Generation failed');
+
+    if (statusEl) {
+      statusEl.textContent = `✓ Generated: "${data.title}"`;
+      setTimeout(() => { statusEl.style.display = 'none'; }, 4000);
+    }
+    if (topicInput) topicInput.value = '';
+    loadBlogs();
+  } catch (err) {
+    alert('Failed to generate blog: ' + err.message);
+    if (statusEl) statusEl.style.display = 'none';
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg> Generate AI Blog`;
+  }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
