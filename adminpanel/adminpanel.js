@@ -758,7 +758,13 @@ async function triggerGenerateBlog() {
       headers: authHeaders(),
       body: JSON.stringify(topic ? { topic } : {})
     });
-    const data = await res.json();
+    const resText = await res.text();
+    let data;
+    try {
+      data = JSON.parse(resText);
+    } catch(e) {
+      throw new Error('Server took too long to generate. Please try again.');
+    }
     if (!res.ok) throw new Error(data.message || (data.error && data.error.message) || 'Generation failed');
 
     if (statusEl) {
