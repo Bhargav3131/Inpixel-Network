@@ -6,7 +6,7 @@ const ALLOWED_ORIGINS = ['https://inpixelnetwork.in', 'https://www.inpixelnetwor
 function setCors(req, res) {
   const origin = req.headers.origin || '';
   res.setHeader('Access-Control-Allow-Origin', ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0]);
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 }
 
@@ -14,22 +14,37 @@ module.exports = async function (req, res) {
   setCors(req, res);
   if (req.method === 'OPTIONS') return res.status(200).end();
 
+  const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
+
+  let expectedAmounts = {
+    'socialmedia': 99900,
+    'webdevelopment-starter': 299900,
+    'webdevelopment-pro': 599900,
+    'aivideos': 99900,
+    'metaads': 299900,
+    'quotation': 299900
+  };
+
+  try {
+    const { data: setRow } = await supabase.from('settings').select('value').eq('key', 'pricing').maybeSingle();
+    if (setRow && setRow.value && typeof setRow.value === 'object') {
+      expectedAmounts = { ...expectedAmounts, ...setRow.value };
+    }
+  } catch (e) {
+    // Fallback to default expected amounts
+  }
+
+  // Allow GET to fetch current active pricing
+  if (req.method === 'GET') {
+    return res.status(200).json({ success: true, prices: expectedAmounts });
+  }
+
   if (req.method !== 'POST') {
     return res.status(405).json({ success: false, message: 'Method Not Allowed' });
   }
 
   try {
     const { plan, service, amount, client_name, client_phone, client_email } = req.body || {};
-
-    // Validate service↔amount pair (not just amount)
-    const expectedAmounts = {
-      'socialmedia': 100,  // ₹1 for testing (restore to 99900 after)
-      'webdevelopment-starter': 299900,
-      'webdevelopment-pro': 599900,
-      'aivideos': 99900,
-      'metaads': 299900,
-      'quotation': 299900
-    };
 
     const serviceKey = service || plan;
     if (!serviceKey || expectedAmounts[serviceKey] !== amount) {
@@ -57,7 +72,6 @@ module.exports = async function (req, res) {
     });
 
     // Save a "pending" payment record
-    const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
     await supabase.from('payments').insert({
       razorpay_order_id: order.id,
       razorpay_payment_id: null,

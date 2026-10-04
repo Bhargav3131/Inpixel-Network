@@ -8,100 +8,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
   <link rel="icon" type="image/png" href="../logo1.jpeg">
   <link rel="stylesheet" href="/adminpanel/adminpanel.css">
-  <link rel="stylesheet" href="/adminpanel/styles.css">
   <style>
     @keyframes spin  { to { transform: rotate(360deg); } }
     @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
     @keyframes fadeUp{ from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
-
-    .tab-island { display:inline-flex; background:var(--surface2); border:1px solid var(--border); padding:4px; gap:4px; margin-bottom:28px; }
-    .tab-btn { font-family:'Space Mono',monospace; font-size:0.72rem; letter-spacing:0.08em; text-transform:uppercase; padding:10px 24px; border:none; background:transparent; color:var(--text-muted); cursor:pointer; transition:all 0.25s; display:flex; align-items:center; gap:8px; }
-    .tab-btn.tab-active { background:var(--surface); border:1px solid var(--border-bright); color:var(--gold); }
-    .tab-btn .tab-dot { width:6px; height:6px; border-radius:50%; }
-    #tabWebsite .tab-dot { background:var(--gold); }
-    #tabAiAds   .tab-dot { background:#a855f7; }
-    #tabMetaAds .tab-dot { background:#1877f2; }
-    #tabAiAds.tab-active   { color:#a855f7; border-color:rgba(168,85,247,0.4); }
-    #tabMetaAds.tab-active { color:#6aabff; border-color:rgba(24,119,242,0.4); }
-    #tabPayments .tab-dot { background:#22c55e; }
-    #tabPayments.tab-active { color:#22c55e; border-color:rgba(34,197,94,0.4); }
-    #tabBlog .tab-dot { background:#eab308; }
-    #tabBlog.tab-active { color:#eab308; border-color:rgba(234,179,8,0.4); }
-    .blog-item-card { background: var(--surface); border: 1px solid var(--border); padding: 18px 20px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; gap: 16px; border-radius: var(--radius); transition: border-color 0.2s; }
-    .blog-item-card:hover { border-color: rgba(240,165,0,0.3); }
-    .blog-action-btn { background: transparent; border: 1px solid var(--border); color: var(--text-muted); padding: 6px 12px; border-radius: 4px; font-family: 'Space Mono', monospace; font-size: 0.7rem; cursor: pointer; transition: all 0.2s; }
-    .blog-action-btn:hover { border-color: var(--gold); color: var(--gold); }
-    .blog-action-btn.del:hover { border-color: #ef4444; color: #ef4444; }
-    .gen-blog-btn { background: var(--gold); color: var(--black); border: none; font-weight: 700; padding: 10px 18px; border-radius: 4px; font-family: 'Syne', sans-serif; font-size: 0.82rem; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: transform 0.15s, opacity 0.2s; }
-    .gen-blog-btn:disabled { opacity: 0.6; cursor: not-allowed; }
-    .pay-card { background: var(--surface); border: 1px solid var(--border); padding: 18px 20px; margin-bottom: 10px; animation: fadeUp 0.4s ease both; display: flex; align-items: center; gap: 16px; cursor: default; transition: border-color 0.2s; }
-    .pay-card:hover { border-color: rgba(255,255,255,0.15); }
-    .pay-card.status-paid { border-left: 3px solid #22c55e; }
-    .pay-card.status-pending { border-left: 3px solid #f0a500; }
-    .pay-card.status-failed { border-left: 3px solid #ef4444; }
-    .pay-status { font-family: 'Space Mono', monospace; font-size: 0.65rem; letter-spacing: 0.08em; text-transform: uppercase; padding: 4px 10px; border-radius: 2px; font-weight: 700; }
-    .pay-status.s-paid { background: rgba(34,197,94,0.12); color: #22c55e; border: 1px solid rgba(34,197,94,0.3); }
-    .pay-status.s-pending { background: rgba(240,165,0,0.12); color: #f0a500; border: 1px solid rgba(240,165,0,0.3); }
-    .pay-status.s-failed { background: rgba(239,68,68,0.12); color: #ef4444; border: 1px solid rgba(239,68,68,0.3); }
-    .pay-info { flex: 1; }
-    .pay-name { font-family: 'Syne', sans-serif; font-weight: 700; color: var(--white); font-size: 0.95rem; }
-    .pay-meta { font-family: 'Space Mono', monospace; font-size: 0.7rem; color: var(--text-muted); margin-top: 4px; }
-    .pay-amount { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.1rem; color: var(--white); text-align: right; }
-    .pay-amount small { font-size: 0.7rem; color: var(--text-muted); display: block; font-weight: 400; font-family: 'Space Mono', monospace; }
-    .pay-live-dot { width: 8px; height: 8px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 8px #22c55e; animation: blink 1.5s ease infinite; display: inline-block; margin-right: 6px; }
-    .pay-stats-row { display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
-    .pay-stat { flex: 1; min-width: 100px; background: var(--surface); border: 1px solid var(--border); padding: 16px; text-align: center; }
-    .pay-stat-num { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.5rem; }
-    .pay-stat-num.green { color: #22c55e; }
-    .pay-stat-num.orange { color: #f0a500; }
-    .pay-stat-num.red { color: #ef4444; }
-    .pay-stat-label { font-family: 'Space Mono', monospace; font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 4px; }
-
-    .svc-check-group { display:flex; gap:10px; margin-bottom:12px; }
-    .svc-check-item { display:flex; align-items:center; gap:8px; cursor:pointer; padding:9px 16px; border:1px solid var(--border); background:var(--black); flex:1; transition:all 0.2s; user-select:none; }
-    .svc-check-item:hover { border-color:rgba(240,165,0,0.3); }
-    .svc-check-item input[type=checkbox] { appearance:none; width:15px; height:15px; flex-shrink:0; background:var(--surface2); border:1px solid var(--border-bright); cursor:pointer; position:relative; transition:background 0.2s; }
-    .svc-check-item input[type=checkbox]:checked { background:var(--gold); border-color:var(--gold); }
-    .svc-check-item input[type=checkbox]:checked::after { content:''; position:absolute; top:2px; left:4px; width:4px; height:7px; border:2px solid var(--black); border-top:none; border-left:none; transform:rotate(45deg); }
-    .svc-check-item.svc-aiads input[type=checkbox]:checked { background:#a855f7; border-color:#a855f7; }
-    .svc-label { font-family:'Space Mono',monospace; font-size:0.7rem; letter-spacing:0.06em; text-transform:uppercase; }
-    .svc-label.gold { color:var(--gold); }
-    .svc-label.purple { color:#a855f7; }
-
-    .manage-clients-btn { background:transparent; border:1px solid var(--border-bright); color:var(--gold); font-family:'Space Mono',monospace; font-size:0.72rem; letter-spacing:0.08em; text-transform:uppercase; padding:10px 18px; cursor:pointer; transition:all 0.3s; display:flex; align-items:center; gap:8px; }
-    .manage-clients-btn:hover { background:rgba(240,165,0,0.08); box-shadow:0 0 20px rgba(240,165,0,0.2); }
-    .manage-clients-btn svg { width:14px; stroke:currentColor; fill:none; stroke-width:2; }
-    .manage-clients-btn .dot { width:6px; height:6px; border-radius:50%; background:#22c55e; box-shadow:0 0 6px #22c55e; animation:blink 1.5s ease infinite; }
-
-    .clients-modal { position:fixed; z-index:2100; top:50%; left:50%; transform:translate(-50%,-48%) scale(0.96); width:92%; max-width:560px; max-height:88vh; overflow-y:auto; background:var(--surface); border:1px solid var(--border-bright); opacity:0; pointer-events:none; transition:all 0.35s cubic-bezier(0.34,1.56,0.64,1); }
-    .clients-modal::before { content:''; position:sticky; top:0; display:block; height:2px; background:linear-gradient(90deg,transparent,var(--gold),transparent); }
-    .clients-modal.show { opacity:1; pointer-events:all; transform:translate(-50%,-50%) scale(1); }
-    .clients-modal-header { position:sticky; top:2px; background:var(--surface); border-bottom:1px solid var(--border); padding:20px 28px; display:flex; align-items:center; justify-content:space-between; z-index:10; }
-    .clients-modal-title { font-family:'Syne',sans-serif; font-weight:800; font-size:1.15rem; color:var(--white); display:flex; align-items:center; gap:10px; }
-    .clients-modal-title .badge { font-family:'Space Mono',monospace; font-size:0.62rem; letter-spacing:0.08em; background:rgba(34,197,94,0.12); border:1px solid rgba(34,197,94,0.3); color:#22c55e; padding:3px 9px; }
-    .clients-modal-body { padding:24px 28px; }
-    .add-client-form { background:var(--black2); border:1px solid var(--border); padding:20px; margin-bottom:24px; }
-    .add-client-form-title { font-family:'Space Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--gold); margin-bottom:14px; }
-    .add-client-fields { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px; }
-    @media(max-width:480px){ .add-client-fields{grid-template-columns:1fr;} }
-    .add-client-input { width:100%; background:var(--black); border:1px solid var(--border); color:var(--text); font-family:'DM Sans',sans-serif; font-size:0.9rem; padding:11px 14px; outline:none; transition:border-color 0.3s; }
-    .add-client-input:focus { border-color:var(--gold); }
-    .add-client-input::placeholder { color:var(--text-muted); }
-    .activate-btn { width:100%; background:var(--gold); color:var(--black); font-family:'Syne',sans-serif; font-weight:700; font-size:0.88rem; letter-spacing:0.04em; border:none; padding:13px; cursor:pointer; transition:all 0.3s; display:flex; align-items:center; justify-content:center; gap:8px; }
-    .activate-btn:hover { background:var(--gold-light); box-shadow:0 0 24px rgba(240,165,0,0.35); }
-    .activate-btn:disabled { opacity:0.6; cursor:not-allowed; }
-    .client-add-error   { display:none; font-size:0.78rem; color:#ff6666; margin-top:8px; font-family:'Space Mono',monospace; }
-    .client-add-success { display:none; font-size:0.78rem; color:#22c55e; margin-top:8px; font-family:'Space Mono',monospace; }
-    .clients-list-title { font-family:'Space Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-muted); margin-bottom:12px; }
-    #clientsList { display:flex; flex-direction:column; gap:8px; }
-    .client-row { display:flex; align-items:center; gap:14px; background:var(--black2); border:1px solid var(--border); padding:14px 16px; animation:fadeUp 0.3s ease both; transition:border-color 0.3s; }
-    .client-row:hover { border-color:var(--border-bright); }
-    .client-avatar { width:38px; height:38px; border-radius:50%; flex-shrink:0; background:linear-gradient(135deg,var(--gold-dim),var(--gold)); display:flex; align-items:center; justify-content:center; font-family:'Syne',sans-serif; font-weight:800; font-size:0.95rem; color:var(--black); }
-    .client-info { flex:1; min-width:0; }
-    .client-name { font-family:'Syne',sans-serif; font-weight:700; font-size:0.92rem; color:var(--white); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    .client-phone { font-family:'Space Mono',monospace; font-size:0.7rem; color:var(--text-muted); margin-top:2px; }
-    .client-added { font-family:'Space Mono',monospace; font-size:0.65rem; color:var(--text-muted); flex-shrink:0; }
-    .client-status-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; background:#22c55e; box-shadow:0 0 6px #22c55e; }
   </style>
 </head>
 <body>
@@ -125,39 +35,76 @@
       <span class="nav-badge">Admin Panel</span>
     </div>
     <div class="nav-right">
-      <button class="manage-clients-btn" onclick="openClientsModal()">
-        <div class="dot"></div>
-        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-        Manage Clients
+      <button class="back-to-dash-btn" id="backToDashBtn" onclick="backToDashboard()" style="display:none;">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" style="width:14px;stroke:currentColor;"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Dashboard
       </button>
       <a class="nav-back" href="../index.html"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>Back to Site</a>
     </div>
   </nav>
 
   <main>
-    <div class="page-header">
-      <div class="page-header-left"><p>Dashboard</p><h1>Submissions</h1></div>
+    <!-- ═══════ DASHBOARD VIEW ═══════ -->
+    <div id="dashboardView" style="display:none;">
+      <div class="page-header">
+        <div class="page-header-left"><p>Dashboard</p><h1>Admin Panel</h1></div>
+      </div>
+      <div class="dash-grid">
+        <!-- Website Submissions -->
+        <div class="dash-card" onclick="openSection('website')">
+          <div class="dash-card-icon gold-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
+          <div class="dash-card-body"><div class="dash-card-title">Website Submissions</div><div class="dash-card-desc">View & manage website development form entries</div></div>
+          <div class="dash-card-right"><div class="dash-card-badge gold-badge" id="badgeWebsite">0</div><svg class="dash-card-arrow" viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+        </div>
+        <!-- AI Video Submissions -->
+        <div class="dash-card" onclick="openSection('aiads')">
+          <div class="dash-card-icon purple-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
+          <div class="dash-card-body"><div class="dash-card-title">AI Video Submissions</div><div class="dash-card-desc">View & manage AI video ad form entries</div></div>
+          <div class="dash-card-right"><div class="dash-card-badge purple-badge" id="badgeAiAds">0</div><svg class="dash-card-arrow" viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+        </div>
+        <!-- Meta Ads Submissions -->
+        <div class="dash-card" onclick="openSection('metaads')">
+          <div class="dash-card-icon blue-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></div>
+          <div class="dash-card-body"><div class="dash-card-title">Meta Ads Submissions</div><div class="dash-card-desc">View & manage Meta/Facebook ads form entries</div></div>
+          <div class="dash-card-right"><div class="dash-card-badge blue-badge" id="badgeMetaAds">0</div><svg class="dash-card-arrow" viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+        </div>
+        <!-- Payments -->
+        <div class="dash-card" onclick="openSection('payments')">
+          <div class="dash-card-icon green-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+          <div class="dash-card-body"><div class="dash-card-title">Payments</div><div class="dash-card-desc">Live payment tracking — completed, pending & failed</div></div>
+          <div class="dash-card-right"><div class="dash-card-meta" id="badgePayments"><span class="pay-live-dot"></span> Live</div><svg class="dash-card-arrow" viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+        </div>
+        <!-- Client Accounts -->
+        <div class="dash-card" onclick="openSection('clients')">
+          <div class="dash-card-icon teal-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+          <div class="dash-card-body"><div class="dash-card-title">Client Accounts</div><div class="dash-card-desc">Activate, deactivate & manage client access</div></div>
+          <div class="dash-card-right"><div class="dash-card-badge teal-badge" id="badgeClients">0</div><svg class="dash-card-arrow" viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+        </div>
+        <!-- Blog Manager -->
+        <div class="dash-card" onclick="openSection('blog')">
+          <div class="dash-card-icon yellow-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
+          <div class="dash-card-body"><div class="dash-card-title">Blog Manager</div><div class="dash-card-desc">Generate AI blogs, publish, draft & delete posts</div></div>
+          <div class="dash-card-right"><div class="dash-card-badge yellow-badge" id="badgeBlog">0</div><svg class="dash-card-arrow" viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+        </div>
+        <!-- Pricing & Settings -->
+        <div class="dash-card" onclick="openSection('pricing')">
+          <div class="dash-card-icon white-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
+          <div class="dash-card-body"><div class="dash-card-title">Pricing & Settings</div><div class="dash-card-desc">Edit service prices & configure panel settings</div></div>
+          <div class="dash-card-right"><svg class="dash-card-arrow" viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+        </div>
+      </div>
     </div>
 
-    <div class="tab-island">
-      <button class="tab-btn tab-active" id="tabWebsite" onclick="switchTab('website')"><span class="tab-dot"></span> Website</button>
-      <button class="tab-btn" id="tabAiAds" onclick="switchTab('aiads')"><span class="tab-dot"></span> AI Ads</button>
-      <button class="tab-btn" id="tabMetaAds" onclick="switchTab('metaads')"><span class="tab-dot"></span> Meta Ads</button>
-      <button class="tab-btn" id="tabPayments" onclick="switchTab('payments')"><span class="tab-dot"></span> Payments</button>
-      <button class="tab-btn" id="tabBlog" onclick="switchTab('blog')"><span class="tab-dot"></span> Blog</button>
-    </div>
-
-    <div id="websitePanel">
+    <!-- ═══════ WEBSITE SUBMISSIONS ═══════ -->
+    <div id="view-website" class="section-view" style="display:none;">
+      <div class="section-view-header"><div><p class="section-view-label">Submissions</p><h2 class="section-view-title">Website Development</h2></div></div>
       <div class="stats-row" style="margin-bottom:24px;">
         <div class="stat-chip"><div class="stat-chip-num" id="statTotal">0</div><div class="stat-chip-label">Total</div></div>
         <div class="stat-chip"><div class="stat-chip-num" id="statToday">0</div><div class="stat-chip-label">Today</div></div>
         <div class="stat-chip"><div class="stat-chip-num" id="statWeek">0</div><div class="stat-chip-label">This Week</div></div>
       </div>
       <div class="toolbar">
-        <div class="search-box">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <input type="text" id="searchInput" placeholder="Search by name, phone, business..." oninput="filterCards()">
-        </div>
+        <div class="search-box"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" id="searchInput" placeholder="Search by name, phone, business..." oninput="filterCards()"></div>
         <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
         <button class="filter-btn" onclick="setFilter('today',this)">Today</button>
         <button class="filter-btn" onclick="setFilter('week',this)">This Week</button>
@@ -166,35 +113,35 @@
       <div id="cardsContainer"></div>
     </div>
 
-    <div id="aiAdsPanel" style="display:none;">
+    <!-- ═══════ AI ADS SUBMISSIONS ═══════ -->
+    <div id="view-aiads" class="section-view" style="display:none;">
+      <div class="section-view-header"><div><p class="section-view-label" style="color:#a855f7;">Submissions</p><h2 class="section-view-title">AI Video Ads</h2></div></div>
       <div class="stats-row" style="margin-bottom:24px;">
         <div class="stat-chip"><div class="stat-chip-num" id="aiStatTotal">0</div><div class="stat-chip-label">Total</div></div>
         <div class="stat-chip"><div class="stat-chip-num" id="aiStatToday">0</div><div class="stat-chip-label">Today</div></div>
       </div>
       <div class="toolbar">
-        <div class="search-box">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <input type="text" id="aiSearchInput" placeholder="Search by name or phone..." oninput="renderAiAdsCards()">
-        </div>
+        <div class="search-box"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" id="aiSearchInput" placeholder="Search by name or phone..." oninput="renderAiAdsCards()"></div>
       </div>
       <div id="aiAdsContainer"></div>
     </div>
 
-    <div id="metaAdsPanel" style="display:none;">
+    <!-- ═══════ META ADS SUBMISSIONS ═══════ -->
+    <div id="view-metaads" class="section-view" style="display:none;">
+      <div class="section-view-header"><div><p class="section-view-label" style="color:#6aabff;">Submissions</p><h2 class="section-view-title">Meta Ads</h2></div></div>
       <div class="stats-row" style="margin-bottom:24px;">
         <div class="stat-chip"><div class="stat-chip-num" id="metaStatTotal">0</div><div class="stat-chip-label">Total</div></div>
         <div class="stat-chip"><div class="stat-chip-num" id="metaStatToday">0</div><div class="stat-chip-label">Today</div></div>
       </div>
       <div class="toolbar">
-        <div class="search-box">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <input type="text" id="metaSearchInput" placeholder="Search by name, phone, business..." oninput="renderMetaAdsCards()">
-        </div>
+        <div class="search-box"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" id="metaSearchInput" placeholder="Search by name, phone, business..." oninput="renderMetaAdsCards()"></div>
       </div>
       <div id="metaAdsContainer"></div>
     </div>
 
-    <div id="paymentsPanel" style="display:none;">
+    <!-- ═══════ PAYMENTS ═══════ -->
+    <div id="view-payments" class="section-view" style="display:none;">
+      <div class="section-view-header"><div><p class="section-view-label" style="color:#22c55e;">Live Dashboard</p><h2 class="section-view-title">Payments</h2></div></div>
       <div class="pay-stats-row">
         <div class="pay-stat"><div class="pay-stat-num green" id="payStatPaid">0</div><div class="pay-stat-label">Completed</div></div>
         <div class="pay-stat"><div class="pay-stat-num orange" id="payStatPending">0</div><div class="pay-stat-label">Pending</div></div>
@@ -208,50 +155,10 @@
       <div id="paymentsContainer"></div>
     </div>
 
-    <div id="blogPanel" style="display:none;">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
-        <div style="display:flex; gap:10px; align-items:center;">
-          <button class="filter-btn active" id="blogFilterAll" onclick="setBlogFilter('all', this)">All</button>
-          <button class="filter-btn" id="blogFilterPub" onclick="setBlogFilter('published', this)">Published</button>
-          <button class="filter-btn" id="blogFilterDraft" onclick="setBlogFilter('draft', this)">Drafts</button>
-        </div>
-        <div style="display:flex; gap:10px; align-items:center;">
-          <input type="text" id="customBlogTopic" placeholder="Optional topic (or auto)" style="background:var(--surface); border:1px solid var(--border); color:var(--white); padding:8px 12px; border-radius:4px; font-size:0.8rem; outline:none; font-family:'DM Sans',sans-serif;">
-          <button class="gen-blog-btn" id="btnGenBlog" onclick="triggerGenerateBlog()">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
-            Generate AI Blog
-          </button>
-        </div>
-      </div>
-      <div id="blogGenStatus" style="display:none; font-family:'Space Mono',monospace; font-size:0.75rem; color:var(--gold); margin-bottom:14px;"></div>
-      <div id="blogsContainer"></div>
-    </div>
-  </main>
-
-  <div class="overlay" id="overlay" onclick="closeModal()"></div>
-  <div class="detail-modal" id="detailModal">
-    <div class="modal-header">
-      <div class="modal-header-left">
-        <div class="modal-avatar" id="mAvatar"></div>
-        <div><div class="modal-name" id="mName"></div><div class="modal-sub" id="mSub"></div></div>
-      </div>
-      <button class="modal-close" onclick="closeModal()"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-    </div>
-    <div class="modal-body" id="mBody"></div>
-    <div class="modal-footer">
-      <div class="modal-timestamp" id="mTimestamp"></div>
-      <button class="delete-btn" id="mDeleteBtn"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>Delete Entry</button>
-    </div>
-  </div>
-
-  <div class="overlay" id="clientsOverlay" style="z-index:2000;" onclick="closeClientsModal()"></div>
-  <div class="clients-modal" id="clientsModal">
-    <div class="clients-modal-header">
-      <div class="clients-modal-title">Manage Clients <span class="badge">Live</span></div>
-      <button class="modal-close" onclick="closeClientsModal()"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-    </div>
-    <div class="clients-modal-body">
-      <div class="add-client-form">
+    <!-- ═══════ CLIENT ACCOUNTS ═══════ -->
+    <div id="view-clients" class="section-view" style="display:none;">
+      <div class="section-view-header"><div><p class="section-view-label" style="color:#14b8a6;">Account Management</p><h2 class="section-view-title">Client Accounts</h2></div></div>
+      <div class="add-client-form" style="max-width:600px; margin-bottom:32px;">
         <div class="add-client-form-title">Activate New Client</div>
         <div class="add-client-fields">
           <input class="add-client-input" type="text" id="newClientName" placeholder="Client name" autocomplete="off">
@@ -272,11 +179,90 @@
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
         <div class="clients-list-title" style="margin-bottom:0;">All Activated Clients</div>
       </div>
-      <div style="display:flex;align-items:center;gap:10px;background:var(--black);border:1px solid var(--border);padding:8px 12px;margin-bottom:12px;">
+      <div style="display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);padding:8px 12px;margin-bottom:12px;max-width:600px;">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="2" style="width:14px;stroke:var(--text-muted);flex-shrink:0;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         <input type="text" id="clientSearch" placeholder="Search by name or phone..." oninput="renderClientsList()" style="background:none;border:none;outline:none;color:var(--text);font-family:'DM Sans',sans-serif;font-size:0.88rem;width:100%;">
       </div>
-      <div id="clientsList"></div>
+      <div id="clientsList" style="max-width:600px;"></div>
+    </div>
+
+    <!-- ═══════ BLOG MANAGER ═══════ -->
+    <div id="view-blog" class="section-view" style="display:none;">
+      <div class="section-view-header"><div><p class="section-view-label" style="color:#eab308;">Content</p><h2 class="section-view-title">Blog Manager</h2></div></div>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+        <div style="display:flex; gap:10px; align-items:center;">
+          <button class="filter-btn active" id="blogFilterAll" onclick="setBlogFilter('all', this)">All</button>
+          <button class="filter-btn" id="blogFilterPub" onclick="setBlogFilter('published', this)">Published</button>
+          <button class="filter-btn" id="blogFilterDraft" onclick="setBlogFilter('draft', this)">Drafts</button>
+        </div>
+        <div style="display:flex; gap:10px; align-items:center;">
+          <input type="text" id="customBlogTopic" placeholder="Optional topic (or auto)" style="background:var(--surface); border:1px solid var(--border); color:var(--white); padding:8px 12px; border-radius:4px; font-size:0.8rem; outline:none; font-family:'DM Sans',sans-serif;">
+          <button class="gen-blog-btn" id="btnGenBlog" onclick="triggerGenerateBlog()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+            Generate AI Blog
+          </button>
+        </div>
+      </div>
+      <div id="blogGenStatus" style="display:none; font-family:'Space Mono',monospace; font-size:0.75rem; color:var(--gold); margin-bottom:14px;"></div>
+      <div id="blogsContainer"></div>
+    </div>
+
+    <!-- ═══════ PRICING & SETTINGS ═══════ -->
+    <div id="view-pricing" class="section-view" style="display:none;">
+      <div class="section-view-header"><div><p class="section-view-label">Configuration</p><h2 class="section-view-title">Pricing & Settings</h2></div></div>
+      <div class="pricing-grid" id="pricingGrid">
+        <div class="pricing-plan-card">
+          <div class="pricing-plan-header"><span class="pricing-plan-dot" style="background:var(--gold);"></span> Social Media Management</div>
+          <div class="pricing-plan-key">socialmedia</div>
+          <div class="pricing-plan-input-wrap"><span class="pricing-currency">₹</span><input type="number" class="pricing-input" id="price-socialmedia" value="999" min="1"><span class="pricing-unit">/month</span></div>
+        </div>
+        <div class="pricing-plan-card">
+          <div class="pricing-plan-header"><span class="pricing-plan-dot" style="background:var(--gold);"></span> Web Development — Starter</div>
+          <div class="pricing-plan-key">webdevelopment-starter</div>
+          <div class="pricing-plan-input-wrap"><span class="pricing-currency">₹</span><input type="number" class="pricing-input" id="price-webdevelopment-starter" value="2999" min="1"><span class="pricing-unit">one-time</span></div>
+        </div>
+        <div class="pricing-plan-card">
+          <div class="pricing-plan-header"><span class="pricing-plan-dot" style="background:var(--gold);"></span> Web Development — Pro</div>
+          <div class="pricing-plan-key">webdevelopment-pro</div>
+          <div class="pricing-plan-input-wrap"><span class="pricing-currency">₹</span><input type="number" class="pricing-input" id="price-webdevelopment-pro" value="5999" min="1"><span class="pricing-unit">one-time</span></div>
+        </div>
+        <div class="pricing-plan-card">
+          <div class="pricing-plan-header"><span class="pricing-plan-dot" style="background:#a855f7;"></span> AI Video Ads</div>
+          <div class="pricing-plan-key">aivideos</div>
+          <div class="pricing-plan-input-wrap"><span class="pricing-currency">₹</span><input type="number" class="pricing-input" id="price-aivideos" value="999" min="1"><span class="pricing-unit">per video</span></div>
+        </div>
+        <div class="pricing-plan-card">
+          <div class="pricing-plan-header"><span class="pricing-plan-dot" style="background:#1877f2;"></span> Meta Ads Management</div>
+          <div class="pricing-plan-key">metaads</div>
+          <div class="pricing-plan-input-wrap"><span class="pricing-currency">₹</span><input type="number" class="pricing-input" id="price-metaads" value="2999" min="1"><span class="pricing-unit">/month</span></div>
+        </div>
+        <div class="pricing-plan-card">
+          <div class="pricing-plan-header"><span class="pricing-plan-dot" style="background:var(--white);"></span> Quotation Software</div>
+          <div class="pricing-plan-key">quotation</div>
+          <div class="pricing-plan-input-wrap"><span class="pricing-currency">₹</span><input type="number" class="pricing-input" id="price-quotation" value="2999" min="1"><span class="pricing-unit">lifetime</span></div>
+        </div>
+      </div>
+      <div style="display:flex;gap:12px;align-items:center;margin-top:24px;">
+        <button class="activate-btn" id="savePricesBtn" onclick="savePricing()" style="width:auto;padding:13px 32px;">Save Prices</button>
+        <div id="pricingSaveStatus" style="font-family:'Space Mono',monospace;font-size:0.75rem;color:#22c55e;display:none;"></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Detail Modal -->
+  <div class="overlay" id="overlay" onclick="closeModal()"></div>
+  <div class="detail-modal" id="detailModal">
+    <div class="modal-header">
+      <div class="modal-header-left">
+        <div class="modal-avatar" id="mAvatar"></div>
+        <div><div class="modal-name" id="mName"></div><div class="modal-sub" id="mSub"></div></div>
+      </div>
+      <button class="modal-close" onclick="closeModal()"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body" id="mBody"></div>
+    <div class="modal-footer">
+      <div class="modal-timestamp" id="mTimestamp"></div>
+      <button class="delete-btn" id="mDeleteBtn"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>Delete Entry</button>
     </div>
   </div>
 

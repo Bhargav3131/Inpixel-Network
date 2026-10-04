@@ -1,5 +1,5 @@
 // ============================================================
-//   INPIXEL NETWORK — adminpanel.js (v4 — API Auth & Fetch)
+//   INPIXEL NETWORK — adminpanel.js (v5 — Card-Based Dashboard)
 // ============================================================
 
 document.getElementById('gateInput').addEventListener('keydown', e => {
@@ -40,11 +40,16 @@ async function checkGate() {
       document.getElementById('adminGate').style.display = 'none';
       document.querySelector('nav').style.display  = 'flex';
       document.querySelector('main').style.display = 'block';
+      document.getElementById('dashboardView').style.display = 'block';
+      
+      // Load all data
       loadSubmissions();
       loadAiAdsSubmissions();
       loadMetaAdsSubmissions();
       loadClients();
       loadPayments();
+      loadBlogs();
+      loadPricing();
     } else {
       document.getElementById('gateError').textContent = data.error || 'Incorrect credentials.';
       document.getElementById('gateError').style.display = 'block';
@@ -70,32 +75,71 @@ function authHeaders() {
 
 let allSubmissions = [], allAiAds = [], allMetaAds = [], allClients = [], allPayments = [], allBlogs = [];
 let currentFilter = 'all', currentSearch = '', currentOpenId = null, currentBlogFilter = 'all';
+let currentSection = null;
 
-// ── TAB SWITCHER ─────────────────────────────────────────────
-function switchTab(tab) {
-  document.getElementById('tabWebsite').classList.toggle('tab-active',  tab === 'website');
-  document.getElementById('tabAiAds').classList.toggle('tab-active',   tab === 'aiads');
-  document.getElementById('tabMetaAds').classList.toggle('tab-active', tab === 'metaads');
-  document.getElementById('tabPayments').classList.toggle('tab-active', tab === 'payments');
-  const blogTab = document.getElementById('tabBlog');
-  if (blogTab) blogTab.classList.toggle('tab-active', tab === 'blog');
+// ── NAVIGATION & VIEWS ───────────────────────────────────────
+function openSection(section) {
+  document.getElementById('dashboardView').style.display = 'none';
+  document.getElementById('backToDashBtn').style.display = 'inline-flex';
+  document.querySelectorAll('.section-view').forEach(v => v.style.display = 'none');
+  
+  const targetView = document.getElementById('view-' + section);
+  if (targetView) targetView.style.display = 'block';
+  currentSection = section;
 
-  document.getElementById('websitePanel').style.display  = tab === 'website'  ? 'block' : 'none';
-  document.getElementById('aiAdsPanel').style.display    = tab === 'aiads'    ? 'block' : 'none';
-  document.getElementById('metaAdsPanel').style.display  = tab === 'metaads'  ? 'block' : 'none';
-  document.getElementById('paymentsPanel').style.display = tab === 'payments' ? 'block' : 'none';
-  const blogPanel = document.getElementById('blogPanel');
-  if (blogPanel) blogPanel.style.display = tab === 'blog' ? 'block' : 'none';
+  if (section === 'payments') {
+    startPaymentsLive();
+  } else if (payRefreshInterval) {
+    clearInterval(payRefreshInterval);
+    payRefreshInterval = null;
+  }
 
-  if (tab === 'payments') { startPaymentsLive(); }
-  else if (payRefreshInterval) { clearInterval(payRefreshInterval); payRefreshInterval = null; }
+  if (section === 'blog') loadBlogs();
+  if (section === 'clients') renderClientsList();
+  if (section === 'pricing') loadPricing();
+}
 
-  if (tab === 'blog') { loadBlogs(); }
+function backToDashboard() {
+  document.querySelectorAll('.section-view').forEach(v => v.style.display = 'none');
+  document.getElementById('dashboardView').style.display = 'block';
+  document.getElementById('backToDashBtn').style.display = 'none';
+  currentSection = null;
+
+  if (payRefreshInterval) {
+    clearInterval(payRefreshInterval);
+    payRefreshInterval = null;
+  }
+
+  updateDashboardBadges();
+}
+
+function updateDashboardBadges() {
+  const bWeb = document.getElementById('badgeWebsite');
+  if (bWeb) bWeb.textContent = allSubmissions.length;
+
+  const bAi = document.getElementById('badgeAiAds');
+  if (bAi) bAi.textContent = allAiAds.length;
+
+  const bMeta = document.getElementById('badgeMetaAds');
+  if (bMeta) bMeta.textContent = allMetaAds.length;
+
+  const bClients = document.getElementById('badgeClients');
+  if (bClients) bClients.textContent = allClients.length;
+
+  const bBlog = document.getElementById('badgeBlog');
+  if (bBlog) bBlog.textContent = allBlogs.length;
+
+  const bPay = document.getElementById('badgePayments');
+  if (bPay) {
+    const paidCount = allPayments.filter(p => p.status === 'paid').length;
+    bPay.innerHTML = '<span class="pay-live-dot"></span> ' + paidCount + ' Paid (' + allPayments.length + ' Total)';
+  }
 }
 
 // ── WEBSITE SUBMISSIONS ──────────────────────────────────────
 async function loadSubmissions() {
-  document.getElementById('cardsContainer').innerHTML = '<div class="empty-state"><p style="color:var(--text-muted);font-family:\'Space Mono\',monospace;font-size:0.8rem;">Loading...</p></div>';
+  const container = document.getElementById('cardsContainer');
+  if (container) container.innerHTML = '<div class="empty-state"><p style="color:var(--text-muted);font-family:\'Space Mono\',monospace;font-size:0.8rem;">Loading...</p></div>';
   try {
     const res = await fetch('/api/admin/submissions?type=website', { headers: authHeaders() });
     const data = await res.json();
@@ -115,27 +159,38 @@ async function loadSubmissions() {
       hasDomain: r.has_domain || '', domainName: r.domain_name || '', hasHosting: r.has_hosting || '',
       extraNotes: r.extra_notes || '', hearAboutUs: r.source || '', budget: r.budget || '', timeline: r.timeline || ''
     }));
-    updateStats(); renderCards();
+    updateStats();
+    renderCards();
+    updateDashboardBadges();
   } catch (err) {
-    document.getElementById('cardsContainer').innerHTML = '<div class="empty-state"><p style="color:#ff4444;font-family:\'Space Mono\',monospace;font-size:0.8rem;">Failed to load.</p></div>';
+    if (container) container.innerHTML = '<div class="empty-state"><p style="color:#ff4444;font-family:\'Space Mono\',monospace;font-size:0.8rem;">Failed to load.</p></div>';
   }
 }
 
 function updateStats() {
-  document.getElementById('statTotal').textContent = allSubmissions.length;
+  const elTotal = document.getElementById('statTotal');
+  const elToday = document.getElementById('statToday');
+  const elWeek  = document.getElementById('statWeek');
+  if (elTotal) elTotal.textContent = allSubmissions.length;
   const todayStart = new Date(); todayStart.setHours(0,0,0,0);
-  document.getElementById('statToday').textContent = allSubmissions.filter(s => new Date(s.submittedAt) >= todayStart).length;
+  if (elToday) elToday.textContent = allSubmissions.filter(s => new Date(s.submittedAt) >= todayStart).length;
+  const weekStart = new Date(); weekStart.setDate(weekStart.getDate() - 7);
+  if (elWeek) elWeek.textContent = allSubmissions.filter(s => new Date(s.submittedAt) >= weekStart).length;
 }
 
 function renderCards() {
   const container = document.getElementById('cardsContainer');
+  if (!container) return;
   let list = allSubmissions;
   if (currentFilter !== 'all') list = list.filter(s => s.websiteTypes.includes(currentFilter));
   if (currentSearch) {
     const q = currentSearch.toLowerCase();
     list = list.filter(s => (s.user?.name||'').toLowerCase().includes(q) || (s.user?.phone||'').toLowerCase().includes(q) || (s.businessName||'').toLowerCase().includes(q));
   }
-  if (!list.length) { container.innerHTML = '<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><h3>No Submissions Yet</h3><p>Once clients fill the form, their entries appear here.</p></div>'; return; }
+  if (!list.length) {
+    container.innerHTML = '<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><h3>No Submissions Yet</h3><p>Once clients fill the form, their entries appear here.</p></div>';
+    return;
+  }
   container.innerHTML = '<div class="cards-grid">' + list.map((s, i) => cardHTML(s, i)).join('') + '</div>';
 }
 
@@ -159,6 +214,7 @@ function openModal(id) {
   const tagList = arr => arr?.length ? '<div class="tag-list">'+arr.map(t=>'<span class="tag">'+esc(t)+'</span>').join('')+'</div>' : '<p class="empty">None selected</p>';
   const val = v => v ? '<p>'+esc(v)+'</p>' : '<p class="empty">Not provided</p>';
   document.getElementById('mBody').innerHTML = '<div class="detail-section"><div class="detail-section-title">Contact</div><div class="detail-grid"><div class="detail-field"><label>Name</label>'+val(s.user?.name)+'</div><div class="detail-field"><label>Phone</label>'+val(s.user?.phone)+'</div><div class="detail-field full"><label>Email</label>'+val(s.user?.email)+'</div></div></div><div class="detail-section"><div class="detail-section-title">Business</div><div class="detail-grid"><div class="detail-field"><label>Business Name</label>'+val(s.businessName)+'</div><div class="detail-field"><label>Industry</label>'+val(s.industry)+'</div><div class="detail-field"><label>Location</label>'+val(s.location)+'</div><div class="detail-field"><label>Source</label>'+val(s.hearAboutUs)+'</div><div class="detail-field full"><label>Description</label>'+val(s.description)+'</div></div></div><div class="detail-section"><div class="detail-section-title">Website Requirements</div><div class="detail-grid"><div class="detail-field full"><label>Types</label>'+tagList(s.websiteTypes)+'</div><div class="detail-field full"><label>Features</label>'+tagList(s.features)+'</div><div class="detail-field full"><label>Pages</label>'+val(s.pages)+'</div></div></div><div class="detail-section"><div class="detail-section-title">Design</div><div class="detail-grid"><div class="detail-field"><label>Style</label>'+val(s.designStyle)+'</div><div class="detail-field"><label>Colors</label>'+val(s.colorTheme)+'</div><div class="detail-field"><label>Has Logo</label>'+val(s.hasLogo)+'</div><div class="detail-field"><label>Content</label>'+val(s.contentProvided)+'</div><div class="detail-field full"><label>References</label>'+val(s.referenceWebsites)+'</div></div></div><div class="detail-section"><div class="detail-section-title">Technical & Budget</div><div class="detail-grid"><div class="detail-field"><label>Domain?</label>'+val(s.hasDomain)+'</div><div class="detail-field"><label>Domain Name</label>'+val(s.domainName)+'</div><div class="detail-field"><label>Hosting?</label>'+val(s.hasHosting)+'</div><div class="detail-field"><label>Budget</label>'+val(s.budget)+'</div><div class="detail-field"><label>Timeline</label>'+val(s.timeline)+'</div></div></div>'+(s.extraNotes?'<div class="detail-section"><div class="detail-section-title">Notes</div><div class="detail-field"><p>'+esc(s.extraNotes)+'</p></div></div>':'');
+  document.getElementById('mDeleteBtn').style.display = 'flex';
   document.getElementById('mDeleteBtn').onclick = () => deleteEntry(id);
   document.getElementById('overlay').classList.add('show');
   document.getElementById('detailModal').classList.add('show');
@@ -168,10 +224,14 @@ function openModal(id) {
 function closeModal() {
   document.getElementById('overlay').classList.remove('show');
   document.getElementById('detailModal').classList.remove('show');
-  document.body.style.overflow = ''; currentOpenId = null;
+  document.body.style.overflow = '';
+  document.getElementById('mDeleteBtn').style.display = 'flex';
+  currentOpenId = null;
 }
 
-document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal(); closeClientsModal(); } });
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal();
+});
 
 async function deleteEntry(id) {
   if (!confirm('Delete this submission?')) return;
@@ -183,25 +243,35 @@ async function deleteEntry(id) {
     });
     if (!res.ok) throw new Error();
     allSubmissions = allSubmissions.filter(s => s.id !== id);
-    closeModal(); updateStats(); renderCards();
+    closeModal();
+    updateStats();
+    renderCards();
+    updateDashboardBadges();
   } catch (err) {
     alert('Failed to delete. Please try again.');
   }
 }
-async function confirmClearAll() {
-  if (!confirm('Delete ALL submissions? (Not implemented via API yet, skipping)')) return;
-  // Intentionally skipped for now since API doesn't mention clear all
+
+function confirmClearAll() {
+  alert('Clear all is disabled to prevent accidental data loss.');
 }
+
 function setFilter(f, btn) {
   currentFilter = f;
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active'); renderCards();
+  btn.classList.add('active');
+  renderCards();
 }
-function filterCards() { currentSearch = document.getElementById('searchInput').value; renderCards(); }
+
+function filterCards() {
+  currentSearch = document.getElementById('searchInput').value;
+  renderCards();
+}
 
 // ── AI ADS SUBMISSIONS ───────────────────────────────────────
 async function loadAiAdsSubmissions() {
-  document.getElementById('aiAdsContainer').innerHTML = '<div class="empty-state"><p style="color:var(--text-muted);font-family:\'Space Mono\',monospace;font-size:0.8rem;">Loading AI Ads submissions...</p></div>';
+  const container = document.getElementById('aiAdsContainer');
+  if (container) container.innerHTML = '<div class="empty-state"><p style="color:var(--text-muted);font-family:\'Space Mono\',monospace;font-size:0.8rem;">Loading AI Ads submissions...</p></div>';
   try {
     const res = await fetch('/api/admin/submissions?type=aiads', { headers: authHeaders() });
     const data = await res.json();
@@ -216,24 +286,33 @@ async function loadAiAdsSubmissions() {
       'Script': r.script || '',
       'Submitted At': r.submitted_at || ''
     }));
-    renderAiAdsCards(); updateAiAdsStats();
+    renderAiAdsCards();
+    updateAiAdsStats();
+    updateDashboardBadges();
   } catch (err) {
-    allAiAds = []; renderAiAdsCards();
+    allAiAds = [];
+    renderAiAdsCards();
   }
 }
 
 function updateAiAdsStats() {
-  document.getElementById('aiStatTotal').textContent = allAiAds.length;
+  const elTotal = document.getElementById('aiStatTotal');
+  const elToday = document.getElementById('aiStatToday');
+  if (elTotal) elTotal.textContent = allAiAds.length;
   const todayStart = new Date(); todayStart.setHours(0,0,0,0);
-  document.getElementById('aiStatToday').textContent = allAiAds.filter(s => new Date(s['Submitted At']) >= todayStart).length;
+  if (elToday) elToday.textContent = allAiAds.filter(s => new Date(s['Submitted At']) >= todayStart).length;
 }
 
 function renderAiAdsCards() {
   const container = document.getElementById('aiAdsContainer');
+  if (!container) return;
   const search = (document.getElementById('aiSearchInput')?.value || '').toLowerCase();
   let list = allAiAds;
   if (search) list = list.filter(s => (s['Name']||'').toLowerCase().includes(search) || (s['Phone']||'').toLowerCase().includes(search));
-  if (!list.length) { container.innerHTML = '<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg><h3>No AI Ads Submissions Yet</h3><p>Activated AI Ads clients will appear here.</p></div>'; return; }
+  if (!list.length) {
+    container.innerHTML = '<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg><h3>No AI Ads Submissions Yet</h3><p>Activated AI Ads clients will appear here.</p></div>';
+    return;
+  }
   container.innerHTML = '<div class="cards-grid">' + list.map((s, i) => aiCardHTML(s, i)).join('') + '</div>';
 }
 
@@ -251,6 +330,7 @@ function openAiModal(id) {
   document.getElementById('mSub').textContent = s['Phone'] || '—';
   document.getElementById('mTimestamp').textContent = 'Submitted: ' + new Date(s['Submitted At']).toLocaleString('en-IN');
   document.getElementById('mBody').innerHTML = '<div class="detail-section"><div class="detail-section-title">Client Info</div><div class="detail-grid"><div class="detail-field"><label>Name</label><p>'+(esc(s['Name'])||'—')+'</p></div><div class="detail-field"><label>Phone</label><p>'+(esc(s['Phone'])||'—')+'</p></div></div></div><div class="detail-section"><div class="detail-section-title">AI Ad Details</div><div class="detail-grid"><div class="detail-field"><label>Selected Model</label><p style="color:#a855f7;font-family:\'Syne\',sans-serif;font-weight:700;font-size:1.1rem;">Model '+(esc(s['Model No'])||'—')+'</p></div><div class="detail-field full"><label>Ad Script</label><p style="white-space:pre-wrap;line-height:1.7">'+(esc(s['Script'])||'—')+'</p></div></div></div>';
+  document.getElementById('mDeleteBtn').style.display = 'flex';
   document.getElementById('mDeleteBtn').onclick = async () => {
     if (!confirm('Delete this entry?')) return;
     try {
@@ -260,7 +340,11 @@ function openAiModal(id) {
         body: JSON.stringify({ type: 'aiads', id })
       });
       if (!res.ok) throw new Error();
-      allAiAds = allAiAds.filter(x => String(x.id) !== String(id)); closeModal(); renderAiAdsCards(); updateAiAdsStats();
+      allAiAds = allAiAds.filter(x => String(x.id) !== String(id));
+      closeModal();
+      renderAiAdsCards();
+      updateAiAdsStats();
+      updateDashboardBadges();
     } catch (err) {
       alert('Failed to delete.');
     }
@@ -272,7 +356,8 @@ function openAiModal(id) {
 
 // ── META ADS SUBMISSIONS ─────────────────────────────────────
 async function loadMetaAdsSubmissions() {
-  document.getElementById('metaAdsContainer').innerHTML = '<div class="empty-state"><p style="color:var(--text-muted);font-family:\'Space Mono\',monospace;font-size:0.8rem;">Loading Meta Ads submissions...</p></div>';
+  const container = document.getElementById('metaAdsContainer');
+  if (container) container.innerHTML = '<div class="empty-state"><p style="color:var(--text-muted);font-family:\'Space Mono\',monospace;font-size:0.8rem;">Loading Meta Ads submissions...</p></div>';
   try {
     const res = await fetch('/api/admin/submissions?type=metaads', { headers: authHeaders() });
     const data = await res.json();
@@ -293,24 +378,33 @@ async function loadMetaAdsSubmissions() {
       'Extra Notes': r.extra_notes || '',
       'Submitted At': r.submitted_at || ''
     }));
-    renderMetaAdsCards(); updateMetaAdsStats();
+    renderMetaAdsCards();
+    updateMetaAdsStats();
+    updateDashboardBadges();
   } catch (err) {
-    allMetaAds = []; renderMetaAdsCards();
+    allMetaAds = [];
+    renderMetaAdsCards();
   }
 }
 
 function updateMetaAdsStats() {
-  document.getElementById('metaStatTotal').textContent = allMetaAds.length;
+  const elTotal = document.getElementById('metaStatTotal');
+  const elToday = document.getElementById('metaStatToday');
+  if (elTotal) elTotal.textContent = allMetaAds.length;
   const todayStart = new Date(); todayStart.setHours(0,0,0,0);
-  document.getElementById('metaStatToday').textContent = allMetaAds.filter(s => new Date(s['Submitted At']) >= todayStart).length;
+  if (elToday) elToday.textContent = allMetaAds.filter(s => new Date(s['Submitted At']) >= todayStart).length;
 }
 
 function renderMetaAdsCards() {
   const container = document.getElementById('metaAdsContainer');
+  if (!container) return;
   const search = (document.getElementById('metaSearchInput')?.value || '').toLowerCase();
   let list = allMetaAds;
   if (search) list = list.filter(s => (s['Name']||'').toLowerCase().includes(search) || (s['Phone']||'').toLowerCase().includes(search) || (s['Business Name']||'').toLowerCase().includes(search));
-  if (!list.length) { container.innerHTML = '<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg><h3>No Meta Ads Submissions Yet</h3><p>Activated Meta Ads clients will appear here.</p></div>'; return; }
+  if (!list.length) {
+    container.innerHTML = '<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg><h3>No Meta Ads Submissions Yet</h3><p>Activated Meta Ads clients will appear here.</p></div>';
+    return;
+  }
   container.innerHTML = '<div class="cards-grid">' + list.map((s, i) => metaCardHTML(s, i)).join('') + '</div>';
 }
 
@@ -322,7 +416,7 @@ function metaCardHTML(s, idx) {
     + '<div class="card-name">' + (esc(s['Name'])||'—') + '</div>'
     + '<div class="card-contact"><span>' + (esc(s['Phone'])||'—') + '</span></div>'
     + '<div class="card-chips">'
-      + '<span class="chip" style="background:rgba(24,119,242,0.12);border-color:rgba(24,119,242,0.3);color:#6aabff;">' + (esc(s['Campaign Objective'])||'—') + '</span>'
+      + '<span class="chip" style="background:rgba(240,165,0,0.1);border-color:rgba(24,119,242,0.3);color:#6aabff;">' + (esc(s['Campaign Objective'])||'—') + '</span>'
       + (s['Daily Budget'] ? '<span class="chip grey">₹' + esc(s['Daily Budget']) + '/day</span>' : '')
     + '</div>'
     + '<div class="card-footer"><div class="card-business" style="font-size:0.8rem;color:var(--text-muted)">' + (esc(s['Business Name'])||'—') + ' · ' + (esc(preview)||'No details') + '</div><div class="view-btn">View <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div></div>'
@@ -361,6 +455,7 @@ function openMetaModal(id) {
       ? '<div class="detail-field full"><label>Extra Notes</label>' + val(s['Extra Notes']) + '</div>'
       : '')
     + '</div></div>';
+  document.getElementById('mDeleteBtn').style.display = 'flex';
   document.getElementById('mDeleteBtn').onclick = async () => {
     if (!confirm('Delete this entry?')) return;
     try {
@@ -370,7 +465,11 @@ function openMetaModal(id) {
         body: JSON.stringify({ type: 'metaads', id })
       });
       if (!res.ok) throw new Error();
-      allMetaAds = allMetaAds.filter(x => x.id !== id); closeModal(); renderMetaAdsCards(); updateMetaAdsStats();
+      allMetaAds = allMetaAds.filter(x => x.id !== id);
+      closeModal();
+      renderMetaAdsCards();
+      updateMetaAdsStats();
+      updateDashboardBadges();
     } catch (err) {
       alert('Failed to delete.');
     }
@@ -381,27 +480,6 @@ function openMetaModal(id) {
 }
 
 // ── MANAGE CLIENTS ───────────────────────────────────────────
-function openClientsModal() {
-  document.getElementById('clientsOverlay').style.zIndex = '10200';
-  document.getElementById('clientsModal').style.zIndex   = '10300';
-  document.getElementById('clientsOverlay').classList.add('show');
-  document.getElementById('clientsModal').classList.add('show');
-  document.body.style.overflow = 'hidden';
-  renderClientsList();
-}
-function closeClientsModal() {
-  document.getElementById('clientsOverlay').classList.remove('show');
-  document.getElementById('clientsModal').classList.remove('show');
-  document.body.style.overflow = '';
-  document.getElementById('newClientName').value = '';
-  document.getElementById('newClientPhone').value = '';
-  document.getElementById('svcWebsite').checked = true;
-  document.getElementById('svcAiAds').checked = false;
-  document.getElementById('svcMetaAds').checked = false;
-  document.getElementById('clientAddError').style.display = 'none';
-  document.getElementById('clientAddSuccess').style.display = 'none';
-}
-
 async function loadClients() {
   try {
     const res = await fetch('/api/admin/clients', { headers: authHeaders() });
@@ -413,6 +491,7 @@ async function loadClients() {
       services: r.services || 'website',
       addedAt: r.added_at
     }));
+    updateDashboardBadges();
   } catch (err) {
     allClients = [];
   }
@@ -420,6 +499,7 @@ async function loadClients() {
 
 function renderClientsList() {
   const container = document.getElementById('clientsList');
+  if (!container) return;
   const search = (document.getElementById('clientSearch')?.value || '').toLowerCase();
   let list = allClients;
   if (search) list = list.filter(c => c.name.toLowerCase().includes(search) || String(c.phone).includes(search));
@@ -460,6 +540,7 @@ async function deactivateClient(phone) {
     if (!res.ok) throw new Error();
     allClients = allClients.filter(c => String(c.phone).replace(/[\s\-\(\)]/g, '') !== normalized);
     renderClientsList();
+    updateDashboardBadges();
   } catch (err) {
     alert('Failed to remove client.');
   }
@@ -513,7 +594,9 @@ async function activateClient() {
     document.getElementById('svcMetaAds').checked = false;
     const label = svcList.map(s => s === 'website' ? 'Website' : s === 'aiads' ? 'AI Ads' : 'Meta Ads').join(' + ');
     sucEl.textContent = '✓ ' + name + ' activated for ' + label + '!';
-    sucEl.style.display = 'block'; renderClientsList();
+    sucEl.style.display = 'block';
+    renderClientsList();
+    updateDashboardBadges();
     setTimeout(() => { sucEl.style.display = 'none'; }, 3000);
   } catch (err) {
     errEl.textContent = err.message || 'Failed to save.'; errEl.style.display = 'block';
@@ -536,19 +619,26 @@ async function loadPayments() {
     allPayments = json.data || [];
     updatePayStats();
     renderPayments();
-    document.getElementById('payLastUpdated').textContent = 'Updated ' + new Date().toLocaleTimeString('en-IN');
+    updateDashboardBadges();
+    const upEl = document.getElementById('payLastUpdated');
+    if (upEl) upEl.textContent = 'Updated ' + new Date().toLocaleTimeString('en-IN');
   } catch(e) { console.error('Failed to load payments', e); }
 }
 
 function updatePayStats() {
-  document.getElementById('payStatTotal').textContent = allPayments.length;
-  document.getElementById('payStatPaid').textContent = allPayments.filter(p => p.status === 'paid').length;
-  document.getElementById('payStatPending').textContent = allPayments.filter(p => p.status === 'pending').length;
-  document.getElementById('payStatFailed').textContent = allPayments.filter(p => p.status === 'failed').length;
+  const elTot = document.getElementById('payStatTotal');
+  const elPaid = document.getElementById('payStatPaid');
+  const elPend = document.getElementById('payStatPending');
+  const elFail = document.getElementById('payStatFailed');
+  if (elTot) elTot.textContent = allPayments.length;
+  if (elPaid) elPaid.textContent = allPayments.filter(p => p.status === 'paid').length;
+  if (elPend) elPend.textContent = allPayments.filter(p => p.status === 'pending').length;
+  if (elFail) elFail.textContent = allPayments.filter(p => p.status === 'failed').length;
 }
 
 function renderPayments() {
   const container = document.getElementById('paymentsContainer');
+  if (!container) return;
   if (!allPayments.length) {
     container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-muted);font-family:\'Space Mono\',monospace;font-size:0.8rem;">No payments recorded yet.</div>';
     return;
@@ -620,30 +710,22 @@ function openPaymentModalDetail(id) {
     </div>
   `;
 
-  document.getElementById('mDeleteBtn').style.display = 'none'; // Hide delete button for payments
+  document.getElementById('mDeleteBtn').style.display = 'none';
   document.getElementById('overlay').classList.add('show');
   document.getElementById('detailModal').classList.add('show');
   document.body.style.overflow = 'hidden';
 }
 
-function closeModal() {
-  document.getElementById('overlay').classList.remove('show');
-  document.getElementById('detailModal').classList.remove('show');
-  document.body.style.overflow = '';
-  document.getElementById('mDeleteBtn').style.display = 'flex'; // Reset display
-}
-
 function startPaymentsLive() {
   if (payRefreshInterval) clearInterval(payRefreshInterval);
   loadPayments();
-  payRefreshInterval = setInterval(loadPayments, 15000); // refresh every 15 seconds
+  payRefreshInterval = setInterval(loadPayments, 15000);
 }
 
 // ── BLOG MANAGEMENT ──────────────────────────────────────────
 async function loadBlogs() {
   const container = document.getElementById('blogsContainer');
-  if (!container) return;
-  container.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text-muted);font-family:\'Space Mono\',monospace;font-size:0.8rem;">Loading blogs...</div>';
+  if (container) container.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text-muted);font-family:\'Space Mono\',monospace;font-size:0.8rem;">Loading blogs...</div>';
 
   try {
     const res = await fetch('/api/blog/manage', { headers: authHeaders() });
@@ -651,8 +733,9 @@ async function loadBlogs() {
     if (!res.ok) throw new Error(data.message || 'Failed to fetch');
     allBlogs = data.blogs || [];
     renderBlogs();
+    updateDashboardBadges();
   } catch (err) {
-    container.innerHTML = '<div style="text-align:center;padding:30px;color:#ef4444;font-family:\'Space Mono\',monospace;font-size:0.8rem;">Failed to load blogs.</div>';
+    if (container) container.innerHTML = '<div style="text-align:center;padding:30px;color:#ef4444;font-family:\'Space Mono\',monospace;font-size:0.8rem;">Failed to load blogs.</div>';
   }
 }
 
@@ -748,7 +831,7 @@ async function triggerGenerateBlog() {
   btn.disabled = true;
   btn.textContent = 'Generating with AI...';
   if (statusEl) {
-    statusEl.textContent = '🤖 Calling Gemini AI & generating SVG thumbnail... this takes ~10-15s';
+    statusEl.textContent = '🤖 Calling Gemini AI & generating thumbnail... takes ~10-15s';
     statusEl.style.display = 'block';
   }
 
@@ -782,9 +865,89 @@ async function triggerGenerateBlog() {
   }
 }
 
+// ── PRICING & SETTINGS ───────────────────────────────────────
+const PRICING_KEYS = ['socialmedia', 'webdevelopment-starter', 'webdevelopment-pro', 'aivideos', 'metaads', 'quotation'];
+const DEFAULT_PRICES = {
+  'socialmedia': 999,
+  'webdevelopment-starter': 2999,
+  'webdevelopment-pro': 5999,
+  'aivideos': 999,
+  'metaads': 2999,
+  'quotation': 2999
+};
+
+async function loadPricing() {
+  try {
+    const res = await fetch('/api/admin/payments?action=pricing', {
+      headers: authHeaders()
+    });
+    if (res.ok) {
+      const json = await res.json();
+      if (json.success && json.data) {
+        PRICING_KEYS.forEach(key => {
+          const valInPaise = json.data[key];
+          const el = document.getElementById('price-' + key);
+          if (el && valInPaise) {
+            el.value = Math.round(valInPaise / 100);
+          }
+        });
+        return;
+      }
+    }
+  } catch(e) {
+    console.warn('Could not fetch server pricing, using defaults/cached');
+  }
+
+  // Fallback to local defaults if server not set yet
+  PRICING_KEYS.forEach(key => {
+    const el = document.getElementById('price-' + key);
+    if (el && !el.value) {
+      el.value = DEFAULT_PRICES[key];
+    }
+  });
+}
+
+async function savePricing() {
+  const btn = document.getElementById('savePricesBtn');
+  const status = document.getElementById('pricingSaveStatus');
+  btn.disabled = true;
+  btn.textContent = 'Saving...';
+
+  const pricesInPaise = {};
+  PRICING_KEYS.forEach(key => {
+    const el = document.getElementById('price-' + key);
+    const rupees = parseFloat(el.value) || DEFAULT_PRICES[key];
+    pricesInPaise[key] = Math.round(rupees * 100);
+  });
+
+  try {
+    const res = await fetch('/api/admin/payments?action=pricing', {
+      method: 'POST',
+      headers: authHeaders(),
+      body: JSON.stringify({ prices: pricesInPaise })
+    });
+    const json = await res.json();
+    if (!res.ok || !json.success) throw new Error(json.message || 'Failed to save');
+
+    status.textContent = '✓ Prices updated in database!';
+    status.style.color = '#22c55e';
+    status.style.display = 'inline';
+  } catch(err) {
+    status.textContent = 'Error: ' + err.message;
+    status.style.color = '#ef4444';
+    status.style.display = 'inline';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Save Prices';
+    setTimeout(() => { if (status) status.style.display = 'none'; }, 4000);
+  }
+}
+
+// ── INITIALIZATION ───────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   const p = document.getElementById('newClientPhone');
   if (p) p.addEventListener('keydown', e => { if (e.key === 'Enter') activateClient(); });
+
   // Hide nav and main until gate is passed
   document.querySelector('nav').style.display  = 'none';
   document.querySelector('main').style.display = 'none';
