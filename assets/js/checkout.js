@@ -107,7 +107,102 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
-function openPaymentModal(service, planName, amount) {
+// ── DYNAMIC LIVE PRICING SYNC ─────────────────────────────────
+let INPIXEL_PRICES = null;
+
+async function fetchLivePrices() {
+  try {
+    const res = await fetch('/api/payments/create-order');
+    if (res.ok) {
+      const data = await res.json();
+      if (data.success && data.prices) {
+        INPIXEL_PRICES = data.prices;
+        window.INPIXEL_PRICES = data.prices;
+        applyLivePrices(INPIXEL_PRICES);
+      }
+    }
+  } catch (err) {
+    console.warn('Could not fetch live pricing from server', err);
+  }
+}
+
+function applyLivePrices(prices) {
+  if (!prices) return;
+
+  // 1. Update buttons that call openPaymentModal
+  document.querySelectorAll('button[onclick*="openPaymentModal"]').forEach(btn => {
+    const onclickStr = btn.getAttribute('onclick') || '';
+    const match = onclickStr.match(/openPaymentModal\s*\(\s*['"]([^'"]+)['"]/);
+    if (match && match[1]) {
+      const service = match[1];
+      if (prices[service] !== undefined) {
+        const amt = prices[service];
+        const formatted = '₹' + (amt / 100).toLocaleString('en-IN');
+        btn.innerHTML = btn.innerHTML.replace(/(?:₹|&#8377;)\s*[\d,]+(\s*\/\s*(?:month|mo))?/gi, (m, unit) => {
+          return formatted + (unit || '');
+        });
+      }
+    }
+  });
+
+  // 2. Update service-specific headings / tags
+  if (prices['socialmedia'] !== undefined) {
+    const smFormatted = '₹' + (prices['socialmedia'] / 100).toLocaleString('en-IN');
+    document.querySelectorAll('.gold-head, .plans-table th').forEach(el => {
+      if (el.textContent.includes('Social Media Package')) {
+        el.innerHTML = el.innerHTML.replace(/(?:₹|&#8377;)\s*[\d,]+(\s*\/\s*month)?/gi, smFormatted + '$1');
+      }
+    });
+  }
+
+  if (prices['metaads'] !== undefined) {
+    const metaFormatted = '₹' + (prices['metaads'] / 100).toLocaleString('en-IN');
+    document.querySelectorAll('.hero-price-tag, .plan-price').forEach(el => {
+      el.innerHTML = el.innerHTML.replace(/(?:₹|&#8377;)\s*[\d,]+/gi, metaFormatted);
+    });
+  }
+
+  if (prices['aivideos'] !== undefined) {
+    const aiFormatted = '₹' + (prices['aivideos'] / 100).toLocaleString('en-IN');
+    document.querySelectorAll('.hero-price-tag, .plan-price').forEach(el => {
+      el.innerHTML = el.innerHTML.replace(/(?:₹|&#8377;)\s*[\d,]+/gi, aiFormatted);
+    });
+  }
+
+  if (prices['quotation'] !== undefined) {
+    const qFormatted = '₹' + (prices['quotation'] / 100).toLocaleString('en-IN');
+    document.querySelectorAll('.hero-price-tag, .plan-price, .pricing-box').forEach(el => {
+      el.innerHTML = el.innerHTML.replace(/(?:₹|&#8377;)\s*[\d,]+/gi, qFormatted);
+    });
+  }
+
+  // 3. Any element with explicit data-price-key attribute
+  document.querySelectorAll('[data-price-key]').forEach(el => {
+    const key = el.getAttribute('data-price-key');
+    if (prices[key] !== undefined) {
+      el.textContent = '₹' + (prices[key] / 100).toLocaleString('en-IN');
+    }
+  });
+}
+
+// Fetch live prices as soon as DOM is ready or immediately
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', fetchLivePrices);
+} else {
+  fetchLivePrices();
+}
+
+// ── PAYMENT MODAL ─────────────────────────────────────────────
+async function openPaymentModal(service, planName, amount) {
+  // Ensure live prices are fetched so client and server amounts match 100%
+  if (!INPIXEL_PRICES) {
+    await fetchLivePrices();
+  }
+
+  if (INPIXEL_PRICES && INPIXEL_PRICES[service] !== undefined) {
+    amount = INPIXEL_PRICES[service];
+  }
+
   const overlay = document.createElement('div');
   overlay.className = 'inpixel-payment-overlay';
   
@@ -117,11 +212,14 @@ function openPaymentModal(service, planName, amount) {
   const serviceLabel = service.replace(/-/g, ' ').toUpperCase();
   const formattedAmount = '₹' + (amount / 100).toLocaleString('en-IN');
   
+  // Replace old hardcoded price in planName with live amount
+  const displayPlanName = planName.replace(/(?:₹|&#8377;)\s*[\d,]+(\s*\/\s*(?:month|mo))?/gi, formattedAmount + '$1');
+
   modal.innerHTML = `
     <button class="inpixel-payment-close">&times;</button>
     <div style="text-align:center;">
       <span style="display:inline-block; padding:3px 10px; background:rgba(240,165,0,0.12); border:1px solid rgba(240,165,0,0.3); color:var(--gold); border-radius:12px; font-size:0.7rem; font-family:'Space Mono',monospace; letter-spacing:0.08em; text-transform:uppercase; margin-bottom:8px;">${serviceLabel}</span>
-      <h3 class="inpixel-payment-title" style="margin-bottom:4px;">${planName}</h3>
+      <h3 class="inpixel-payment-title" style="margin-bottom:4px;">${displayPlanName}</h3>
       <p class="inpixel-payment-desc" style="margin-bottom:20px;">Amount to Pay: <strong style="color:var(--white);">${formattedAmount}</strong></p>
     </div>
     
@@ -193,7 +291,7 @@ function openPaymentModal(service, planName, amount) {
         amount: data.amount,
         currency: data.currency,
         name: 'Inpixel Network',
-        description: planName,
+        description: displayPlanName,
         order_id: data.order_id,
         handler: async function(response) {
           try {
@@ -210,7 +308,7 @@ function openPaymentModal(service, planName, amount) {
                 razorpay_order_id: response.razorpay_order_id,
                 razorpay_payment_id: response.razorpay_payment_id,
                 razorpay_signature: response.razorpay_signature,
-                client_name, client_phone, client_email, service, plan_name: planName, amount
+                client_name, client_phone, client_email, service, plan_name: displayPlanName, amount
               })
             });
             const verifyData = await verifyRes.json();
@@ -228,7 +326,7 @@ function openPaymentModal(service, planName, amount) {
                   <div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span style="color:rgba(255,255,255,0.5);">Name:</span><strong style="color:var(--white);">${client_name}</strong></div>
                   <div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span style="color:rgba(255,255,255,0.5);">Phone:</span><strong style="color:var(--gold);">${client_phone}</strong></div>
                   ${client_email ? `<div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span style="color:rgba(255,255,255,0.5);">Email:</span><strong style="color:var(--white);">${client_email}</strong></div>` : ''}
-                  <div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span style="color:rgba(255,255,255,0.5);">Enrolled Plan:</span><strong style="color:var(--white);">${planName}</strong></div>
+                  <div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span style="color:rgba(255,255,255,0.5);">Enrolled Plan:</span><strong style="color:var(--white);">${displayPlanName}</strong></div>
                   <div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span style="color:rgba(255,255,255,0.5);">Amount Paid:</span><strong style="color:#22c55e;">${formattedAmount}</strong></div>
                   <div style="display:flex; justify-content:space-between; font-size:0.7rem; color:rgba(255,255,255,0.4); margin-top:8px; border-top:1px solid rgba(255,255,255,0.1); padding-top:6px;"><span>Payment ID:</span><span>${response.razorpay_payment_id || '—'}</span></div>
                 </div>
@@ -256,7 +354,6 @@ function openPaymentModal(service, planName, amount) {
       rzp.on('payment.failed', function (response) {
         const err = response && response.error;
         const failureReason = err ? (err.description ? err.description + (err.reason ? ' (' + err.reason + ')' : '') : (err.reason || err.code || 'Payment failed or cancelled')) : 'Cancelled by user / Payment failed';
-        // Mark payment as failed in DB with failure reason
         fetch('/api/payments/update-status', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -286,3 +383,4 @@ function openPaymentModal(service, planName, amount) {
 }
 
 window.openPaymentModal = openPaymentModal;
+window.fetchLivePrices = fetchLivePrices;
