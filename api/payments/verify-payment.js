@@ -11,7 +11,7 @@ function setCors(req, res) {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 }
 
-// Service display names & prices for the receipt
+// Service display names & fallback prices for the receipt
 const SERVICE_INFO = {
   'socialmedia': { name: 'Social Media Management', price: '₹999/mo' },
   'webdevelopment-starter': { name: 'Website Development — Starter', price: '₹2,999' },
@@ -21,7 +21,7 @@ const SERVICE_INFO = {
   'quotation': { name: 'Inpixel Quotation Software — Lifetime', price: '₹2,999' }
 };
 
-async function sendReceiptEmail({ to, clientName, serviceName, servicePrice, paymentId, orderId }) {
+async function sendReceiptEmail({ to, clientName, serviceName, servicePrice, paymentId, orderId, emailSettings }) {
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -30,12 +30,20 @@ async function sendReceiptEmail({ to, clientName, serviceName, servicePrice, pay
     }
   });
 
+  const heading = (emailSettings && emailSettings.heading) || 'Payment Successful ✓';
+  const subheading = (emailSettings && emailSettings.subheading) || 'Thank you for choosing Inpixel Network';
+  const message = (emailSettings && emailSettings.message) || 'Our team will reach out to you shortly to get started.';
+  const contactEmail = (emailSettings && emailSettings.contactEmail) || process.env.GMAIL_USER || 'supportinpixelnetwork@gmail.com';
+  
+  let subject = (emailSettings && emailSettings.subject) || 'Payment Confirmed — {service} | Inpixel Network';
+  subject = subject.replace(/\{service\}/g, serviceName).replace(/\{amount\}/g, servicePrice);
+
   const html = `
-    <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #060608; color: #ffffff; border-radius: 12px; overflow: hidden;">
+    <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #060608; color: #ffffff; border-radius: 12px; overflow: hidden; border: 1px solid rgba(240,165,0,0.2);">
       
       <div style="background: linear-gradient(135deg, #f0a500 0%, #d4920a 100%); padding: 32px; text-align: center;">
-        <h1 style="margin: 0; font-size: 24px; color: #060608; font-weight: 800;">Payment Successful ✓</h1>
-        <p style="margin: 8px 0 0; color: rgba(6,6,8,0.7); font-size: 14px;">Thank you for choosing Inpixel Network</p>
+        <h1 style="margin: 0; font-size: 24px; color: #060608; font-weight: 800;">${heading}</h1>
+        <p style="margin: 8px 0 0; color: rgba(6,6,8,0.7); font-size: 14px;">${subheading}</p>
       </div>
 
       <div style="padding: 32px;">
@@ -65,9 +73,11 @@ async function sendReceiptEmail({ to, clientName, serviceName, servicePrice, pay
         </table>
 
         <div style="margin-top: 28px; padding: 20px; background: rgba(240,165,0,0.08); border: 1px solid rgba(240,165,0,0.2); border-radius: 8px; text-align: center;">
-          <p style="margin: 0; color: rgba(255,255,255,0.7); font-size: 14px; line-height: 1.6;">
-            Our team will reach out to you shortly to get started.<br>
-            For any queries, contact us at <a href="mailto:supportinpixelnetwork@gmail.com" style="color: #f0a500;">supportinpixelnetwork@gmail.com</a>
+          <p style="margin: 0; color: rgba(255,255,255,0.7); font-size: 14px; line-height: 1.6; white-space: pre-line;">
+            ${message}
+          </p>
+          <p style="margin: 10px 0 0; color: rgba(255,255,255,0.5); font-size: 13px;">
+            For any queries, contact us at <a href="mailto:${contactEmail}" style="color: #f0a500;">${contactEmail}</a>
           </p>
         </div>
       </div>
@@ -83,7 +93,7 @@ async function sendReceiptEmail({ to, clientName, serviceName, servicePrice, pay
   await transporter.sendMail({
     from: `"Inpixel Network" <${process.env.GMAIL_USER}>`,
     to,
-    subject: `Payment Confirmed — ${serviceName} | Inpixel Network`,
+    subject,
     html
   });
 }
@@ -100,9 +110,9 @@ module.exports = async function (req, res) {
     const { 
       razorpay_order_id, 
       razorpay_payment_id, 
-      razorpay_signature, 
-      client_name, 
-      client_phone, 
+      razorpay_signature,
+      client_name,
+      client_phone,
       client_email
     } = req.body || {};
 
@@ -110,44 +120,53 @@ module.exports = async function (req, res) {
       return res.status(400).json({ success: false, message: 'Missing payment details' });
     }
 
-    // Verify HMAC-SHA256 signature
-    const generated = crypto.createHmac('sha256', process.env.RAZORPAY_KEY_SECRET)
-                            .update(razorpay_order_id + '|' + razorpay_payment_id)
-                            .digest('hex');
+    // Verify Razorpay HMAC SHA256 signature
+    const generated = crypto
+      .createHmac('sha256', process.env.RAZORPAY_KEY_SECRET)
+      .update(razorpay_order_id + '|' + razorpay_payment_id)
+      .digest('hex');
 
     if (generated !== razorpay_signature) {
-      return res.status(400).json({ success: false, message: 'Invalid signature' });
+      return res.status(400).json({ success: false, message: 'Invalid payment signature' });
     }
 
     const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
 
-    // Read the service from the DB record (set at order creation), NOT from client
-    const { data: paymentRecord, error: fetchError } = await supabase
+    // Look up the pending payment record created in create-order.js
+    const { data: pendingPayment, error: fetchError } = await supabase
       .from('payments')
-      .select('service, plan_name, client_name, client_phone, client_email')
+      .select('*')
       .eq('razorpay_order_id', razorpay_order_id)
-      .eq('status', 'pending')
       .single();
 
-    if (fetchError || !paymentRecord) {
-      return res.status(400).json({ success: false, message: 'Payment record not found or already processed' });
+    if (fetchError || !pendingPayment) {
+      console.error('Pending payment not found for order:', razorpay_order_id, fetchError);
+      return res.status(404).json({ success: false, message: 'Order record not found' });
     }
 
-    // Use DB-stored values (trusted), not client-sent values
-    const trustedService = paymentRecord.service;
-    const trustedPhone = paymentRecord.client_phone || (client_phone ? client_phone.replace(/[\s\-\(\)]/g, '') : '');
-    const trustedName = paymentRecord.client_name || client_name || 'Unknown';
-    const trustedEmail = paymentRecord.client_email || client_email || '';
+    // Read trusted data from our database record (tamper-proof)
+    const trustedService = pendingPayment.service;
+    const trustedAmount = pendingPayment.amount;
+    const trustedName = pendingPayment.client_name || client_name;
+    const trustedPhone = pendingPayment.client_phone || client_phone;
+    const trustedEmail = pendingPayment.client_email || client_email;
 
-    // Update the pending record to "paid"
-    await supabase.from('payments')
+    // Update payment record to "paid"
+    const { error: updateError } = await supabase
+      .from('payments')
       .update({
         razorpay_payment_id,
         status: 'paid'
       })
       .eq('razorpay_order_id', razorpay_order_id);
 
-    // Map service to client activation service
+    if (updateError) {
+      console.error('Failed to update payment status:', updateError);
+      return res.status(500).json({ success: false, message: 'Failed to record payment' });
+    }
+
+    // Client portal activation mapping
+    // Note: socialmedia and quotation do NOT have portal dashboards
     let targetService = '';
     if (trustedService === 'webdevelopment-starter' || trustedService === 'webdevelopment-pro' || trustedService === 'webdevelopment' || trustedService === 'website') {
       targetService = 'website';
@@ -155,11 +174,9 @@ module.exports = async function (req, res) {
       targetService = 'aiads';
     } else if (trustedService === 'metaads') {
       targetService = 'metaads';
-    } else if (trustedService === 'socialmedia') {
-      targetService = 'socialmedia';
     }
 
-    if (trustedPhone) {
+    if (trustedPhone && targetService) {
       const { data: existingClient } = await supabase
         .from('clients')
         .select('*')
@@ -168,12 +185,10 @@ module.exports = async function (req, res) {
 
       let finalServices = existingClient ? existingClient.services || '' : '';
       
-      if (targetService) {
-        if (!finalServices) {
-          finalServices = targetService;
-        } else if (!finalServices.includes(targetService)) {
-          finalServices += (finalServices.length > 0 ? ',' : '') + targetService;
-        }
+      if (!finalServices) {
+        finalServices = targetService;
+      } else if (!finalServices.includes(targetService)) {
+        finalServices += (finalServices.length > 0 ? ',' : '') + targetService;
       }
 
       await supabase.from('clients').upsert({ 
@@ -183,25 +198,35 @@ module.exports = async function (req, res) {
       }, { onConflict: 'phone' });
     }
 
-    // Send confirmation & receipt email
+    // Send confirmation & receipt email with actual amount paid & custom email settings
     if (trustedEmail) {
       const info = SERVICE_INFO[trustedService] || { name: trustedService, price: '' };
+      // Format actual amount paid
+      const actualPaidPrice = trustedAmount ? '₹' + (trustedAmount / 100).toLocaleString('en-IN') : info.price;
+
+      // Fetch email settings from database
+      let emailSettings = null;
+      try {
+        const { data: eRow } = await supabase.from('settings').select('value').eq('key', 'email_settings').maybeSingle();
+        if (eRow && eRow.value) emailSettings = eRow.value;
+      } catch (err) {}
+
       try {
         await sendReceiptEmail({
           to: trustedEmail,
           clientName: trustedName,
           serviceName: info.name,
-          servicePrice: info.price,
+          servicePrice: actualPaidPrice,
           paymentId: razorpay_payment_id,
-          orderId: razorpay_order_id
+          orderId: razorpay_order_id,
+          emailSettings
         });
       } catch (emailError) {
-        // Don't fail the payment if email fails — log and continue
         console.error('Email send failed:', emailError);
       }
     }
 
-    return res.status(200).json({ success: true, message: 'Payment verified and account activated' });
+    return res.status(200).json({ success: true, message: 'Payment verified successfully' });
   } catch (error) {
     console.error('Payment verification error:', error);
     return res.status(500).json({ success: false, message: 'Something went wrong' });

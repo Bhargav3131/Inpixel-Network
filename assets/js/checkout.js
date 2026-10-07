@@ -295,9 +295,12 @@ async function openPaymentModal(service, planName, amount) {
         order_id: data.order_id,
         handler: async function(response) {
           try {
+            const isNoPortalService = (service === 'socialmedia' || service === 'quotation');
+            const verifyingMsg = isNoPortalService ? 'Verifying Payment...' : 'Verifying Payment & Activating Account...';
+
             modal.querySelector('#payment-form-content').innerHTML = `
               <div style="text-align:center; padding: 20px 0;">
-                <div style="color:var(--gold); font-family:'Space Mono',monospace; font-size:0.85rem; margin-bottom:10px;">Verifying Payment & Activating Account...</div>
+                <div style="color:var(--gold); font-family:'Space Mono',monospace; font-size:0.85rem; margin-bottom:10px;">${verifyingMsg}</div>
               </div>
             `;
             
@@ -316,24 +319,48 @@ async function openPaymentModal(service, planName, amount) {
             
             modal.querySelector('.inpixel-payment-title').style.display = 'none';
             modal.querySelector('.inpixel-payment-desc').style.display = 'none';
-            modal.querySelector('#payment-form-content').innerHTML = `
-              <div style="text-align: center; padding: 10px 0;">
-                <div class="success-checkmark">✓</div>
-                <h3 style="font-family:'Syne',sans-serif; color:var(--white); margin:0 0 4px 0; font-size:1.4rem;">Payment Successful!</h3>
-                <p style="color:#22c55e; margin-bottom:16px; font-size:0.85rem; font-family:'Space Mono',monospace;">✓ Account Auto-Activated</p>
-                
-                <div style="background:var(--black); border:1px solid var(--border); padding:14px; border-radius:6px; text-align:left; font-size:0.8rem; margin-bottom:20px; line-height:1.6;">
-                  <div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span style="color:rgba(255,255,255,0.5);">Name:</span><strong style="color:var(--white);">${client_name}</strong></div>
-                  <div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span style="color:rgba(255,255,255,0.5);">Phone:</span><strong style="color:var(--gold);">${client_phone}</strong></div>
-                  ${client_email ? `<div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span style="color:rgba(255,255,255,0.5);">Email:</span><strong style="color:var(--white);">${client_email}</strong></div>` : ''}
-                  <div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span style="color:rgba(255,255,255,0.5);">Enrolled Plan:</span><strong style="color:var(--white);">${displayPlanName}</strong></div>
-                  <div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span style="color:rgba(255,255,255,0.5);">Amount Paid:</span><strong style="color:#22c55e;">${formattedAmount}</strong></div>
-                  <div style="display:flex; justify-content:space-between; font-size:0.7rem; color:rgba(255,255,255,0.4); margin-top:8px; border-top:1px solid rgba(255,255,255,0.1); padding-top:6px;"><span>Payment ID:</span><span>${response.razorpay_payment_id || '—'}</span></div>
-                </div>
 
-                <a href="/userlogin/" style="display:inline-block; text-decoration:none; width:100%; padding:14px; background:var(--gold); color:var(--black); border-radius:4px; font-family:'Syne',sans-serif; font-weight:700; font-size:1rem; transition:background 0.2s; box-sizing:border-box;">Login to Your Dashboard &rarr;</a>
-              </div>
-            `;
+            if (isNoPortalService) {
+              modal.querySelector('#payment-form-content').innerHTML = `
+                <div style="text-align: center; padding: 10px 0;">
+                  <div class="success-checkmark">✓</div>
+                  <h3 style="font-family:'Syne',sans-serif; color:var(--white); margin:0 0 4px 0; font-size:1.4rem;">Payment Completed</h3>
+                  <p style="color:var(--gold); margin-bottom:16px; font-size:0.85rem; font-family:'Space Mono',monospace;">✓ Our team will contact you shortly.</p>
+                  
+                  <div style="background:var(--black); border:1px solid var(--border); padding:14px; border-radius:6px; text-align:left; font-size:0.8rem; margin-bottom:20px; line-height:1.6;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span style="color:rgba(255,255,255,0.5);">Name:</span><strong style="color:var(--white);">${client_name}</strong></div>
+                    <div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span style="color:rgba(255,255,255,0.5);">Phone:</span><strong style="color:var(--gold);">${client_phone}</strong></div>
+                    ${client_email ? `<div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span style="color:rgba(255,255,255,0.5);">Email:</span><strong style="color:var(--white);">${client_email}</strong></div>` : ''}
+                    <div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span style="color:rgba(255,255,255,0.5);">Enrolled Plan:</span><strong style="color:var(--white);">${displayPlanName}</strong></div>
+                    <div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span style="color:rgba(255,255,255,0.5);">Amount Paid:</span><strong style="color:#22c55e;">${formattedAmount}</strong></div>
+                    <div style="display:flex; justify-content:space-between; font-size:0.7rem; color:rgba(255,255,255,0.4); margin-top:8px; border-top:1px solid rgba(255,255,255,0.1); padding-top:6px;"><span>Payment ID:</span><span>${response.razorpay_payment_id || '—'}</span></div>
+                    <div style="display:flex; justify-content:space-between; font-size:0.7rem; color:rgba(255,255,255,0.4); margin-top:4px;"><span>Order ID:</span><span>${response.razorpay_order_id || data.order_id || '—'}</span></div>
+                  </div>
+
+                  <button onclick="document.querySelector('.inpixel-payment-overlay')?.remove()" style="display:inline-block; border:none; cursor:pointer; width:100%; padding:14px; background:var(--gold); color:var(--black); border-radius:4px; font-family:'Syne',sans-serif; font-weight:700; font-size:1rem; transition:background 0.2s; box-sizing:border-box;">Done</button>
+                </div>
+              `;
+            } else {
+              modal.querySelector('#payment-form-content').innerHTML = `
+                <div style="text-align: center; padding: 10px 0;">
+                  <div class="success-checkmark">✓</div>
+                  <h3 style="font-family:'Syne',sans-serif; color:var(--white); margin:0 0 4px 0; font-size:1.4rem;">Payment Successful!</h3>
+                  <p style="color:#22c55e; margin-bottom:16px; font-size:0.85rem; font-family:'Space Mono',monospace;">✓ Account Auto-Activated</p>
+                  
+                  <div style="background:var(--black); border:1px solid var(--border); padding:14px; border-radius:6px; text-align:left; font-size:0.8rem; margin-bottom:20px; line-height:1.6;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span style="color:rgba(255,255,255,0.5);">Name:</span><strong style="color:var(--white);">${client_name}</strong></div>
+                    <div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span style="color:rgba(255,255,255,0.5);">Phone:</span><strong style="color:var(--gold);">${client_phone}</strong></div>
+                    ${client_email ? `<div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span style="color:rgba(255,255,255,0.5);">Email:</span><strong style="color:var(--white);">${client_email}</strong></div>` : ''}
+                    <div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span style="color:rgba(255,255,255,0.5);">Enrolled Plan:</span><strong style="color:var(--white);">${displayPlanName}</strong></div>
+                    <div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span style="color:rgba(255,255,255,0.5);">Amount Paid:</span><strong style="color:#22c55e;">${formattedAmount}</strong></div>
+                    <div style="display:flex; justify-content:space-between; font-size:0.7rem; color:rgba(255,255,255,0.4); margin-top:8px; border-top:1px solid rgba(255,255,255,0.1); padding-top:6px;"><span>Payment ID:</span><span>${response.razorpay_payment_id || '—'}</span></div>
+                    <div style="display:flex; justify-content:space-between; font-size:0.7rem; color:rgba(255,255,255,0.4); margin-top:4px;"><span>Order ID:</span><span>${response.razorpay_order_id || data.order_id || '—'}</span></div>
+                  </div>
+
+                  <a href="/userlogin/" style="display:inline-block; text-decoration:none; width:100%; padding:14px; background:var(--gold); color:var(--black); border-radius:4px; font-family:'Syne',sans-serif; font-weight:700; font-size:1rem; transition:background 0.2s; box-sizing:border-box;">Login to Your Dashboard &rarr;</a>
+                </div>
+              `;
+            }
             
           } catch(err) {
             alert('Payment verification failed: ' + err.message);

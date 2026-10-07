@@ -50,6 +50,7 @@ async function checkGate() {
       loadPayments();
       loadBlogs();
       loadPricing();
+      loadEmailSettings();
     } else {
       document.getElementById('gateError').textContent = data.error || 'Incorrect credentials.';
       document.getElementById('gateError').style.display = 'block';
@@ -97,6 +98,7 @@ function openSection(section) {
   if (section === 'blog') loadBlogs();
   if (section === 'clients') renderClientsList();
   if (section === 'pricing') loadPricing();
+  if (section === 'email') loadEmailSettings();
 }
 
 function backToDashboard() {
@@ -952,3 +954,94 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelector('nav').style.display  = 'none';
   document.querySelector('main').style.display = 'none';
 });
+
+// ── EMAIL SETTINGS ───────────────────────────────────────────
+async function loadEmailSettings() {
+  try {
+    const res = await fetch('/api/admin/payments?action=email-settings', { headers: authHeaders() });
+    const data = await res.json();
+    if (!res.ok || !data.success) return;
+    const s = data.data || {};
+    if (s.subject)    document.getElementById('emailSubject').value    = s.subject;
+    if (s.heading)    document.getElementById('emailHeading').value    = s.heading;
+    if (s.subheading) document.getElementById('emailSubheading').value = s.subheading;
+    if (s.message)    document.getElementById('emailMessage').value    = s.message;
+    if (s.contactEmail) document.getElementById('emailContact').value  = s.contactEmail;
+  } catch (err) {
+    console.warn('Could not load email settings', err);
+  }
+}
+
+async function saveEmailSettings() {
+  const btn = document.getElementById('saveEmailBtn');
+  const status = document.getElementById('emailSaveStatus');
+  btn.disabled = true;
+  btn.textContent = 'Saving...';
+
+  const settings = {
+    subject:      document.getElementById('emailSubject').value.trim() || 'Payment Confirmed — {service} | Inpixel Network',
+    heading:      document.getElementById('emailHeading').value.trim() || 'Payment Successful ✓',
+    subheading:   document.getElementById('emailSubheading').value.trim() || 'Thank you for choosing Inpixel Network',
+    message:      document.getElementById('emailMessage').value.trim() || 'Our team will reach out to you shortly to get started.',
+    contactEmail: document.getElementById('emailContact').value.trim() || 'supportinpixelnetwork@gmail.com'
+  };
+
+  try {
+    const res = await fetch('/api/admin/payments?action=email-settings', {
+      method: 'POST',
+      headers: authHeaders(),
+      body: JSON.stringify({ settings })
+    });
+    const json = await res.json();
+    if (!res.ok || !json.success) throw new Error(json.message || 'Failed to save');
+
+    status.textContent = '✓ Email settings saved!';
+    status.style.color = '#22c55e';
+    status.style.display = 'inline';
+  } catch (err) {
+    status.textContent = 'Error: ' + err.message;
+    status.style.color = '#ef4444';
+    status.style.display = 'inline';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Save Email Settings';
+    setTimeout(() => { if (status) status.style.display = 'none'; }, 4000);
+  }
+}
+
+async function sendPreviewEmail() {
+  const btn = document.getElementById('testEmailBtn');
+  const status = document.getElementById('emailSaveStatus');
+  btn.disabled = true;
+  btn.textContent = 'Sending...';
+
+  const settings = {
+    subject:      document.getElementById('emailSubject').value.trim() || 'Payment Confirmed — {service} | Inpixel Network',
+    heading:      document.getElementById('emailHeading').value.trim() || 'Payment Successful ✓',
+    subheading:   document.getElementById('emailSubheading').value.trim() || 'Thank you for choosing Inpixel Network',
+    message:      document.getElementById('emailMessage').value.trim() || 'Our team will reach out to you shortly to get started.',
+    contactEmail: document.getElementById('emailContact').value.trim() || 'supportinpixelnetwork@gmail.com'
+  };
+
+  try {
+    const res = await fetch('/api/admin/payments?action=test-custom-email', {
+      method: 'POST',
+      headers: authHeaders(),
+      body: JSON.stringify({ settings })
+    });
+    const json = await res.json();
+    if (!res.ok || !json.success) throw new Error(json.message || 'Failed to send');
+
+    status.textContent = '✓ Test email sent to supportinpixelnetwork@gmail.com!';
+    status.style.color = '#22c55e';
+    status.style.display = 'inline';
+  } catch (err) {
+    status.textContent = 'Error: ' + err.message;
+    status.style.color = '#ef4444';
+    status.style.display = 'inline';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Send Test Email';
+    setTimeout(() => { if (status) status.style.display = 'none'; }, 5000);
+  }
+}

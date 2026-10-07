@@ -92,6 +92,12 @@
           <div class="dash-card-body"><div class="dash-card-title">Pricing & Settings</div><div class="dash-card-desc">Edit service prices & configure panel settings</div></div>
           <div class="dash-card-right"><svg class="dash-card-arrow" viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
         </div>
+        <!-- Email Receipt Settings -->
+        <div class="dash-card" onclick="openSection('email')">
+          <div class="dash-card-icon amber-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+          <div class="dash-card-body"><div class="dash-card-title">Email Receipt Settings</div><div class="dash-card-desc">Customize customer receipt email subject, message & contact info</div></div>
+          <div class="dash-card-right"><svg class="dash-card-arrow" viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+        </div>
       </div>
     </div>
 
@@ -245,6 +251,46 @@
       <div style="display:flex;gap:12px;align-items:center;margin-top:24px;">
         <button class="activate-btn" id="savePricesBtn" onclick="savePricing()" style="width:auto;padding:13px 32px;">Save Prices</button>
         <div id="pricingSaveStatus" style="font-family:'Space Mono',monospace;font-size:0.75rem;color:#22c55e;display:none;"></div>
+      </div>
+    </div>
+
+    <!-- ═══════ EMAIL RECEIPT SETTINGS ═══════ -->
+    <div id="view-email" class="section-view" style="display:none;">
+      <div class="section-view-header">
+        <div><p class="section-view-label" style="color:#f59e0b;">Notifications</p><h2 class="section-view-title">Email Receipt Settings</h2></div>
+      </div>
+      <div style="background:var(--surface); border:1px solid var(--border); padding:28px; max-width:700px; border-radius:var(--radius);">
+        <div style="margin-bottom:20px;">
+          <label style="display:block; font-family:'Space Mono',monospace; font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; margin-bottom:8px;">Email Subject</label>
+          <input type="text" id="emailSubject" class="add-client-input" placeholder="Payment Confirmed — {service} | Inpixel Network" style="width:100%;">
+          <span style="font-size:0.68rem; color:var(--text-muted); font-family:'Space Mono',monospace; margin-top:4px; display:block;">Use {service} and {amount} as dynamic placeholders.</span>
+        </div>
+
+        <div style="margin-bottom:20px;">
+          <label style="display:block; font-family:'Space Mono',monospace; font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; margin-bottom:8px;">Header Title</label>
+          <input type="text" id="emailHeading" class="add-client-input" placeholder="Payment Successful ✓" style="width:100%;">
+        </div>
+
+        <div style="margin-bottom:20px;">
+          <label style="display:block; font-family:'Space Mono',monospace; font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; margin-bottom:8px;">Header Subtitle</label>
+          <input type="text" id="emailSubheading" class="add-client-input" placeholder="Thank you for choosing Inpixel Network" style="width:100%;">
+        </div>
+
+        <div style="margin-bottom:20px;">
+          <label style="display:block; font-family:'Space Mono',monospace; font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; margin-bottom:8px;">Customer Message / Instructions</label>
+          <textarea id="emailMessage" class="add-client-input" rows="4" style="width:100%; resize:vertical; font-family:'DM Sans',sans-serif;" placeholder="Our team will reach out to you shortly to get started."></textarea>
+        </div>
+
+        <div style="margin-bottom:24px;">
+          <label style="display:block; font-family:'Space Mono',monospace; font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; margin-bottom:8px;">Support / Contact Email Shown In Receipt</label>
+          <input type="email" id="emailContact" class="add-client-input" placeholder="supportinpixelnetwork@gmail.com" style="width:100%;">
+        </div>
+
+        <div style="display:flex; gap:14px; align-items:center; flex-wrap:wrap;">
+          <button class="activate-btn" id="saveEmailBtn" onclick="saveEmailSettings()" style="width:auto; padding:12px 28px;">Save Email Settings</button>
+          <button class="blog-action-btn" id="testEmailBtn" onclick="sendPreviewEmail()" style="padding:12px 20px;">Send Test Email</button>
+          <span id="emailSaveStatus" style="font-family:'Space Mono',monospace; font-size:0.75rem; color:#22c55e; display:none;"></span>
+        </div>
       </div>
     </div>
   </main>
