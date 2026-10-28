@@ -5,6 +5,21 @@
 
 let currentUser = null;
 
+// Restore an authenticated portal session after refresh within the same tab.
+document.addEventListener('DOMContentLoaded', () => {
+  try {
+    const saved = JSON.parse(sessionStorage.getItem('inpixel_user') || 'null');
+    if (!saved?.phone || !saved?.services) return;
+    currentUser = saved;
+    document.getElementById('loginStep').style.display = 'none';
+    document.getElementById('serviceDashboard').style.display = 'block';
+    document.getElementById('dashGreetName').textContent = saved.name || 'Client';
+    applyServiceLocks();
+  } catch {
+    sessionStorage.removeItem('inpixel_user');
+  }
+});
+
 // ── Checkbox / Radio visual toggles ────────────────────────
 document.querySelectorAll('.checkbox-item input[type=checkbox]').forEach(cb => {
   cb.addEventListener('change', function() {

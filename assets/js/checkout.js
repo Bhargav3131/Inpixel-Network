@@ -183,7 +183,36 @@ function applyLivePrices(prices) {
       el.textContent = '₹' + (prices[key] / 100).toLocaleString('en-IN');
     }
   });
+
+  // 4. Update plan-card price headings built by redesign.js
+  document.querySelectorAll('.fresh-plans article').forEach(card => {
+    const btn = card.querySelector('button[onclick*="openPaymentModal"]');
+    const strong = card.querySelector('strong');
+    if (!btn || !strong) return;
+    const match = (btn.getAttribute('onclick') || '').match(/openPaymentModal\s*\(\s*['"]([^'"]+)['"]/);
+    if (match && match[1] && prices[match[1]] !== undefined) {
+      const formatted = '₹' + (prices[match[1]] / 100).toLocaleString('en-IN');
+      strong.textContent = formatted;
+      // Also update the onclick amount argument
+      const oldOnclick = btn.getAttribute('onclick');
+      btn.setAttribute('onclick', oldOnclick.replace(/,\s*\d+\s*\)/, ',' + prices[match[1]] + ')'));
+    }
+  });
+
+  // 5. Update home page service list price tags
+  document.querySelectorAll('.fresh-service-list a > b').forEach(tag => {
+    const href = tag.closest('a')?.getAttribute('href') || '';
+    const route = href.replace(/\//g, '');
+    // Map route to the correct price key
+    const keyMap = {'webdevelopment':'webdevelopment-starter','socialmedia':'socialmedia','aivideos':'aivideos','metaads':'metaads'};
+    const key = keyMap[route];
+    if (key && prices[key] !== undefined) {
+      const formatted = '₹' + (prices[key] / 100).toLocaleString('en-IN');
+      tag.innerHTML = tag.innerHTML.replace(/(?:₹|&#8377;)\s*[\d,]+/gi, formatted);
+    }
+  });
 }
+window.applyLivePrices = applyLivePrices;
 
 // Fetch live prices as soon as DOM is ready or immediately
 if (document.readyState === 'loading') {

@@ -4,8 +4,8 @@ const { createClient } = require('@supabase/supabase-js');
 const ALLOWED_ORIGINS = ['https://inpixelnetwork.in', 'https://www.inpixelnetwork.in'];
 
 function setCors(req, res) {
-  const origin = req.headers.origin || '';
-  res.setHeader('Access-Control-Allow-Origin', ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0]);
+  const origin = req.headers.origin || '*';
+  res.setHeader('Access-Control-Allow-Origin', origin);
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 }
