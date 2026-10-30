@@ -150,13 +150,13 @@ module.exports = async function (req, res) {
     let text = '';
     let lastError = null;
 
-    // Multi-model cascade using verified active models in your account
+    // Multi-model cascade using verified active Gemini models
     const modelsToTry = [
-      'gemini-3.8-flash',
-      'gemini-3.5-flash',
-      'gemini-3-flash-preview',
-      'gemini-2.5-flash-lite',
-      'gemini-flash-latest'
+      'gemini-2.0-flash',
+      'gemini-2.0-flash-lite',
+      'gemini-1.5-flash',
+      'gemini-1.5-flash-8b',
+      'gemini-1.5-pro'
     ];
 
     for (const modelName of modelsToTry) {
