@@ -2,6 +2,7 @@
   const routeNames = new Set(['adminpanel','aivideos','blog','dash','metaads','privacy','quotation','services','socialmedia','terms','userlogin','webdevelopment'])
   const pathParts = decodeURIComponent(location.pathname).split('/').filter(Boolean)
   let route = pathParts[0] || 'home'
+  if (route === 'index.html') route = 'home'
   let baseHref = '/'
   if (location.protocol === 'file:') {
     const parent = pathParts.at(-2)
