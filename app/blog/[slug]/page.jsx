@@ -4,6 +4,21 @@ import { supabase } from '../../../lib/supabase';
 
 export const revalidate = 60;
 
+export async function generateStaticParams() {
+  try {
+    const { data: posts } = await supabase
+      .from('blogs')
+      .select('slug')
+      .eq('status', 'published');
+
+    return (posts || []).map((post) => ({
+      slug: post.slug,
+    }));
+  } catch (e) {
+    return [];
+  }
+}
+
 export async function generateMetadata({ params }) {
   const { data: blog } = await supabase
     .from('blogs')
