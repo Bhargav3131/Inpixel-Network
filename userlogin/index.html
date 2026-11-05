@@ -234,12 +234,24 @@
 
     .frame-badge.blue { background:rgba(24,119,242,0.12); border:1px solid rgba(24,119,242,0.3); color:#6aabff; }
   </style>
-  <link rel="stylesheet" href="../styles.css">
-  <script src="../main.js" defer></script>
+  <link rel="stylesheet" href="/styles.css">
 </head>
-<body>
-
-  <div class="page-split">
+<body data-page="userlogin" class="fresh-build">
+  <div class="fresh-shell fresh-portal">
+    <header class="fresh-nav">
+      <a class="fresh-brand" href="/"><img src="/logo1.jpeg" alt="Inpixel Network"><span>Inpixel Network</span></a>
+      <button class="fresh-menu" aria-label="Toggle menu" onclick="this.nextElementSibling.classList.toggle('open')"><span></span><span></span></button>
+      <nav>
+        <a href="/webdevelopment">Websites</a>
+        <a href="/aivideos">AI Videos</a>
+        <a href="/metaads">Meta Ads</a>
+        <a href="/socialmedia">Social Media</a>
+        <a href="/quotation">Quotation</a>
+        <a class="fresh-nav-cta" href="/userlogin">Client Login ↗</a>
+      </nav>
+    </header>
+    <main class="fresh-portal-main">
+      <div class="page-split">
 
     <!-- ══ LEFT PANEL (hidden via CSS) ══ -->
     <div class="split-left"></div>
@@ -656,6 +668,8 @@
 
     </div><!-- /split-right -->
   </div><!-- /page-split -->
+    </main>
+  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="/supabase-config.js"></script>

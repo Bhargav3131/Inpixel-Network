@@ -58,7 +58,7 @@ export default async function BlogIndexPage() {
                       <span className="inpixel-blog-pill">{post.category || 'Article'}</span>
                       <time className="inpixel-blog-date">{dateStr}</time>
                     </div>
-                    <h2 className="inpixel-blog-card-title">{post.title}</h2>
+                    <h3 className="inpixel-blog-card-title">{post.title}</h3>
                     <p className="inpixel-blog-card-excerpt">
                       {post.excerpt || post.title}
                     </p>
