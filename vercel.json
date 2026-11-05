@@ -1,5 +1,13 @@
 {
   "framework": "nextjs",
+  "rewrites": [
+    { "source": "/userlogin", "destination": "/userlogin/index.html" },
+    { "source": "/userlogin/", "destination": "/userlogin/index.html" },
+    { "source": "/adminpanel", "destination": "/adminpanel/index.html" },
+    { "source": "/adminpanel/", "destination": "/adminpanel/index.html" },
+    { "source": "/dash", "destination": "/dash/index.html" },
+    { "source": "/dash/", "destination": "/dash/index.html" }
+  ],
   "crons": [
     {
       "path": "/api/blog/cron",
