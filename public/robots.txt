@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /adminpanel/
+Disallow: /userlogin/
+
+Sitemap: https://inpixelnetwork.in/sitemap.xml

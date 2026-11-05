@@ -1,0 +1,322 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inpixel Network — Admin Panel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png" href="../logo1.jpeg">
+  <link rel="stylesheet" href="/adminpanel/adminpanel.css">
+  <style>
+    @keyframes spin  { to { transform: rotate(360deg); } }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+    @keyframes fadeUp{ from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+  </style>
+  <link rel="stylesheet" href="../styles.css">
+<script src="../main.js" defer></script>
+</head>
+<body>
+  <div class="grid-bg"></div>
+
+  <div id="adminGate">
+    <div class="gate-card">
+      <div class="gate-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+      <h2>Admin Access</h2>
+      <p>Enter the admin passcode to access the panel.</p>
+      <input class="gate-input" type="email" id="gateEmail" placeholder="Admin Email" maxlength="50" style="margin-bottom: 8px;">
+      <input class="gate-input" type="password" id="gateInput" placeholder="••••••••" maxlength="20">
+      <button class="gate-btn" onclick="checkGate()">Enter Panel</button>
+      <p class="gate-error" id="gateError">Incorrect passcode. Try again.</p>
+    </div>
+  </div>
+
+  <nav>
+    <div style="display:flex;align-items:center;gap:14px;">
+      <a class="nav-logo" href="../index.html"><img src="../logo.jpeg" alt="Inpixel Network"><span>Inpixel Network</span></a>
+      <span class="nav-badge">Admin Panel</span>
+    </div>
+    <div class="nav-right">
+      <button class="back-to-dash-btn" id="backToDashBtn" onclick="backToDashboard()" style="display:none;">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" style="width:14px;stroke:currentColor;"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Dashboard
+      </button>
+      <a class="nav-back" href="../index.html"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>Back to Site</a>
+    </div>
+  </nav>
+
+  <main>
+    <!-- ═══════ DASHBOARD VIEW ═══════ -->
+    <div id="dashboardView" style="display:none;">
+      <div class="page-header">
+        <div class="page-header-left"><p>Dashboard</p><h1>Admin Panel</h1></div>
+      </div>
+      <div class="dash-grid">
+        <!-- Website Submissions -->
+        <div class="dash-card" onclick="openSection('website')">
+          <div class="dash-card-icon gold-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
+          <div class="dash-card-body"><div class="dash-card-title">Website Submissions</div><div class="dash-card-desc">View & manage website development form entries</div></div>
+          <div class="dash-card-right"><div class="dash-card-badge gold-badge" id="badgeWebsite">0</div><svg class="dash-card-arrow" viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+        </div>
+        <!-- AI Video Submissions -->
+        <div class="dash-card" onclick="openSection('aiads')">
+          <div class="dash-card-icon purple-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
+          <div class="dash-card-body"><div class="dash-card-title">AI Video Submissions</div><div class="dash-card-desc">View & manage AI video ad form entries</div></div>
+          <div class="dash-card-right"><div class="dash-card-badge purple-badge" id="badgeAiAds">0</div><svg class="dash-card-arrow" viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+        </div>
+        <!-- Meta Ads Submissions -->
+        <div class="dash-card" onclick="openSection('metaads')">
+          <div class="dash-card-icon blue-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></div>
+          <div class="dash-card-body"><div class="dash-card-title">Meta Ads Submissions</div><div class="dash-card-desc">View & manage Meta/Facebook ads form entries</div></div>
+          <div class="dash-card-right"><div class="dash-card-badge blue-badge" id="badgeMetaAds">0</div><svg class="dash-card-arrow" viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+        </div>
+        <!-- Payments -->
+        <div class="dash-card" onclick="openSection('payments')">
+          <div class="dash-card-icon green-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+          <div class="dash-card-body"><div class="dash-card-title">Payments</div><div class="dash-card-desc">Live payment tracking — completed, pending & failed</div></div>
+          <div class="dash-card-right"><div class="dash-card-meta" id="badgePayments"><span class="pay-live-dot"></span> Live</div><svg class="dash-card-arrow" viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+        </div>
+        <!-- Client Accounts -->
+        <div class="dash-card" onclick="openSection('clients')">
+          <div class="dash-card-icon teal-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+          <div class="dash-card-body"><div class="dash-card-title">Client Accounts</div><div class="dash-card-desc">Activate, deactivate & manage client access</div></div>
+          <div class="dash-card-right"><div class="dash-card-badge teal-badge" id="badgeClients">0</div><svg class="dash-card-arrow" viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+        </div>
+        <!-- Blog Manager -->
+        <div class="dash-card" onclick="openSection('blog')">
+          <div class="dash-card-icon yellow-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
+          <div class="dash-card-body"><div class="dash-card-title">Blog Manager</div><div class="dash-card-desc">Generate AI blogs, publish, draft & delete posts</div></div>
+          <div class="dash-card-right"><div class="dash-card-badge yellow-badge" id="badgeBlog">0</div><svg class="dash-card-arrow" viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+        </div>
+        <!-- Pricing & Settings -->
+        <div class="dash-card" onclick="openSection('pricing')">
+          <div class="dash-card-icon white-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
+          <div class="dash-card-body"><div class="dash-card-title">Pricing & Settings</div><div class="dash-card-desc">Edit service prices & configure panel settings</div></div>
+          <div class="dash-card-right"><svg class="dash-card-arrow" viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+        </div>
+        <!-- Email Receipt Settings -->
+        <div class="dash-card" onclick="openSection('email')">
+          <div class="dash-card-icon amber-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+          <div class="dash-card-body"><div class="dash-card-title">Email Receipt Settings</div><div class="dash-card-desc">Customize customer receipt email subject, message & contact info</div></div>
+          <div class="dash-card-right"><svg class="dash-card-arrow" viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════ WEBSITE SUBMISSIONS ═══════ -->
+    <div id="view-website" class="section-view" style="display:none;">
+      <div class="section-view-header"><div><p class="section-view-label">Submissions</p><h2 class="section-view-title">Website Development</h2></div></div>
+      <div class="stats-row" style="margin-bottom:24px;">
+        <div class="stat-chip"><div class="stat-chip-num" id="statTotal">0</div><div class="stat-chip-label">Total</div></div>
+        <div class="stat-chip"><div class="stat-chip-num" id="statToday">0</div><div class="stat-chip-label">Today</div></div>
+        <div class="stat-chip"><div class="stat-chip-num" id="statWeek">0</div><div class="stat-chip-label">This Week</div></div>
+      </div>
+      <div class="toolbar">
+        <div class="search-box"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" id="searchInput" placeholder="Search by name, phone, business..." oninput="filterCards()"></div>
+        <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
+        <button class="filter-btn" onclick="setFilter('today',this)">Today</button>
+        <button class="filter-btn" onclick="setFilter('week',this)">This Week</button>
+        <button class="clear-btn" onclick="confirmClearAll()">Clear All</button>
+      </div>
+      <div id="cardsContainer"></div>
+    </div>
+
+    <!-- ═══════ AI ADS SUBMISSIONS ═══════ -->
+    <div id="view-aiads" class="section-view" style="display:none;">
+      <div class="section-view-header"><div><p class="section-view-label" style="color:#a855f7;">Submissions</p><h2 class="section-view-title">AI Video Ads</h2></div></div>
+      <div class="stats-row" style="margin-bottom:24px;">
+        <div class="stat-chip"><div class="stat-chip-num" id="aiStatTotal">0</div><div class="stat-chip-label">Total</div></div>
+        <div class="stat-chip"><div class="stat-chip-num" id="aiStatToday">0</div><div class="stat-chip-label">Today</div></div>
+      </div>
+      <div class="toolbar">
+        <div class="search-box"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" id="aiSearchInput" placeholder="Search by name or phone..." oninput="renderAiAdsCards()"></div>
+      </div>
+      <div id="aiAdsContainer"></div>
+    </div>
+
+    <!-- ═══════ META ADS SUBMISSIONS ═══════ -->
+    <div id="view-metaads" class="section-view" style="display:none;">
+      <div class="section-view-header"><div><p class="section-view-label" style="color:#6aabff;">Submissions</p><h2 class="section-view-title">Meta Ads</h2></div></div>
+      <div class="stats-row" style="margin-bottom:24px;">
+        <div class="stat-chip"><div class="stat-chip-num" id="metaStatTotal">0</div><div class="stat-chip-label">Total</div></div>
+        <div class="stat-chip"><div class="stat-chip-num" id="metaStatToday">0</div><div class="stat-chip-label">Today</div></div>
+      </div>
+      <div class="toolbar">
+        <div class="search-box"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" id="metaSearchInput" placeholder="Search by name, phone, business..." oninput="renderMetaAdsCards()"></div>
+      </div>
+      <div id="metaAdsContainer"></div>
+    </div>
+
+    <!-- ═══════ PAYMENTS ═══════ -->
+    <div id="view-payments" class="section-view" style="display:none;">
+      <div class="section-view-header"><div><p class="section-view-label" style="color:#22c55e;">Live Dashboard</p><h2 class="section-view-title">Payments</h2></div></div>
+      <div class="pay-stats-row">
+        <div class="pay-stat"><div class="pay-stat-num green" id="payStatPaid">0</div><div class="pay-stat-label">Completed</div></div>
+        <div class="pay-stat"><div class="pay-stat-num orange" id="payStatPending">0</div><div class="pay-stat-label">Pending</div></div>
+        <div class="pay-stat"><div class="pay-stat-num red" id="payStatFailed">0</div><div class="pay-stat-label">Failed</div></div>
+        <div class="pay-stat"><div class="pay-stat-num" id="payStatTotal" style="color:var(--white)">0</div><div class="pay-stat-label">Total</div></div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+        <div style="display:flex;align-items:center;gap:8px;"><span class="pay-live-dot"></span><span style="font-family:'Space Mono',monospace;font-size:0.72rem;color:#22c55e;text-transform:uppercase;letter-spacing:0.08em;">Live</span></div>
+        <span style="font-family:'Space Mono',monospace;font-size:0.68rem;color:var(--text-muted);" id="payLastUpdated">Updated just now</span>
+      </div>
+      <div id="paymentsContainer"></div>
+    </div>
+
+    <!-- ═══════ CLIENT ACCOUNTS ═══════ -->
+    <div id="view-clients" class="section-view" style="display:none;">
+      <div class="section-view-header"><div><p class="section-view-label" style="color:#14b8a6;">Account Management</p><h2 class="section-view-title">Client Accounts</h2></div></div>
+      <div class="add-client-form" style="max-width:600px; margin-bottom:32px;">
+        <div class="add-client-form-title">Activate New Client</div>
+        <div class="add-client-fields">
+          <input class="add-client-input" type="text" id="newClientName" placeholder="Client name" autocomplete="off">
+          <input class="add-client-input" type="tel" id="newClientPhone" placeholder="Phone (e.g. +91 98765 43210)" autocomplete="off">
+        </div>
+        <div class="svc-check-group">
+          <label class="svc-check-item"><input type="checkbox" id="svcWebsite" checked><span class="svc-label gold">Website</span></label>
+          <label class="svc-check-item svc-aiads"><input type="checkbox" id="svcAiAds"><span class="svc-label purple">AI Ads</span></label>
+          <label class="svc-check-item" style="border-color:rgba(24,119,242,0.25);"><input type="checkbox" id="svcMetaAds" style="accent-color:#1877f2;"><span class="svc-label" style="color:#6aabff;">Meta Ads</span></label>
+        </div>
+        <button class="activate-btn" id="activateBtn" onclick="activateClient()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px"><polyline points="20 6 9 17 4 12"/></svg>
+          Activate Account
+        </button>
+        <div class="client-add-error" id="clientAddError"></div>
+        <div class="client-add-success" id="clientAddSuccess"></div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+        <div class="clients-list-title" style="margin-bottom:0;">All Activated Clients</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);padding:8px 12px;margin-bottom:12px;max-width:600px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" style="width:14px;stroke:var(--text-muted);flex-shrink:0;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="clientSearch" placeholder="Search by name or phone..." oninput="renderClientsList()" style="background:none;border:none;outline:none;color:var(--text);font-family:'DM Sans',sans-serif;font-size:0.88rem;width:100%;">
+      </div>
+      <div id="clientsList" style="max-width:600px;"></div>
+    </div>
+
+    <!-- ═══════ BLOG MANAGER ═══════ -->
+    <div id="view-blog" class="section-view" style="display:none;">
+      <div class="section-view-header"><div><p class="section-view-label" style="color:#eab308;">Content</p><h2 class="section-view-title">Blog Manager</h2></div></div>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+        <div style="display:flex; gap:10px; align-items:center;">
+          <button class="filter-btn active" id="blogFilterAll" onclick="setBlogFilter('all', this)">All</button>
+          <button class="filter-btn" id="blogFilterPub" onclick="setBlogFilter('published', this)">Published</button>
+          <button class="filter-btn" id="blogFilterDraft" onclick="setBlogFilter('draft', this)">Drafts</button>
+        </div>
+        <div style="display:flex; gap:10px; align-items:center;">
+          <input type="text" id="customBlogTopic" placeholder="Optional topic (or auto)" style="background:var(--surface); border:1px solid var(--border); color:var(--white); padding:8px 12px; border-radius:4px; font-size:0.8rem; outline:none; font-family:'DM Sans',sans-serif;">
+          <button class="gen-blog-btn" id="btnGenBlog" onclick="triggerGenerateBlog()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+            Generate AI Blog
+          </button>
+        </div>
+      </div>
+      <div id="blogGenStatus" style="display:none; font-family:'Space Mono',monospace; font-size:0.75rem; color:var(--gold); margin-bottom:14px;"></div>
+      <div id="blogsContainer"></div>
+    </div>
+
+    <!-- ═══════ PRICING & SETTINGS ═══════ -->
+    <div id="view-pricing" class="section-view" style="display:none;">
+      <div class="section-view-header"><div><p class="section-view-label">Configuration</p><h2 class="section-view-title">Pricing & Settings</h2></div></div>
+      <div class="pricing-grid" id="pricingGrid">
+        <div class="pricing-plan-card">
+          <div class="pricing-plan-header"><span class="pricing-plan-dot" style="background:var(--gold);"></span> Social Media Management</div>
+          <div class="pricing-plan-key">socialmedia</div>
+          <div class="pricing-plan-input-wrap"><span class="pricing-currency">₹</span><input type="number" class="pricing-input" id="price-socialmedia" value="999" min="1"><span class="pricing-unit">/month</span></div>
+        </div>
+        <div class="pricing-plan-card">
+          <div class="pricing-plan-header"><span class="pricing-plan-dot" style="background:var(--gold);"></span> Web Development — Starter</div>
+          <div class="pricing-plan-key">webdevelopment-starter</div>
+          <div class="pricing-plan-input-wrap"><span class="pricing-currency">₹</span><input type="number" class="pricing-input" id="price-webdevelopment-starter" value="2999" min="1"><span class="pricing-unit">one-time</span></div>
+        </div>
+        <div class="pricing-plan-card">
+          <div class="pricing-plan-header"><span class="pricing-plan-dot" style="background:var(--gold);"></span> Web Development — Pro</div>
+          <div class="pricing-plan-key">webdevelopment-pro</div>
+          <div class="pricing-plan-input-wrap"><span class="pricing-currency">₹</span><input type="number" class="pricing-input" id="price-webdevelopment-pro" value="5999" min="1"><span class="pricing-unit">one-time</span></div>
+        </div>
+        <div class="pricing-plan-card">
+          <div class="pricing-plan-header"><span class="pricing-plan-dot" style="background:#a855f7;"></span> AI Video Ads</div>
+          <div class="pricing-plan-key">aivideos</div>
+          <div class="pricing-plan-input-wrap"><span class="pricing-currency">₹</span><input type="number" class="pricing-input" id="price-aivideos" value="999" min="1"><span class="pricing-unit">per video</span></div>
+        </div>
+        <div class="pricing-plan-card">
+          <div class="pricing-plan-header"><span class="pricing-plan-dot" style="background:#1877f2;"></span> Meta Ads Management</div>
+          <div class="pricing-plan-key">metaads</div>
+          <div class="pricing-plan-input-wrap"><span class="pricing-currency">₹</span><input type="number" class="pricing-input" id="price-metaads" value="2999" min="1"><span class="pricing-unit">/month</span></div>
+        </div>
+        <div class="pricing-plan-card">
+          <div class="pricing-plan-header"><span class="pricing-plan-dot" style="background:var(--white);"></span> Quotation Software</div>
+          <div class="pricing-plan-key">quotation</div>
+          <div class="pricing-plan-input-wrap"><span class="pricing-currency">₹</span><input type="number" class="pricing-input" id="price-quotation" value="2999" min="1"><span class="pricing-unit">lifetime</span></div>
+        </div>
+      </div>
+      <div style="display:flex;gap:12px;align-items:center;margin-top:24px;">
+        <button class="activate-btn" id="savePricesBtn" onclick="savePricing()" style="width:auto;padding:13px 32px;">Save Prices</button>
+        <div id="pricingSaveStatus" style="font-family:'Space Mono',monospace;font-size:0.75rem;color:#22c55e;display:none;"></div>
+      </div>
+    </div>
+
+    <!-- ═══════ EMAIL RECEIPT SETTINGS ═══════ -->
+    <div id="view-email" class="section-view" style="display:none;">
+      <div class="section-view-header">
+        <div><p class="section-view-label" style="color:#f59e0b;">Notifications</p><h2 class="section-view-title">Email Receipt Settings</h2></div>
+      </div>
+      <div style="background:var(--surface); border:1px solid var(--border); padding:28px; max-width:700px; border-radius:var(--radius);">
+        <div style="margin-bottom:20px;">
+          <label style="display:block; font-family:'Space Mono',monospace; font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; margin-bottom:8px;">Email Subject</label>
+          <input type="text" id="emailSubject" class="add-client-input" placeholder="Payment Confirmed — {service} | Inpixel Network" style="width:100%;">
+          <span style="font-size:0.68rem; color:var(--text-muted); font-family:'Space Mono',monospace; margin-top:4px; display:block;">Use {service} and {amount} as dynamic placeholders.</span>
+        </div>
+
+        <div style="margin-bottom:20px;">
+          <label style="display:block; font-family:'Space Mono',monospace; font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; margin-bottom:8px;">Header Title</label>
+          <input type="text" id="emailHeading" class="add-client-input" placeholder="Payment Successful ✓" style="width:100%;">
+        </div>
+
+        <div style="margin-bottom:20px;">
+          <label style="display:block; font-family:'Space Mono',monospace; font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; margin-bottom:8px;">Header Subtitle</label>
+          <input type="text" id="emailSubheading" class="add-client-input" placeholder="Thank you for choosing Inpixel Network" style="width:100%;">
+        </div>
+
+        <div style="margin-bottom:20px;">
+          <label style="display:block; font-family:'Space Mono',monospace; font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; margin-bottom:8px;">Customer Message / Instructions</label>
+          <textarea id="emailMessage" class="add-client-input" rows="4" style="width:100%; resize:vertical; font-family:'DM Sans',sans-serif;" placeholder="Our team will reach out to you shortly to get started."></textarea>
+        </div>
+
+        <div style="margin-bottom:24px;">
+          <label style="display:block; font-family:'Space Mono',monospace; font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; margin-bottom:8px;">Support / Contact Email Shown In Receipt</label>
+          <input type="email" id="emailContact" class="add-client-input" placeholder="supportinpixelnetwork@gmail.com" style="width:100%;">
+        </div>
+
+        <div style="display:flex; gap:14px; align-items:center; flex-wrap:wrap;">
+          <button class="activate-btn" id="saveEmailBtn" onclick="saveEmailSettings()" style="width:auto; padding:12px 28px;">Save Email Settings</button>
+          <button class="blog-action-btn" id="testEmailBtn" onclick="sendPreviewEmail()" style="padding:12px 20px;">Send Test Email</button>
+          <span id="emailSaveStatus" style="font-family:'Space Mono',monospace; font-size:0.75rem; color:#22c55e; display:none;"></span>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Detail Modal -->
+  <div class="overlay" id="overlay" onclick="closeModal()"></div>
+  <div class="detail-modal" id="detailModal">
+    <div class="modal-header">
+      <div class="modal-header-left">
+        <div class="modal-avatar" id="mAvatar"></div>
+        <div><div class="modal-name" id="mName"></div><div class="modal-sub" id="mSub"></div></div>
+      </div>
+      <button class="modal-close" onclick="closeModal()"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body" id="mBody"></div>
+    <div class="modal-footer">
+      <div class="modal-timestamp" id="mTimestamp"></div>
+      <button class="delete-btn" id="mDeleteBtn"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>Delete Entry</button>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/supabase-config.js"></script>
+  <script src="/adminpanel/adminpanel.js"></script>
+  
+</body>
+</html>
