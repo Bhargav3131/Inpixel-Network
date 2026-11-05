@@ -106,11 +106,11 @@
       plans: [['Starter','₹2,999','Single landing page · Mobile-first · Contact form',"openPaymentModal('webdevelopment-starter','Starter Plan — ₹2,999',299900)"],['Professional','₹5,999','Up to 5 pages · Custom UI · Analytics + Pixel',"openPaymentModal('webdevelopment-pro','Professional Plan — ₹5,999',599900)"]]
     },
     socialmedia: {
-      eyebrow: 'Always-on brand', title: 'A social presence<br><em>worth following.</em>',
-      intro: 'Consistent creative, sharp captions and an intentional calendar that keeps your brand relevant without taking over your week.',
-      image: 'assets/images/social-media-showcase.png', metric: ['15','posts every month'],
-      features: [['Content strategy','A monthly direction rooted in your audience.'],['Designed posts','Ten static posts and five considered carousels.'],['Brand voice','Captions that sound recognisably like you.'],['Useful reporting','Clear learning on reach and engagement.']],
-      plans: [['Monthly system','₹999','15 posts · Captions · Hashtags · Monthly report',"openPaymentModal('socialmedia','Social Media Package — ₹999/month',99900)"]]
+      eyebrow: 'Social Media Management', title: 'You focus on your business.<br><em>We handle your social media.</em>',
+      intro: '15 posts every month — 10 static + 5 carousels — designed, captioned, and scheduled. All for ₹999/month.',
+      image: 'assets/images/social-media-showcase.png', metric: ['₹999','per month'],
+      features: [['10 Static Posts','Scroll-stopping designed graphics for your feed, every month.'],['5 Carousel Posts','Multi-slide carousels that educate, engage and get saved.'],['Captions & Hashtags','On-brand copy and targeted hashtags written for each post.'],['Monthly Report','Clear numbers on reach, engagement and what worked.']],
+      plans: [['Social Media Package','₹999','10 Static Posts · 5 Carousel Posts · Captions & Hashtags · Monthly Report',"openPaymentModal('socialmedia','Social Media Package — ₹999/month',99900)"]]
     },
     aivideos: {
       eyebrow: 'AI production studio', title: 'More motion.<br><em>Less production drag.</em>',
@@ -143,7 +143,32 @@
       <section class="web-browser-stage"><div class="browser-chrome"><i></i><i></i><i></i><span>yourbrand.in</span></div><img src="${data.image}" alt="Website design showcase"></section>
       <section class="web-system"><header><p class="fresh-kicker">Built from the customer backwards</p><h2>Strategy first.<br>Then every pixel.</h2></header><div class="web-system-grid">${featureCards(data)}</div></section>`
     if (route === 'socialmedia') return `
-      <section class="social-collage"><header><p class="fresh-kicker">A month of momentum</p><h2>Not “more content.”<br><em>A recognisable brand.</em></h2></header><div class="social-wall"><figure><img src="assets/images/social-media-showcase.png" alt="Social media feed"><b>01 / Feed system</b></figure><figure><img src="assets/images/social-media-content.png" alt="Content creation"><b>02 / Content engine</b></figure><figure><img src="assets/images/social-media-strategy.png" alt="Social strategy"><b>03 / Growth plan</b></figure></div><div class="social-features">${featureCards(data)}</div></section>`
+      <section class="sma-promise">
+        <div class="sma-promise-copy">
+          <p class="fresh-kicker">What you get every month</p>
+          <h2>15 posts.<br>Done for you.</h2>
+          <p>No briefs to write. No back-and-forth. We learn your brand, create the content and deliver it &mdash; ready to post.</p>
+        </div>
+        <div class="sma-breakdown">
+          <div class="sma-item"><span class="sma-num">10</span><div><strong>Static Posts</strong><p>Eye-catching graphics designed for your feed.</p></div></div>
+          <div class="sma-item"><span class="sma-num">5</span><div><strong>Carousel Posts</strong><p>Multi-slide posts that educate, engage and get saved.</p></div></div>
+          <div class="sma-item sma-item-sm"><span class="sma-tick">&#10003;</span><div><strong>Captions &amp; Hashtags</strong><p>On-brand copy + targeted hashtags for every post.</p></div></div>
+          <div class="sma-item sma-item-sm"><span class="sma-tick">&#10003;</span><div><strong>Monthly Report</strong><p>Clear numbers on reach, engagement and what worked.</p></div></div>
+        </div>
+      </section>
+      <section class="sma-price-banner">
+        <div class="sma-price-inner">
+          <div class="sma-price-left">
+            <p class="sma-eyebrow">One simple price</p>
+            <div class="sma-price-tag">&#8377;999<span>/month</span></div>
+            <p class="sma-price-sub">No hidden fees. No long-term contracts. Cancel anytime.</p>
+          </div>
+          <div class="sma-price-right">
+            <button class="fresh-button dark sma-cta" onclick="openPaymentModal('socialmedia','Social Media Package &mdash; &#8377;999/month',99900)">Choose Plan &#8599;</button>
+            <a class="sma-wa" href="https://api.whatsapp.com/send/?phone=919697993131">Have a question? Chat on WhatsApp &#8594;</a>
+          </div>
+        </div>
+      </section>`
     if (route === 'aivideos') return `
       <section class="video-reel"><div class="video-reel-copy"><p class="fresh-kicker">Made for the scroll</p><h2>Three seconds<br>to earn attention.</h2><p>AI production lets your brand test more ideas, speak more often and stay visually fresh.</p></div><div class="phone-reels"><video src="assets/videos/Demo1.mp4" muted autoplay loop playsinline></video><video src="assets/videos/Demo2.mp4" muted autoplay loop playsinline></video><video src="assets/videos/Demo3.mp4" muted autoplay loop playsinline></video></div></section><section class="video-process">${featureCards(data)}</section>`
     if (route === 'metaads') return `
