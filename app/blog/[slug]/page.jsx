@@ -73,60 +73,42 @@ export default async function BlogPostPage({ params }) {
   });
 
   return (
-    <main style={{ maxWidth: '840px', margin: '0 auto', padding: '60px 24px 120px' }}>
-      <div style={{ marginBottom: '32px' }}>
-        <Link href="/blog" style={{ color: '#f0a500', fontSize: '14px', textDecoration: 'none' }}>
-          ← Back to all articles
-        </Link>
-      </div>
+    <main className="blog-post-container">
+      <Link href="/blog" className="blog-back-btn">
+        ← Back to all articles
+      </Link>
 
-      <header style={{ marginBottom: '40px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '16px' }}>
-          <span style={{ fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#f0a500', fontWeight: 600 }}>
-            {blog.category || 'Article'}
+      <header className="blog-header">
+        <div className="blog-header-tags">
+          <span className="inpixel-blog-pill">{blog.category || 'Article'}</span>
+          <span className="blog-author-line">
+            {dateStr} • By {blog.author_name || 'Inpixel Network'}
           </span>
-          <span style={{ color: '#666' }}>•</span>
-          <time style={{ fontSize: '13px', color: '#888' }}>{dateStr}</time>
-          <span style={{ color: '#666' }}>•</span>
-          <span style={{ fontSize: '13px', color: '#888' }}>By {blog.author_name || 'Inpixel Network'}</span>
         </div>
-        <h1 style={{ fontSize: 'clamp(32px, 5vw, 52px)', lineHeight: 1.15, fontWeight: 800, color: '#fff', marginBottom: '20px' }}>
-          {blog.title}
-        </h1>
-        {blog.excerpt && (
-          <p style={{ fontSize: '18px', color: '#aaa', lineHeight: 1.6 }}>
-            {blog.excerpt}
-          </p>
-        )}
+        <h1 className="blog-title">{blog.title}</h1>
+        {blog.excerpt && <p className="blog-excerpt-lead">{blog.excerpt}</p>}
       </header>
 
       {blog.thumbnail_url && (
-        <div style={{ marginBottom: '48px', borderRadius: '16px', overflow: 'hidden' }}>
-          <img
-            src={blog.thumbnail_url}
-            alt={blog.title}
-            style={{ width: '100%', maxHeight: '480px', objectFit: 'cover' }}
-          />
+        <div className="blog-hero-image-wrap">
+          <img src={blog.thumbnail_url} alt={blog.title} />
         </div>
       )}
 
       <article
-        className="blog-content-body"
-        style={{
-          color: '#d4d4dc',
-          fontSize: '17px',
-          lineHeight: 1.8,
-        }}
+        className="blog-body-prose"
         dangerouslySetInnerHTML={{ __html: blog.content }}
       />
 
-      <div style={{ marginTop: '70px', padding: '40px', background: '#18181f', borderRadius: '18px', border: '1px solid rgba(240,165,0,0.2)', textAlign: 'center' }}>
-        <p className="fresh-kicker" style={{ color: '#f0a500', marginBottom: '10px' }}>Grow your business</p>
-        <h2 style={{ fontSize: '28px', color: '#fff', marginBottom: '16px' }}>Ready to elevate your digital presence?</h2>
-        <p style={{ color: '#aaa', marginBottom: '28px', maxWidth: '480px', margin: '0 auto 28px' }}>
-          From social media management to custom high-converting websites, we help brands build lasting momentum.
+      <div className="blog-post-cta">
+        <p className="fresh-kicker" style={{ color: '#f0a500', marginBottom: '8px' }}>
+          Grow with Inpixel
         </p>
-        <Link href="/services" className="fresh-button dark" style={{ display: 'inline-block' }}>
+        <h3>Ready to elevate your digital presence?</h3>
+        <p>
+          From social media management to custom websites and AI video campaigns, we build systems that generate measurable momentum.
+        </p>
+        <Link href="/services" className="blog-post-cta-btn">
           Explore our services ↗
         </Link>
       </div>
