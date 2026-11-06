@@ -1,4 +1,5 @@
 import PaymentButton from '../../components/PaymentButton';
+import QuotationVideo from '../../components/QuotationVideo';
 
 export const metadata = {
   title: 'Inpixel Quotation Software — ₹2,999 Lifetime',
@@ -8,8 +9,7 @@ export const metadata = {
 export default function QuotationPage() {
   return (
     <main className="fresh-service-page service-quotation">
-      {/* Preload the demo video — tells the browser to fetch it at high priority immediately,
-          so it plays the moment the section scrolls into view rather than loading on demand */}
+      {/* Preload the demo video — starts fetching immediately for instant playback */}
       <link rel="preload" as="video" href="/assets/demo-quotation.mp4" />
 
       <section className="fresh-detail-hero">
@@ -22,20 +22,7 @@ export default function QuotationPage() {
       </section>
 
       <section className="quote-product">
-        <div>
-          {/* muted + autoPlay + playsInline is the correct combo for autoplay.
-              preload="auto" tells the browser to buffer the full file, not just metadata.
-              The video has no audio track in its source file, hence no sound — this is intentional. */}
-          <video
-            src="/assets/demo-quotation.mp4"
-            muted
-            autoPlay
-            loop
-            playsInline
-            preload="auto"
-            aria-label="Inpixel quotation software demo"
-          />
-        </div>
+        <QuotationVideo />
         <aside>
           <p className="fresh-kicker">From blank to sent</p>
           <h2>Look established.<br />Move faster.</h2>
