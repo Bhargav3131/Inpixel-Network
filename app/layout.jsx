@@ -2,6 +2,22 @@ import '../styles.css';
 import Script from 'next/script';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import { Manrope, DM_Mono } from 'next/font/google';
+
+// Self-hosted by Next.js at build time — zero external DNS request, no GDPR font leakage
+const manrope = Manrope({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800'],
+  display: 'swap',
+  variable: '--font-manrope',
+});
+
+const dmMono = DM_Mono({
+  subsets: ['latin'],
+  weight: ['400', '500'],
+  display: 'swap',
+  variable: '--font-dm-mono',
+});
 
 export const metadata = {
   metadataBase: new URL('https://inpixelnetwork.in'),
@@ -38,10 +54,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <head>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" />
-      </head>
+    <html lang="en" className={`${manrope.variable} ${dmMono.variable}`}>
       <body className="fresh-build">
         <div className="fresh-shell">
           <Navbar />

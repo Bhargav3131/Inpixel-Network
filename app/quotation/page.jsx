@@ -8,6 +8,10 @@ export const metadata = {
 export default function QuotationPage() {
   return (
     <main className="fresh-service-page service-quotation">
+      {/* Preload the demo video — tells the browser to fetch it at high priority immediately,
+          so it plays the moment the section scrolls into view rather than loading on demand */}
+      <link rel="preload" as="video" href="/assets/demo-quotation.mp4" />
+
       <section className="fresh-detail-hero">
         <div>
           <p className="fresh-kicker">Business utility</p>
@@ -19,7 +23,18 @@ export default function QuotationPage() {
 
       <section className="quote-product">
         <div>
-          <video src="/assets/demo-quotation.mp4" muted autoPlay loop playsInline></video>
+          {/* muted + autoPlay + playsInline is the correct combo for autoplay.
+              preload="auto" tells the browser to buffer the full file, not just metadata.
+              The video has no audio track in its source file, hence no sound — this is intentional. */}
+          <video
+            src="/assets/demo-quotation.mp4"
+            muted
+            autoPlay
+            loop
+            playsInline
+            preload="auto"
+            aria-label="Inpixel quotation software demo"
+          />
         </div>
         <aside>
           <p className="fresh-kicker">From blank to sent</p>
@@ -52,7 +67,7 @@ export default function QuotationPage() {
           <article className="featured">
             <small>Lifetime access</small>
             <strong>₹2,999</strong>
-            <p className="plan-includes-label">What’s included</p>
+            <p className="plan-includes-label">What&apos;s included</p>
             <ul>
               <li>One payment · No subscription</li>
               <li>Unlimited quotations &amp; client records</li>
@@ -73,7 +88,7 @@ export default function QuotationPage() {
 
       <section className="fresh-service-cta">
         <p className="fresh-kicker">Have questions?</p>
-        <h2>Let’s find the right<br />way forward.</h2>
+        <h2>Let&apos;s find the right<br />way forward.</h2>
         <a className="fresh-button dark" href="https://api.whatsapp.com/send/?phone=919697993131" target="_blank" rel="noopener noreferrer">
           Talk to the studio ↗
         </a>
