@@ -18,13 +18,14 @@ export default function Footer() {
       </div>
       <div>
         <small>Company</small>
-        <Link href="/terms">Terms & Conditions</Link>
+        <Link href="/terms">Terms &amp; Conditions</Link>
         <Link href="/privacy">Privacy Policy</Link>
         <Link href="/userlogin">Client Portal</Link>
       </div>
       <div>
         <small>Connect</small>
-        <a href="mailto:supportinpixelnetwork@gmail.com">Email</a>
+        <a href="mailto:support@inpixelnetwork.in">support@inpixelnetwork.in</a>
+        <a href="tel:+919697993131">+91 96979 93131</a>
         <a href="https://instagram.com/inpixel_network" target="_blank" rel="noopener noreferrer">Instagram</a>
         <a href="https://wa.me/919697993131" target="_blank" rel="noopener noreferrer">WhatsApp</a>
       </div>
