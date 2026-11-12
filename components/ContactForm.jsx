@@ -1,27 +1,44 @@
 'use client';
 import { useState } from 'react';
 
+// Wait for EmailJS SDK to be ready (loaded via lazyOnload Script in layout)
+function waitForEmailJS(timeout = 8000) {
+  return new Promise((resolve, reject) => {
+    if (window.emailjs) return resolve(window.emailjs);
+    const start = Date.now();
+    const iv = setInterval(() => {
+      if (window.emailjs) {
+        clearInterval(iv);
+        resolve(window.emailjs);
+      } else if (Date.now() - start > timeout) {
+        clearInterval(iv);
+        reject(new Error('EmailJS not loaded'));
+      }
+    }, 100);
+  });
+}
+
 export default function ContactForm() {
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setError('');
     const form = e.target;
-    const name = form.name.value;
-    const phone = form.phone.value;
-    const message = form.message.value;
+    const name    = form.name.value.trim();
+    const contact = form.phone.value.trim();
+    const message = form.message.value.trim();
 
     try {
-      if (typeof window !== 'undefined' && window.emailjs) {
-        await window.emailjs.send("service_p1upsrh", "template_mibmmmu", { name, contact: phone, message });
-      }
+      const ejs = await waitForEmailJS();
+      await ejs.send('service_p1upsrh', 'template_mibmmmu', { name, contact, message });
       setSent(true);
     } catch (err) {
-      console.error('Contact submit error:', err);
-      // Even if emailjs fails, show success or fallback so user isn't stuck
-      setSent(true);
+      console.error('EmailJS error:', err);
+      setError('Failed to send — please WhatsApp us directly or try again.');
     } finally {
       setLoading(false);
     }
@@ -57,6 +74,9 @@ export default function ContactForm() {
         <label htmlFor="c-msg">Message</label>
         <textarea id="c-msg" name="message" rows="4" required placeholder="Tell us about your project..."></textarea>
       </div>
+      {error && (
+        <p style={{ color: '#ff6b6b', fontSize: '0.82rem', marginBottom: '12px', marginTop: '-8px' }}>{error}</p>
+      )}
       <button type="submit" className="form-submit" disabled={loading}>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ width: '16px', marginRight: '8px' }}>
           <line x1="22" y1="2" x2="11" y2="13"/>

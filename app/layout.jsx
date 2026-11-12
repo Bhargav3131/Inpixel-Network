@@ -3,6 +3,7 @@ import Script from 'next/script';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import FloatingCTA from '../components/FloatingCTA';
+import EmailJSInit from '../components/EmailJSInit';
 import { Manrope, DM_Mono } from 'next/font/google';
 
 // Self-hosted by Next.js at build time — zero external DNS request, no GDPR font leakage
@@ -65,6 +66,7 @@ export default function RootLayout({ children }) {
         </div>
         <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="lazyOnload" />
         <Script src="/assets/js/checkout.js" strategy="lazyOnload" />
+        <EmailJSInit />
       </body>
     </html>
   );
