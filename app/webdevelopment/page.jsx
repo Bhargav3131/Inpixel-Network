@@ -110,7 +110,7 @@ export default function WebDevPage() {
       <section className="fresh-service-cta">
         <p className="fresh-kicker">Have questions?</p>
         <h2>Let’s find the right<br />way forward.</h2>
-        <a className="fresh-button dark" href="https://api.whatsapp.com/send/?phone=919697993131" target="_blank" rel="noopener noreferrer">
+        <a className="fresh-button dark" href="https://api.whatsapp.com/send/?phone=919697993131&text=Hello,+I+want+to+get+started+with+Inpixel+network" target="_blank" rel="noopener noreferrer">
           Talk to the studio ↗
         </a>
       </section>

@@ -16,7 +16,7 @@ export default function HomePage() {
             A compact digital studio building high-converting websites, social systems, AI video and performance campaigns for growing Indian businesses.
           </p>
           <div className="fresh-actions">
-            <a className="fresh-button dark" href="https://api.whatsapp.com/send/?phone=919697993131" target="_blank" rel="noopener noreferrer">
+            <a className="fresh-button dark" href="https://api.whatsapp.com/send/?phone=919697993131&text=Hello,+I+want+to+get+started+with+Inpixel+network" target="_blank" rel="noopener noreferrer">
               Build with us <b>↗</b>
             </a>
             <a href="#fresh-work">See our services ↓</a>

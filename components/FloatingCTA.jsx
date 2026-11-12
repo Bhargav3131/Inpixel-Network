@@ -206,7 +206,7 @@ export default function FloatingCTA() {
       }}>
         {/* Chat with us — WhatsApp */}
         <a
-          href="https://api.whatsapp.com/send/?phone=919697993131"
+          href="https://api.whatsapp.com/send/?phone=919697993131&text=Hello,+I+want+to+get+started+with+Inpixel+network"
           target="_blank"
           rel="noopener noreferrer"
           style={{

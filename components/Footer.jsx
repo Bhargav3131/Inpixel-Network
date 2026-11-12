@@ -27,7 +27,7 @@ export default function Footer() {
         <a href="mailto:support@inpixelnetwork.in">support@inpixelnetwork.in</a>
         <a href="tel:+919697993131">+91 96979 93131</a>
         <a href="https://instagram.com/inpixel_network" target="_blank" rel="noopener noreferrer">Instagram</a>
-        <a href="https://wa.me/919697993131" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+        <a href="https://wa.me/919697993131?text=Hello,+I+want+to+get+started+with+Inpixel+network" target="_blank" rel="noopener noreferrer">WhatsApp</a>
       </div>
       <p className="fresh-copy">
         © 2026 Inpixel Network · Pune, India · <Link href="/terms">Terms</Link> · <Link href="/privacy">Privacy</Link>

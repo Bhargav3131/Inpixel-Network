@@ -35,7 +35,7 @@
       <div><a class="fresh-brand" href="./"><img src="logo1.jpeg" alt="Inpixel Network"><span>Inpixel Network</span></a><p>We turn ambitious businesses into memorable digital brands.</p></div>
       <div><small>Explore</small><a href="services/">Services</a><a href="quotation/">Quotation Software</a><a href="blog/">Blog</a></div>
       <div><small>Company</small><a href="terms/">Terms & Conditions</a><a href="privacy/">Privacy Policy</a><a href="userlogin/">Client Portal</a></div>
-      <div><small>Connect</small><a href="mailto:supportinpixelnetwork@gmail.com">Email</a><a href="https://instagram.com/inpixel_network" target="_blank" rel="noopener">Instagram</a><a href="https://wa.me/919697993131" target="_blank" rel="noopener">WhatsApp</a></div>
+      <div><small>Connect</small><a href="mailto:supportinpixelnetwork@gmail.com">Email</a><a href="https://instagram.com/inpixel_network" target="_blank" rel="noopener">Instagram</a><a href="https://wa.me/919697993131?text=Hello,+I+want+to+get+started+with+Inpixel+network" target="_blank" rel="noopener">WhatsApp</a></div>
       <p class="fresh-copy">© 2026 Inpixel Network · Pune, India · <a href="terms/">Terms</a> · <a href="privacy/">Privacy</a></p>
     </footer>`
 
@@ -61,7 +61,7 @@
             <p class="fresh-kicker"><span></span> Strategy · Design · Momentum</p>
             <h1>Make your<br>brand <em>matter.</em></h1>
             <p class="fresh-lede">A compact digital studio building high-converting websites, social systems, AI video and performance campaigns for growing Indian businesses.</p>
-            <div class="fresh-actions"><a class="fresh-button dark" href="https://api.whatsapp.com/send/?phone=919697993131">Build with us <b>↗</b></a><a href="#fresh-work">See our services ↓</a></div>
+            <div class="fresh-actions"><a class="fresh-button dark" href="https://api.whatsapp.com/send/?phone=919697993131&text=Hello,+I+want+to+get+started+with+Inpixel+network">Build with us <b>↗</b></a><a href="#fresh-work">See our services ↓</a></div>
           </div>
           <div class="fresh-hero-visual">
             <div class="fresh-orbit"></div><div class="fresh-orbit second"></div>
@@ -165,7 +165,7 @@
           </div>
           <div class="sma-price-right">
             <button class="fresh-button dark sma-cta" onclick="openPaymentModal('socialmedia','Social Media Package &mdash; &#8377;999/month',99900)">Choose Plan &#8599;</button>
-            <a class="sma-wa" href="https://api.whatsapp.com/send/?phone=919697993131">Have a question? Chat on WhatsApp &#8594;</a>
+            <a class="sma-wa" href="https://api.whatsapp.com/send/?phone=919697993131&text=Hello,+I+want+to+get+started+with+Inpixel+network">Have a question? Chat on WhatsApp &#8594;</a>
           </div>
         </div>
       </section>`
@@ -184,7 +184,7 @@
       <section class="fresh-detail-hero"><div><p class="fresh-kicker">${data.eyebrow}</p><h1>${data.title}</h1><p>${data.intro}</p><a class="fresh-button dark" href="#fresh-plans">See plans ↓</a></div><figure><img src="${data.image}" alt=""><figcaption><strong>${data.metric[0]}</strong><span>${data.metric[1]}</span></figcaption></figure></section>
       ${uniqueServiceBody(data, route)}
       <section class="fresh-plans" id="fresh-plans"><header><p class="fresh-kicker">Simple pricing</p><h2>Choose your<br><em>starting point.</em></h2></header><div>${planCards(data)}</div></section>
-      <section class="fresh-service-cta"><p class="fresh-kicker">Have questions?</p><h2>Let’s find the right<br>way forward.</h2><a class="fresh-button dark" href="https://api.whatsapp.com/send/?phone=919697993131">Talk to the studio ↗</a></section>
+      <section class="fresh-service-cta"><p class="fresh-kicker">Have questions?</p><h2>Let’s find the right<br>way forward.</h2><a class="fresh-button dark" href="https://api.whatsapp.com/send/?phone=919697993131&text=Hello,+I+want+to+get+started+with+Inpixel+network">Talk to the studio ↗</a></section>
     </main>${footer}`
     activate(shell)
   }
