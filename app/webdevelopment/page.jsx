@@ -25,13 +25,7 @@ export default function WebDevPage() {
         </figure>
       </section>
 
-      <section className="web-browser-stage">
-        <div className="browser-chrome">
-          <i></i><i></i><i></i>
-          <span>yourbrand.in</span>
-        </div>
-        <img src="/assets/images/website-mockup.png" alt="Website design showcase" />
-      </section>
+
 
       <section className="web-system">
         <header>
