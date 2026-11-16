@@ -10,29 +10,29 @@ export default function ServicesPage() {
     {
       slug: 'webdevelopment',
       num: '01',
-      eyebrow: 'Digital flagship',
-      title: 'Websites that turn visits into value',
+      eyebrow: 'Design + Development',
+      title: 'Websites That Convert',
       intro: 'Strategy, UX, design and development in one focused sprint. Built fast, responsive everywhere, and ready to sell.'
     },
     {
       slug: 'socialmedia',
       num: '02',
       eyebrow: 'Social Media Management',
-      title: 'You focus on your business. We handle your social media.',
+      title: 'Social Media Handling',
       intro: '15 posts every month — 10 static + 5 carousels — designed, captioned, and scheduled. All for ₹999/month.'
     },
     {
       slug: 'aivideos',
       num: '03',
       eyebrow: 'AI production studio',
-      title: 'More motion. Less production drag.',
+      title: 'AI Video Studio',
       intro: 'High-retention vertical video made for Reels, Shorts and TikTok—without the timelines or cost of a traditional shoot.'
     },
     {
       slug: 'metaads',
       num: '04',
-      eyebrow: 'Paid growth',
-      title: 'Every rupee has a job.',
+      eyebrow: 'Facebook + Instagram Ads',
+      title: 'Meta Ads Management',
       intro: 'Backed by over 2 years of hands-on experience and ₹50 lakh+ in managed ad spend, we build structured Meta campaigns that turn budget into measurable business.'
     }
   ];

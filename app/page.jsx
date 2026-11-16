@@ -69,19 +69,21 @@ export default function HomePage() {
             <span>01</span>
             <div>
               <small>Design + Development</small>
-              <h3>Web experiences</h3>
+              <h3>Websites That Convert</h3>
               <p>Fast, mobile-first websites engineered to convert attention into action.</p>
             </div>
-            <b>From ₹2,999 ↗</b>
+            <b>From ₹2,999</b>
+            <span className="fresh-view-details">View Details →</span>
           </Link>
           <Link href="/socialmedia">
             <span>02</span>
             <div>
-              <small>Content + Community</small>
-              <h3>Social systems</h3>
+              <small>Content + Strategy</small>
+              <h3>Social Media Handling</h3>
               <p>Strategy, design, calendars and reporting—handled from end to end.</p>
             </div>
-            <b>₹999 / month ↗</b>
+            <b>₹999 / month</b>
+            <span className="fresh-view-details">View Details →</span>
           </Link>
           <Link href="/aivideos">
             <span>03</span>
@@ -90,16 +92,18 @@ export default function HomePage() {
               <h3>AI video studio</h3>
               <p>Scroll-stopping vertical stories produced at the speed of culture.</p>
             </div>
-            <b>2 videos for ₹999 ↗</b>
+            <b>2 videos for ₹999</b>
+            <span className="fresh-view-details">View Details →</span>
           </Link>
           <Link href="/metaads">
             <span>04</span>
             <div>
-              <small>Targeting + Scale</small>
-              <h3>Performance ads</h3>
+              <small>Facebook + Instagram Ads</small>
+              <h3>Meta Ads Management</h3>
               <p>Campaigns built around accountable growth, not vanity metrics.</p>
             </div>
-            <b>₹2,999 / month ↗</b>
+            <b>₹2,999 / month</b>
+            <span className="fresh-view-details">View Details →</span>
           </Link>
         </div>
       </section>
