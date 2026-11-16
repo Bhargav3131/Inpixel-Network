@@ -61,7 +61,7 @@ export default function HomePage() {
         <header>
           <p className="fresh-kicker">What we build</p>
           <h2>
-            Four ways to move<br /><em>your business forward.</em>
+            Services that grow<br /><em>your business.</em>
           </h2>
         </header>
         <div className="fresh-service-list">
@@ -72,8 +72,7 @@ export default function HomePage() {
               <h3>Websites That Convert</h3>
               <p>Fast, mobile-first websites engineered to convert attention into action.</p>
             </div>
-            <b>From ₹2,999</b>
-            <span className="fresh-view-details">View Details →</span>
+            <b>From ₹2,999 <span className="fresh-view-cta">View Details →</span></b>
           </Link>
           <Link href="/socialmedia">
             <span>02</span>
@@ -82,8 +81,7 @@ export default function HomePage() {
               <h3>Social Media Handling</h3>
               <p>Strategy, design, calendars and reporting—handled from end to end.</p>
             </div>
-            <b>₹999 / month</b>
-            <span className="fresh-view-details">View Details →</span>
+            <b>₹999 / month <span className="fresh-view-cta">View Details →</span></b>
           </Link>
           <Link href="/aivideos">
             <span>03</span>
@@ -92,8 +90,7 @@ export default function HomePage() {
               <h3>AI video studio</h3>
               <p>Scroll-stopping vertical stories produced at the speed of culture.</p>
             </div>
-            <b>2 videos for ₹999</b>
-            <span className="fresh-view-details">View Details →</span>
+            <b>2 videos for ₹999 <span className="fresh-view-cta">View Details →</span></b>
           </Link>
           <Link href="/metaads">
             <span>04</span>
@@ -102,8 +99,7 @@ export default function HomePage() {
               <h3>Meta Ads Management</h3>
               <p>Campaigns built around accountable growth, not vanity metrics.</p>
             </div>
-            <b>₹2,999 / month</b>
-            <span className="fresh-view-details">View Details →</span>
+            <b>₹2,999 / month <span className="fresh-view-cta">View Details →</span></b>
           </Link>
         </div>
       </section>
