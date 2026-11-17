@@ -13,7 +13,9 @@ export const metadata = {
 export default function SocialMediaPage() {
   return (
     <main className="fresh-service-page service-socialmedia">
-      <section className="fresh-detail-hero">
+
+      {/* Hero Section */}
+      <section className="fresh-detail-hero sma-hero-2col">
         <div>
           <p className="fresh-kicker">Social Media Management</p>
           <h1>
@@ -26,6 +28,33 @@ export default function SocialMediaPage() {
           <a className="fresh-button dark" href="#fresh-plans">
             See plans ↓
           </a>
+        </div>
+
+        {/* Video Player — desktop: right column, mobile: stacked below tagline */}
+        <div className="sma-hero-video-wrap">
+          {/* Mobile-only tagline above video */}
+          <p className="sma-mobile-tagline">Focus on your business,<br />we handle your social media.</p>
+
+          <div className="sma-video-card">
+            <div className="sma-video-badge">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+              See it in action
+            </div>
+            <video
+              src="/assets/videos/sma-hero.mp4"
+              controls
+              preload="metadata"
+              poster=""
+              playsInline
+              className="sma-video-player"
+            >
+              Your browser does not support the video tag.
+            </video>
+            <div className="sma-video-footer">
+              <div className="sma-video-dot"></div>
+              <span>Real results. Real content.</span>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -106,7 +135,7 @@ export default function SocialMediaPage() {
           <article className="featured">
             <small>Social Media Package</small>
             <strong>₹999</strong>
-            <p className="plan-includes-label">What’s included</p>
+            <p className="plan-includes-label">What's included</p>
             <ul>
               <li>10 Static Posts</li>
               <li>5 Carousel Posts</li>
@@ -128,7 +157,7 @@ export default function SocialMediaPage() {
       {/* Contact CTA */}
       <section className="fresh-service-cta">
         <p className="fresh-kicker">Have questions?</p>
-        <h2>Let’s find the right<br />way forward.</h2>
+        <h2>Let's find the right<br />way forward.</h2>
         <a className="fresh-button dark" href="https://api.whatsapp.com/send/?phone=919697993131&text=Hello,+I+want+to+get+started+with+Inpixel+network" target="_blank" rel="noopener noreferrer">
           Talk to the studio ↗
         </a>

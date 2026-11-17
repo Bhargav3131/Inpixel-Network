@@ -1942,6 +1942,7 @@ body.fresh-build > :not(.fresh-shell):not(script):not(#overlay):not(#popup):not(
   .sma-price-banner{padding:65px 20px}
   .sma-price-inner{flex-direction:column;align-items:flex-start}
   .sma-cta{width:100%;text-align:center;justify-content:center}
+  .sma-hero-2col{grid-template-columns:1fr!important;gap:32px!important}.sma-mobile-tagline{display:block;font-size:15px;font-weight:700;color:#5f5b54;line-height:1.4;margin-bottom:14px}.sma-video-card{box-shadow:6px 6px 0 #f0a500}
 }
 
 /* Final layout polish */
@@ -1956,10 +1957,76 @@ body.fresh-build { display:block !important; }
 .fresh-portal .split-left { top:0 !important; height:calc(100vh - 84px) !important; }
 .service-socialmedia .fresh-detail-hero figure,
 .service-aivideos .fresh-detail-hero figure { display:none; }
-.service-socialmedia .fresh-detail-hero,
 .service-aivideos .fresh-detail-hero { grid-template-columns:1fr; max-width:1080px; }
-.service-socialmedia .fresh-detail-hero>div,
 .service-aivideos .fresh-detail-hero>div { max-width:880px; }
+
+/* Social media hero — 2-column layout with video on the right */
+.sma-hero-2col { grid-template-columns: 1fr 1fr !important; max-width: 1320px !important; gap: 60px !important; align-items: center !important; }
+.sma-hero-2col > div { max-width: 100% !important; }
+
+/* Mobile tagline above video — hidden on desktop */
+.sma-mobile-tagline { display: none; }
+
+/* Video wrapper */
+.sma-hero-video-wrap { position: relative; }
+
+/* Video badge — small eyebrow pill above the card */
+.sma-video-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #f0a500;
+  color: #060608;
+  font: 700 10px 'DM Mono', monospace;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  padding: 6px 14px;
+  border-radius: 99px;
+  margin-bottom: 14px;
+}
+.sma-video-badge svg { flex-shrink: 0; }
+
+/* Video card container */
+.sma-video-card {
+  background: #151515;
+  border-radius: 24px;
+  padding: 18px;
+  box-shadow: 12px 12px 0 #f0a500;
+  position: relative;
+}
+
+/* The actual video element */
+.sma-video-player {
+  display: block;
+  width: 100%;
+  border-radius: 12px;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  background: #060608;
+  /* Use default browser controls — no autoplay */
+}
+
+/* Footer row beneath the video */
+.sma-video-footer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+  padding: 0 4px;
+}
+.sma-video-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #37b86a;
+  flex-shrink: 0;
+}
+.sma-video-footer span {
+  font: 500 11px 'DM Mono', monospace;
+  letter-spacing: .08em;
+  color: #888;
+  text-transform: uppercase;
+}
 .social-wall { grid-template-columns:1.2fr .8fr; grid-template-rows:420px; }
 .social-wall figure:first-child { grid-row:auto; }
 .social-wall figure:nth-child(3) { display:none; }
