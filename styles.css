@@ -1942,7 +1942,7 @@ body.fresh-build > :not(.fresh-shell):not(script):not(#overlay):not(#popup):not(
   .sma-price-banner{padding:65px 20px}
   .sma-price-inner{flex-direction:column;align-items:flex-start}
   .sma-cta{width:100%;text-align:center;justify-content:center}
-  .sma-hero-2col{grid-template-columns:1fr!important;gap:32px!important}.sma-mobile-tagline{display:block;font-size:15px;font-weight:700;color:#5f5b54;line-height:1.4;margin-bottom:14px}.sma-video-card{box-shadow:6px 6px 0 #f0a500}
+  
 }
 
 /* Final layout polish */
@@ -1960,72 +1960,216 @@ body.fresh-build { display:block !important; }
 .service-aivideos .fresh-detail-hero { grid-template-columns:1fr; max-width:1080px; }
 .service-aivideos .fresh-detail-hero>div { max-width:880px; }
 
-/* Social media hero — 2-column layout with video on the right */
-.sma-hero-2col { grid-template-columns: 1fr 1fr !important; max-width: 1320px !important; gap: 60px !important; align-items: center !important; }
-.sma-hero-2col > div { max-width: 100% !important; }
+/* ============================================================
+   Social Media Hero — Clean Minimal Layout (Ref: AlmostZero style)
+   ============================================================ */
 
-/* Mobile tagline above video — hidden on desktop */
-.sma-mobile-tagline { display: none; }
+.sma-hero-section {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 85px 28px 100px;
+}
 
-/* Video wrapper */
-.sma-hero-video-wrap { position: relative; }
-
-/* Video badge — small eyebrow pill above the card */
-.sma-video-badge {
-  display: inline-flex;
+.sma-hero-inner {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 65px;
   align-items: center;
-  gap: 6px;
-  background: #f0a500;
-  color: #060608;
-  font: 700 10px 'DM Mono', monospace;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  padding: 6px 14px;
-  border-radius: 99px;
-  margin-bottom: 14px;
-}
-.sma-video-badge svg { flex-shrink: 0; }
-
-/* Video card container */
-.sma-video-card {
-  background: #151515;
-  border-radius: 24px;
-  padding: 18px;
-  box-shadow: 12px 12px 0 #f0a500;
-  position: relative;
 }
 
-/* The actual video element */
-.sma-video-player {
-  display: block;
-  width: 100%;
-  border-radius: 12px;
-  aspect-ratio: 1 / 1;
-  object-fit: cover;
-  background: #060608;
-  /* Use default browser controls — no autoplay */
+.sma-hero-content {
+  display: flex;
+  flex-direction: column;
 }
 
-/* Footer row beneath the video */
-.sma-video-footer {
+.sma-desktop-title {
+  font-size: clamp(52px, 6vw, 84px);
+  line-height: 0.94;
+  letter-spacing: -0.06em !important;
+  font-weight: 800;
+  margin: 20px 0 28px;
+  color: #151515;
+}
+
+.sma-desktop-title em,
+.sma-mobile-title em {
+  color: #f0a500;
+  font-style: normal;
+}
+
+.sma-mobile-title {
+  display: none;
+}
+
+.sma-hero-desc {
+  max-width: 580px;
+  font-size: 18px;
+  line-height: 1.65;
+  color: #5f5b54;
+  margin: 0 0 32px 0;
+}
+
+.sma-hero-actions {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-top: 14px;
-  padding: 0 4px;
+  gap: 20px;
 }
-.sma-video-dot {
-  width: 8px;
-  height: 8px;
+
+.sma-hero-video-slot.mobile-only {
+  display: none;
+}
+
+.sma-hero-video-slot.desktop-only {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+/* ── Minimalist Clean Video Player ── */
+.sma-video-container {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  aspect-ratio: 1 / 1;
+  border-radius: 24px;
+  overflow: hidden;
+  background: #0d0d11;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.14);
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.3s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.3s ease;
+}
+
+.sma-video-container:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.2);
+}
+
+.sma-video-element {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 24px;
+  background: #0d0d11;
+}
+
+.sma-play-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  background: rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(2px);
+  transition: background 0.25s ease;
+  border-radius: 24px;
+}
+
+.sma-video-container:hover .sma-play-overlay {
+  background: rgba(0, 0, 0, 0.16);
+}
+
+.sma-play-btn {
+  width: 68px;
+  height: 68px;
   border-radius: 50%;
-  background: #37b86a;
-  flex-shrink: 0;
+  background: #f0a500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 24px rgba(240, 165, 0, 0.45);
+  transition: transform 0.25s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.25s ease;
+  padding-left: 4px;
 }
-.sma-video-footer span {
-  font: 500 11px 'DM Mono', monospace;
-  letter-spacing: .08em;
-  color: #888;
+
+.sma-video-container:hover .sma-play-btn {
+  transform: scale(1.1);
+  box-shadow: 0 12px 32px rgba(240, 165, 0, 0.65);
+}
+
+.sma-play-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
+  color: #ffffff;
+  background: rgba(6, 6, 8, 0.72);
+  backdrop-filter: blur(10px);
+  padding: 6px 16px;
+  border-radius: 99px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+/* ── Mobile Layout (<= 800px) ── */
+@media (max-width: 800px) {
+  .sma-hero-section {
+    padding: 35px 20px 55px !important;
+  }
+
+  .sma-hero-inner {
+    display: block !important;
+    width: 100% !important;
+  }
+
+  .sma-desktop-title {
+    display: none !important;
+  }
+
+  .sma-mobile-title {
+    display: block !important;
+    font-size: clamp(28px, 7.5vw, 36px) !important;
+    line-height: 1.15 !important;
+    letter-spacing: -0.04em !important;
+    font-weight: 800 !important;
+    margin: 12px 0 20px 0 !important;
+    color: #151515 !important;
+  }
+
+  .sma-hero-video-slot.desktop-only {
+    display: none !important;
+  }
+
+  .sma-hero-video-slot.mobile-only {
+    display: block !important;
+    width: 100% !important;
+    margin: 0 0 24px 0 !important;
+  }
+
+  .sma-video-container {
+    max-width: 100% !important;
+    border-radius: 18px !important;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12) !important;
+  }
+
+  .sma-video-element,
+  .sma-play-overlay {
+    border-radius: 18px !important;
+  }
+
+  .sma-play-btn {
+    width: 58px !important;
+    height: 58px !important;
+  }
+
+  .sma-play-btn svg {
+    width: 20px !important;
+    height: 20px !important;
+  }
+
+  .sma-hero-desc {
+    font-size: 15px !important;
+    line-height: 1.6 !important;
+    margin: 0 0 24px 0 !important;
+  }
+
+  .sma-hero-actions {
+    margin-bottom: 20px !important;
+  }
 }
 .social-wall { grid-template-columns:1.2fr .8fr; grid-template-rows:420px; }
 .social-wall figure:first-child { grid-row:auto; }

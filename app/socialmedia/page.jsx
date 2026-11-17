@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import PaymentButton from '../../components/PaymentButton';
+import SocialVideoPlayer from '../../components/SocialVideoPlayer';
 
 export const metadata = {
   title: 'Social Media Management — ₹999/month',
@@ -13,47 +14,43 @@ export const metadata = {
 export default function SocialMediaPage() {
   return (
     <main className="fresh-service-page service-socialmedia">
-
       {/* Hero Section */}
-      <section className="fresh-detail-hero sma-hero-2col">
-        <div>
-          <p className="fresh-kicker">Social Media Management</p>
-          <h1>
-            You focus on your business.<br />
-            <em>We handle your social media.</em>
-          </h1>
-          <p>
-            15 posts every month — 10 static + 5 carousels — designed, captioned, and scheduled. All for ₹999/month.
-          </p>
-          <a className="fresh-button dark" href="#fresh-plans">
-            See plans ↓
-          </a>
-        </div>
+      <section className="sma-hero-section">
+        <div className="sma-hero-inner">
+          <div className="sma-hero-content">
+            <p className="fresh-kicker">Social Media Management</p>
 
-        {/* Video Player — desktop: right column, mobile: stacked below tagline */}
-        <div className="sma-hero-video-wrap">
-          {/* Mobile-only tagline above video */}
-          <p className="sma-mobile-tagline">Focus on your business,<br />we handle your social media.</p>
+            {/* Desktop Heading */}
+            <h1 className="sma-desktop-title">
+              You focus on your business.<br />
+              <em>We handle your social media.</em>
+            </h1>
 
-          <div className="sma-video-card">
-            <div className="sma-video-badge">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-              See it in action
+            {/* Mobile Compact Heading */}
+            <h1 className="sma-mobile-title">
+              Focus on your business,<br />
+              <em>we handle your social media.</em>
+            </h1>
+
+            {/* Mobile Video: Placed directly under the mobile headline */}
+            <div className="sma-hero-video-slot mobile-only">
+              <SocialVideoPlayer />
             </div>
-            <video
-              src="/assets/videos/sma-hero.mp4"
-              controls
-              preload="metadata"
-              poster=""
-              playsInline
-              className="sma-video-player"
-            >
-              Your browser does not support the video tag.
-            </video>
-            <div className="sma-video-footer">
-              <div className="sma-video-dot"></div>
-              <span>Real results. Real content.</span>
+
+            <p className="sma-hero-desc">
+              15 posts every month — 10 static + 5 carousels — designed, captioned, and scheduled. All for ₹999/month.
+            </p>
+
+            <div className="sma-hero-actions">
+              <a className="fresh-button dark" href="#fresh-plans">
+                See plans ↓
+              </a>
             </div>
+          </div>
+
+          {/* Desktop Video: Sits on the right column */}
+          <div className="sma-hero-video-slot desktop-only">
+            <SocialVideoPlayer />
           </div>
         </div>
       </section>
