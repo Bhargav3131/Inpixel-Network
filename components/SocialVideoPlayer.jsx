@@ -25,7 +25,8 @@ export default function SocialVideoPlayer() {
     <div className="sma-video-container" onClick={!isPlaying ? handlePlayClick : undefined}>
       <video
         ref={videoRef}
-        src="/assets/videos/sma-hero.mp4#t=0.001"
+        src="/assets/videos/sma-hero.mp4"
+        poster="/assets/images/sma-hero-poster.jpg"
         controls={isPlaying}
         playsInline
         preload="metadata"
