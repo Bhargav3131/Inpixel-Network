@@ -2974,6 +2974,9 @@ body[data-page="adminpanel"] .dash-card {
 .mta-hero-video-slot {
   width: 100%;
 }
+.mta-hero-video-slot.mobile-only {
+  display: none;
+}
 
 /* Meta Ads Video Player */
 .mta-video-container {

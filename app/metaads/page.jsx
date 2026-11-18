@@ -14,7 +14,7 @@ export default function MetaAdsPage() {
       <section className="mta-hero-section">
         <div className="mta-hero-inner">
           <div className="mta-hero-content">
-            <p className="fresh-kicker">Paid growth</p>
+            <p className="fresh-kicker">Meta Ads</p>
             <h1 className="mta-desktop-title">Every rupee<br /><em>has a job.</em></h1>
             <h1 className="mta-mobile-title">Every rupee <em>has a job.</em></h1>
             <div className="mta-hero-video-slot mobile-only">
