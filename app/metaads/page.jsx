@@ -1,4 +1,5 @@
 import PaymentButton from '../../components/PaymentButton';
+import MetaVideoPlayer from '../../components/MetaVideoPlayer';
 
 export const metadata = {
   title: 'Meta Ads Management — ₹2,999/month',
@@ -10,12 +11,23 @@ export default function MetaAdsPage() {
 
   return (
     <main className="fresh-service-page service-metaads">
-      <section className="fresh-detail-hero">
-        <div>
-          <p className="fresh-kicker">Paid growth</p>
-          <h1>Every rupee<br /><em>has a job.</em></h1>
-          <p>Backed by over 2 years of hands-on experience and ₹50 lakh+ in managed ad spend, we build structured Meta campaigns that turn budget into measurable business.</p>
-          <a className="fresh-button dark" href="#fresh-plans">See plans ↓</a>
+      <section className="mta-hero-section">
+        <div className="mta-hero-inner">
+          <div className="mta-hero-content">
+            <p className="fresh-kicker">Paid growth</p>
+            <h1 className="mta-desktop-title">Every rupee<br /><em>has a job.</em></h1>
+            <h1 className="mta-mobile-title">Every rupee <em>has a job.</em></h1>
+            <div className="mta-hero-video-slot mobile-only">
+              <MetaVideoPlayer />
+            </div>
+            <p className="mta-hero-desc">Backed by over 2 years of hands-on experience and ₹50 lakh+ in managed ad spend, we build structured Meta campaigns that turn budget into measurable business.</p>
+            <div className="mta-hero-actions">
+              <a className="fresh-button dark" href="#fresh-plans">See plans ↓</a>
+            </div>
+          </div>
+          <div className="mta-hero-video-slot desktop-only">
+            <MetaVideoPlayer />
+          </div>
         </div>
       </section>
 
