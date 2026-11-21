@@ -2,7 +2,7 @@ import PaymentButton from '../../components/PaymentButton';
 import QuotationVideo from '../../components/QuotationVideo';
 
 export const metadata = {
-  title: 'Inpixel Quotation Software — ₹2,999 Lifetime',
+  title: 'Inpixel Quotation Software — ₹499 Lifetime',
   description: 'Professional quotations made in minutes. Branded PDF, GST calculation, unlimited quotes with one-time payment.',
 };
 
@@ -17,11 +17,11 @@ export default function QuotationPage() {
           <p className="fresh-kicker">Business utility</p>
           <h1>Professional quotes.<br /><em>Made in minutes.</em></h1>
           <p>A focused quotation tool that helps your business look credible, move quickly and close work without subscription fatigue.</p>
-          <a className="fresh-button dark" href="#fresh-plans">See plans ↓</a>
+          <a className="fresh-button dark" href="#quote-demo">View Demo ↓</a>
         </div>
       </section>
 
-      <section className="quote-product">
+      <section className="quote-product" id="quote-demo">
         <QuotationVideo />
         <aside>
           <p className="fresh-kicker">From blank to sent</p>
@@ -42,6 +42,9 @@ export default function QuotationPage() {
             <h3>Always yours</h3>
             <p>Future updates with no recurring fee.</p>
           </article>
+          <div className="quote-demo-cta">
+            <a className="fresh-button dark" href="#fresh-plans">See Plans ↓</a>
+          </div>
         </aside>
       </section>
 
@@ -53,7 +56,7 @@ export default function QuotationPage() {
         <div>
           <article className="featured">
             <small>Lifetime access</small>
-            <strong>₹2,999</strong>
+            <strong>₹499</strong>
             <p className="plan-includes-label">What&apos;s included</p>
             <ul>
               <li>One payment · No subscription</li>
@@ -63,8 +66,8 @@ export default function QuotationPage() {
             </ul>
             <PaymentButton
               serviceId="quotation"
-              planName="Inpixel Quotation Software — ₹2,999 Lifetime"
-              amount={299900}
+              planName="Inpixel Quotation Software — ₹499 Lifetime"
+              amount={49900}
               className="fresh-button light"
             >
               Choose plan ↗
