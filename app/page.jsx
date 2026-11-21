@@ -92,7 +92,7 @@ export default function HomePage() {
               <h3>Quotation Software</h3>
               <p>Generate professional quotes in seconds and close deals faster.</p>
             </div>
-            <b>Try it free <span className="fresh-view-cta">View Details →</span></b>
+            <b><s style={{opacity:0.5}}>₹2,999</s> ₹499 <span className="fresh-view-cta">View Details →</span></b>
           </Link>
           <Link href="/webdevelopment">
             <span>04</span>
