@@ -1,5 +1,7 @@
 import Link from 'next/link';
 import ContactForm from '../components/ContactForm';
+import ContactFormPopup from '../components/ContactFormPopup';
+import BusinessSoftwareRow from '../components/BusinessSoftwareRow';
 
 export default function HomePage() {
   return (
@@ -65,35 +67,17 @@ export default function HomePage() {
           </h2>
         </header>
         <div className="fresh-service-list">
-          <Link href="/webdevelopment">
+          <Link href="/socialmedia">
             <span>01</span>
             <div>
-              <small>Design + Development</small>
-              <h3>Websites That Convert</h3>
-              <p>Fast, mobile-first websites engineered to convert attention into action.</p>
-            </div>
-            <b>From ₹2,999 <span className="fresh-view-cta">View Details →</span></b>
-          </Link>
-          <Link href="/socialmedia">
-            <span>02</span>
-            <div>
               <small>Content + Strategy</small>
-              <h3>Social Media Handling</h3>
+              <h3>Social Media Management</h3>
               <p>Strategy, design, calendars and reporting—handled from end to end.</p>
             </div>
             <b>₹999 / month <span className="fresh-view-cta">View Details →</span></b>
           </Link>
-          <Link href="/aivideos">
-            <span>03</span>
-            <div>
-              <small>Concept + Production</small>
-              <h3>AI video studio</h3>
-              <p>Scroll-stopping vertical stories produced at the speed of culture.</p>
-            </div>
-            <b>2 videos for ₹999 <span className="fresh-view-cta">View Details →</span></b>
-          </Link>
           <Link href="/metaads">
-            <span>04</span>
+            <span>02</span>
             <div>
               <small>Facebook + Instagram Ads</small>
               <h3>Meta Ads Management</h3>
@@ -101,6 +85,34 @@ export default function HomePage() {
             </div>
             <b>₹2,999 / month <span className="fresh-view-cta">View Details →</span></b>
           </Link>
+          <Link href="/quotation">
+            <span>03</span>
+            <div>
+              <small>Smart Business Tools</small>
+              <h3>Quotation Software</h3>
+              <p>Generate professional quotes in seconds and close deals faster.</p>
+            </div>
+            <b>Try it free <span className="fresh-view-cta">View Details →</span></b>
+          </Link>
+          <Link href="/webdevelopment">
+            <span>04</span>
+            <div>
+              <small>Design + Development</small>
+              <h3>Websites That Convert</h3>
+              <p>Fast, mobile-first websites engineered to convert attention into action.</p>
+            </div>
+            <b>From ₹2,999 <span className="fresh-view-cta">View Details →</span></b>
+          </Link>
+          <Link href="/aivideos">
+            <span>05</span>
+            <div>
+              <small>Concept + Production</small>
+              <h3>AI Video Studio</h3>
+              <p>Scroll-stopping vertical stories produced at the speed of culture.</p>
+            </div>
+            <b>2 videos for ₹999 <span className="fresh-view-cta">View Details →</span></b>
+          </Link>
+          <BusinessSoftwareRow num="06" />
         </div>
       </section>
 
@@ -139,6 +151,7 @@ export default function HomePage() {
           <ContactForm />
         </div>
       </section>
+      <ContactFormPopup />
     </main>
   );
 }

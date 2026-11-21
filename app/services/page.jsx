@@ -1,4 +1,6 @@
 import Link from 'next/link';
+import ContactFormPopup from '../../components/ContactFormPopup';
+import BusinessSoftwareRow from '../../components/BusinessSoftwareRow';
 
 export const metadata = {
   title: 'Our Services — Inpixel Network',
@@ -8,40 +10,48 @@ export const metadata = {
 export default function ServicesPage() {
   const services = [
     {
-      slug: 'webdevelopment',
+      slug: 'socialmedia',
       num: '01',
+      eyebrow: 'Content + Strategy',
+      title: 'Social Media Management',
+      intro: '15 posts every month — 10 static + 5 carousels — designed, captioned, and scheduled. All for ₹999/month.'
+    },
+    {
+      slug: 'metaads',
+      num: '02',
+      eyebrow: 'Facebook + Instagram Ads',
+      title: 'Meta Ads Management',
+      intro: 'Backed by over 2 years of hands-on experience and ₹50 lakh+ in managed ad spend, we build structured Meta campaigns that turn budget into measurable business.'
+    },
+    {
+      slug: 'quotation',
+      num: '03',
+      eyebrow: 'Smart Business Tools',
+      title: 'Quotation Software',
+      intro: 'Generate professional quotes in seconds and close deals faster. Try it free.'
+    },
+    {
+      slug: 'webdevelopment',
+      num: '04',
       eyebrow: 'Design + Development',
       title: 'Websites That Convert',
       intro: 'Strategy, UX, design and development in one focused sprint. Built fast, responsive everywhere, and ready to sell.'
     },
     {
-      slug: 'socialmedia',
-      num: '02',
-      eyebrow: 'Social Media Management',
-      title: 'Social Media Handling',
-      intro: '15 posts every month — 10 static + 5 carousels — designed, captioned, and scheduled. All for ₹999/month.'
-    },
-    {
       slug: 'aivideos',
-      num: '03',
-      eyebrow: 'AI production studio',
+      num: '05',
+      eyebrow: 'AI Production Studio',
       title: 'AI Video Studio',
       intro: 'High-retention vertical video made for Reels, Shorts and TikTok—without the timelines or cost of a traditional shoot.'
-    },
-    {
-      slug: 'metaads',
-      num: '04',
-      eyebrow: 'Facebook + Instagram Ads',
-      title: 'Meta Ads Management',
-      intro: 'Backed by over 2 years of hands-on experience and ₹50 lakh+ in managed ad spend, we build structured Meta campaigns that turn budget into measurable business.'
     }
   ];
+
 
   return (
     <main>
       <section className="fresh-index-hero">
         <p className="fresh-kicker">Capabilities</p>
-        <h1>Built to make<br /><em>brands move.</em></h1>
+        <h1>Services that<br /><em>grow your business.</em></h1>
         <p>Pick one focused service or connect them into a complete growth system.</p>
       </section>
 
@@ -57,7 +67,9 @@ export default function ServicesPage() {
             <b>Explore ↗</b>
           </Link>
         ))}
+        <BusinessSoftwareRow num="06" isServicePage={true} />
       </section>
+      <ContactFormPopup />
     </main>
   );
 }
