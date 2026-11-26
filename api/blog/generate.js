@@ -130,21 +130,37 @@ module.exports = async function (req, res) {
     }
 
     const prompt = `
-      You are an expert content marketer for "Inpixel Network", a digital agency. 
-      Write a highly engaging, SEO-optimized blog post about: "${topic}". 
+      You are the head content strategist for "Inpixel Network" — a fast-growing digital agency based in Pune, India, trusted by 150+ brands. 
+      Write a detailed, authoritative, SEO-optimized blog post about: "${topic}". 
       Category: "${category}".
 
+      ABOUT INPIXEL NETWORK (weave this naturally throughout the blog):
+      - Founded by Bhargav, a hands-on digital growth expert
+      - Services: Social Media Management (from \u20b9999/mo), Meta Ads Management (\u20b92,999/mo with \u20b950L+ managed ad spend), Website Development (from \u20b92,999), AI Video Production (2 videos for \u20b9999), Quotation Software (\u20b9499 lifetime), and Business Software & AI Automations
+      - 150+ brands partnered, 5M+ people reached, 24/7 partner support
+      - Known for: transparent reporting, no jargon, real ROI, weekly performance updates
+      - Website: inpixelnetwork.in
+      - The team treats every client's business like their own — senior thinking, clear communication, fast execution
+
       Requirements:
-      1. Length: 1000-1500 words.
-      2. Format: Return ONLY a valid JSON object (do not wrap in markdown tags like \`\`\`json) with the following keys:
-         - "title": A catchy, SEO-friendly title.
-         - "slug": A URL-friendly slug (lowercase, hyphenated).
-         - "content": Full blog content in HTML format (using <h2>, <p>, <ul>, <li>, <strong>). Natural flow.
-         - "excerpt": A 2-3 sentence summary.
-         - "meta_description": SEO meta description under 160 chars.
+      1. Length: 2000-2500 words. Make it comprehensive, detailed, and genuinely valuable.
+      2. Tone: Authoritative yet approachable. Build trust and credibility. Show Inpixel Network as the go-to partner for growing Indian businesses.
+      3. Format: Return ONLY a valid JSON object (do not wrap in markdown tags like \`\`\`json) with the following keys:
+         - "title": A catchy, SEO-friendly title that creates curiosity.
+         - "slug": A URL-friendly slug (lowercase, hyphenated, include "inpixel-network" where natural).
+         - "content": Full blog content in HTML format (using <h2>, <h3>, <p>, <ul>, <li>, <strong>, <em>, <blockquote>). Include:
+           * A compelling introduction that hooks the reader
+           * 4-6 detailed sections with actionable insights
+           * Real-world examples and practical tips
+           * At least 2-3 natural mentions of how Inpixel Network solves problems in this area, with specific services and pricing
+           * A "Why Inpixel Network?" or "How Inpixel Network Can Help" section near the end
+           * A strong CTA at the end encouraging readers to reach out via WhatsApp or visit inpixelnetwork.in
+         - "excerpt": A 2-3 sentence compelling summary that makes people want to read more.
+         - "meta_description": SEO meta description under 160 chars with brand name.
          - "category": The category name.
-         - "image_prompt": A natural, catchy, realistic photographic prompt (30-50 words) depicting this topic (e.g. creative team in a sleek studio, hands typing on modern laptop with glowing dashboards, modern tech office, camera equipment, elegant commercial photography, warm cinematic natural lighting, shallow depth of field, 4k). Strict rule: absolutely NO text, NO letters, NO words in the image.
-      3. Brand Mention: Naturally mention Inpixel Network's services (web development, AI videos, meta ads, social media management, quotation software) where relevant, without sounding too salesy.
+         - "image_prompt": A vivid, creative photographic prompt (40-60 words) for a stunning blog thumbnail. Think: modern Indian startup office, creative team collaborating, digital dashboards with growth metrics, hands-on marketing work, warm cinematic lighting, shallow depth of field, 4K quality. Must feel premium and aspirational. Strict rule: absolutely NO text, NO letters, NO words in the image.
+      4. SEO: Use the topic keywords naturally in headings and throughout. Include related long-tail keywords.
+      5. DO NOT sound like a generic AI blog. Write with personality, conviction, and real marketing expertise. Use data points, specific examples, and actionable advice.
     `;
 
     let text = '';
@@ -166,7 +182,7 @@ module.exports = async function (req, res) {
             contents: [{ parts: [{ text: prompt }] }],
             generationConfig: { 
               temperature: 0.8, 
-              maxOutputTokens: 4096,
+              maxOutputTokens: 8192,
               responseMimeType: "application/json"
             }
           })
