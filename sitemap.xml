@@ -1,58 +1,174 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+        xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
 
   <url>
     <loc>https://inpixelnetwork.in/</loc>
-    <lastmod>2026-10-30</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
 
   <url>
     <loc>https://inpixelnetwork.in/services/</loc>
-    <lastmod>2026-10-30</lastmod>
+    <lastmod>2026-11-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
     <loc>https://inpixelnetwork.in/webdevelopment/</loc>
-    <lastmod>2026-10-30</lastmod>
+    <lastmod>2026-11-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://inpixelnetwork.in/assets/images/web-dev-code.png</image:loc>
+      <image:title>Web Development Code</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://inpixelnetwork.in/assets/images/web-ui-design.png</image:loc>
+      <image:title>Website UI Design</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://inpixelnetwork.in/assets/images/web-responsive-test.png</image:loc>
+      <image:title>Responsive Design Testing</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://inpixelnetwork.in/assets/images/website-mockup.png</image:loc>
+      <image:title>Website Mockup</image:title>
+    </image:image>
   </url>
 
   <url>
     <loc>https://inpixelnetwork.in/socialmedia/</loc>
-    <lastmod>2026-10-30</lastmod>
+    <lastmod>2026-11-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://inpixelnetwork.in/assets/images/sma-hero-poster.jpg</image:loc>
+      <image:title>Social Media Management Hero</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://inpixelnetwork.in/assets/images/social-media-showcase.png</image:loc>
+      <image:title>Social Media Showcase</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://inpixelnetwork.in/assets/images/social-media-strategy.png</image:loc>
+      <image:title>Social Media Strategy</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://inpixelnetwork.in/assets/images/social-media-content.png</image:loc>
+      <image:title>Social Media Content Creation</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://inpixelnetwork.in/assets/images/social-media-audit.png</image:loc>
+      <image:title>Social Media Audit</image:title>
+    </image:image>
+    <video:video>
+      <video:thumbnail_loc>https://inpixelnetwork.in/assets/images/sma-hero-poster.jpg</video:thumbnail_loc>
+      <video:title>Social Media Management by Inpixel Network</video:title>
+      <video:description>See how Inpixel Network handles social media management for growing businesses.</video:description>
+      <video:content_loc>https://inpixelnetwork.in/assets/videos/sma-hero.mp4</video:content_loc>
+      <video:family_friendly>yes</video:family_friendly>
+    </video:video>
   </url>
 
   <url>
     <loc>https://inpixelnetwork.in/aivideos/</loc>
-    <lastmod>2026-10-30</lastmod>
+    <lastmod>2026-11-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://inpixelnetwork.in/assets/images/ai-video-showcase.png</image:loc>
+      <image:title>AI Video Production Showcase</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://inpixelnetwork.in/assets/images/video-editing-timeline.png</image:loc>
+      <image:title>Video Editing Timeline</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://inpixelnetwork.in/assets/images/video-script-planning.png</image:loc>
+      <image:title>Video Script Planning</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://inpixelnetwork.in/assets/images/digital-creation-workspace.png</image:loc>
+      <image:title>Digital Creation Workspace</image:title>
+    </image:image>
+    <video:video>
+      <video:thumbnail_loc>https://inpixelnetwork.in/assets/images/ai-video-showcase.png</video:thumbnail_loc>
+      <video:title>AI Video Demo 1</video:title>
+      <video:description>AI-powered video production demo by Inpixel Network.</video:description>
+      <video:content_loc>https://inpixelnetwork.in/assets/videos/Demo1.mp4</video:content_loc>
+      <video:family_friendly>yes</video:family_friendly>
+    </video:video>
+    <video:video>
+      <video:thumbnail_loc>https://inpixelnetwork.in/assets/images/ai-video-showcase.png</video:thumbnail_loc>
+      <video:title>AI Video Demo 2</video:title>
+      <video:description>AI-powered vertical video production demo by Inpixel Network.</video:description>
+      <video:content_loc>https://inpixelnetwork.in/assets/videos/Demo2.mp4</video:content_loc>
+      <video:family_friendly>yes</video:family_friendly>
+    </video:video>
+    <video:video>
+      <video:thumbnail_loc>https://inpixelnetwork.in/assets/images/ai-video-showcase.png</video:thumbnail_loc>
+      <video:title>AI Video Demo 3</video:title>
+      <video:description>AI-powered social video production demo by Inpixel Network.</video:description>
+      <video:content_loc>https://inpixelnetwork.in/assets/videos/Demo3.mp4</video:content_loc>
+      <video:family_friendly>yes</video:family_friendly>
+    </video:video>
   </url>
 
   <url>
     <loc>https://inpixelnetwork.in/metaads/</loc>
-    <lastmod>2026-10-30</lastmod>
+    <lastmod>2026-11-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://inpixelnetwork.in/assets/images/meta-hero-poster.jpg</image:loc>
+      <image:title>Meta Ads Management Hero</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://inpixelnetwork.in/assets/images/meta-ads-dashboard.png</image:loc>
+      <image:title>Meta Ads Dashboard</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://inpixelnetwork.in/assets/images/marketing-campaign-chart.png</image:loc>
+      <image:title>Marketing Campaign Performance Chart</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://inpixelnetwork.in/assets/images/conversion-metrics-dashboard.png</image:loc>
+      <image:title>Conversion Metrics Dashboard</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://inpixelnetwork.in/assets/images/conversion-tracking-scaling.png</image:loc>
+      <image:title>Conversion Tracking and Scaling</image:title>
+    </image:image>
+    <video:video>
+      <video:thumbnail_loc>https://inpixelnetwork.in/assets/images/meta-hero-poster.jpg</video:thumbnail_loc>
+      <video:title>Meta Ads Management by Inpixel Network</video:title>
+      <video:description>See how Inpixel Network manages Meta Ads campaigns for growing businesses.</video:description>
+      <video:content_loc>https://inpixelnetwork.in/assets/videos/meta-hero.mp4</video:content_loc>
+      <video:family_friendly>yes</video:family_friendly>
+    </video:video>
   </url>
 
   <url>
     <loc>https://inpixelnetwork.in/quotation/</loc>
-    <lastmod>2026-10-30</lastmod>
+    <lastmod>2026-11-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+    <video:video>
+      <video:thumbnail_loc>https://inpixelnetwork.in/assets/images/digital-creation-workspace.png</video:thumbnail_loc>
+      <video:title>Quotation Software Demo</video:title>
+      <video:description>See how Inpixel Network's quotation software creates professional quotes in minutes.</video:description>
+      <video:content_loc>https://inpixelnetwork.in/assets/demo-quotation.mp4</video:content_loc>
+      <video:family_friendly>yes</video:family_friendly>
+    </video:video>
   </url>
 
   <url>
     <loc>https://inpixelnetwork.in/blog/</loc>
-    <lastmod>2026-10-30</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
@@ -161,6 +277,27 @@
     <lastmod>2026-10-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+  </url>
+
+  <!-- Model Portfolio Images -->
+  <url>
+    <loc>https://inpixelnetwork.in/</loc>
+    <image:image>
+      <image:loc>https://inpixelnetwork.in/assets/images/model-1.jpg</image:loc>
+      <image:title>Inpixel Network Client Work Model 1</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://inpixelnetwork.in/assets/images/model-2.jpg</image:loc>
+      <image:title>Inpixel Network Client Work Model 2</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://inpixelnetwork.in/assets/images/model-3.jpg</image:loc>
+      <image:title>Inpixel Network Client Work Model 3</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://inpixelnetwork.in/assets/images/model-4.jpg</image:loc>
+      <image:title>Inpixel Network Client Work Model 4</image:title>
+    </image:image>
   </url>
 
   <url>

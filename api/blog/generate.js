@@ -189,25 +189,6 @@ module.exports = async function (req, res) {
       }
     }
 
-    // 2. Second step: If Gemini fails, immediately generate with OpenAI ChatGPT (gpt-4o-mini)
-    if (!text && process.env.OPENAI_API_KEY) {
-      try {
-        const OpenAI = require('openai');
-        const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-        const comp = await openai.chat.completions.create({
-          model: "gpt-4o-mini",
-          response_format: { type: "json_object" },
-          messages: [
-            { role: "system", content: "You are an expert marketing blogger. Output only valid JSON." },
-            { role: "user", content: prompt }
-          ]
-        });
-        text = comp.choices[0]?.message?.content || '';
-      } catch (oaiErr) {
-        console.error("OpenAI ChatGPT fallback error:", oaiErr);
-        lastError = oaiErr;
-      }
-    }
 
     if (!text) {
       const errMsg = lastError?.message || JSON.stringify(lastError) || 'AI generation service temporarily busy';
@@ -231,43 +212,42 @@ module.exports = async function (req, res) {
     let imageContentType = 'image/png';
     let fileExt = 'png';
 
-    // High-Resolution Natural Photography Engine (100% Free & Unlimited)
-    // Curated high-res editorial photography matching the blog category/topic
+    // Gemini Imagen Thumbnail Generation
+    // Uses Gemini's image generation to create a unique, relevant blog thumbnail
     try {
-      const queryKeyword = encodeURIComponent(blogData.category || topic || 'digital marketing agency');
-      const photoUrl = `https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1200&h=675&q=80`; // reliable base
+      const imagenModels = ['gemini-2.0-flash-preview-image-generation', 'imagen-3.0-generate-002'];
       
-      // Dynamic thematic photography search
-      const thematicPhotos = {
-        'social media': 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&w=1200&h=675&q=80',
-        'meta ads': 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&h=675&q=80',
-        'web development': 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1200&h=675&q=80',
-        'ai': 'https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=1200&h=675&q=80',
-        'marketing': 'https://images.unsplash.com/photo-1533750349088-cd871a92f312?auto=format&fit=crop&w=1200&h=675&q=80',
-        'branding': 'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=1200&h=675&q=80',
-        'seo': 'https://images.unsplash.com/photo-1571721795195-a2ca2d3370a9?auto=format&fit=crop&w=1200&h=675&q=80',
-        'business': 'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=1200&h=675&q=80'
-      };
+      for (const imagenModel of imagenModels) {
+        try {
+          const imagenUrl = `https://generativelanguage.googleapis.com/v1beta/models/${imagenModel}:generateContent?key=${process.env.GEMINI_API_KEY}`;
+          const imagenResponse = await fetch(imagenUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: imagePrompt }] }],
+              generationConfig: {
+                responseModalities: ['TEXT', 'IMAGE']
+              }
+            })
+          });
 
-      let selectedPhoto = photoUrl;
-      const lowerCat = (blogData.category + ' ' + blogData.title).toLowerCase();
-      for (const [key, url] of Object.entries(thematicPhotos)) {
-        if (lowerCat.includes(key)) {
-          selectedPhoto = url;
-          break;
+          const imagenJson = await imagenResponse.json();
+          const parts = imagenJson.candidates?.[0]?.content?.parts || [];
+          const imgPart = parts.find(p => p.inlineData);
+          
+          if (imgPart && imgPart.inlineData) {
+            imageBuffer = Buffer.from(imgPart.inlineData.data, 'base64');
+            imageContentType = imgPart.inlineData.mimeType || 'image/png';
+            fileExt = imageContentType.includes('jpeg') ? 'jpg' : 'png';
+            console.log(`Thumbnail generated with ${imagenModel}`);
+            break;
+          }
+        } catch (imagenErr) {
+          console.warn(`Imagen model ${imagenModel} error:`, imagenErr.message);
         }
       }
-
-      // Download the photo buffer to store inside your Supabase bucket
-      const photoFetch = await fetch(selectedPhoto);
-      if (photoFetch.ok) {
-        const arrayBuf = await photoFetch.arrayBuffer();
-        imageBuffer = Buffer.from(arrayBuf);
-        imageContentType = 'image/jpeg';
-        fileExt = 'jpg';
-      }
-    } catch (photoErr) {
-      console.warn("Unsplash fetch warning:", photoErr);
+    } catch (imgGenErr) {
+      console.warn("Gemini image generation warning:", imgGenErr);
     }
 
     // High-end luxury SVG poster fallback if internet fetch fails
