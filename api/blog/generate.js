@@ -201,50 +201,104 @@ module.exports = async function (req, res) {
       return res.status(500).json({ success: false, message: 'AI returned invalid JSON format. Please try again.' });
     }
 
-    // 1. Ask Gemini to write an image generation prompt in the JSON response
-    const imagePrompt = blogData.image_prompt || `High-end editorial photograph illustrating ${blogData.category}, natural ambient lighting, candid executive workspace, modern tech environment, cinematic depth of field, 35mm lens, award-winning photography, no text`;
+    // Build a rich, creative image generation prompt
+    const basePrompt = blogData.image_prompt || `Professional photograph related to ${blogData.category}`;
+    const imagePrompt = `Generate a high-quality, visually stunning 1200x675 blog thumbnail image. ${basePrompt}. Style: modern, clean, vibrant colors, professional photography, shallow depth of field, warm cinematic lighting. IMPORTANT: Do NOT include any text, letters, words, or watermarks in the image.`;
 
     let thumbnailUrl = '';
     let imageBuffer = null;
     let imageContentType = 'image/png';
     let fileExt = 'png';
 
-    // Gemini Imagen Thumbnail Generation
-    // Uses Gemini's image generation to create a unique, relevant blog thumbnail
+    // Gemini Image Generation — tries multiple approaches
+    // Approach 1: Gemini 2.0 Flash with image output
     try {
-      const imagenModels = ['gemini-2.0-flash-preview-image-generation', 'imagen-3.0-generate-002'];
-      
-      for (const imagenModel of imagenModels) {
-        try {
-          const imagenUrl = `https://generativelanguage.googleapis.com/v1beta/models/${imagenModel}:generateContent?key=${process.env.GEMINI_API_KEY}`;
-          const imagenResponse = await fetch(imagenUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              contents: [{ parts: [{ text: imagePrompt }] }],
-              generationConfig: {
-                responseModalities: ['TEXT', 'IMAGE']
-              }
-            })
-          });
-
-          const imagenJson = await imagenResponse.json();
-          const parts = imagenJson.candidates?.[0]?.content?.parts || [];
-          const imgPart = parts.find(p => p.inlineData);
-          
-          if (imgPart && imgPart.inlineData) {
-            imageBuffer = Buffer.from(imgPart.inlineData.data, 'base64');
-            imageContentType = imgPart.inlineData.mimeType || 'image/png';
-            fileExt = imageContentType.includes('jpeg') ? 'jpg' : 'png';
-            console.log(`Thumbnail generated with ${imagenModel}`);
-            break;
+      const geminiImgUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${process.env.GEMINI_API_KEY}`;
+      const geminiImgRes = await fetch(geminiImgUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: imagePrompt }] }],
+          generationConfig: {
+            responseModalities: ['IMAGE'],
+            imageDimensions: { width: 1200, height: 675 }
           }
-        } catch (imagenErr) {
-          console.warn(`Imagen model ${imagenModel} error:`, imagenErr.message);
-        }
+        })
+      });
+      const geminiImgJson = await geminiImgRes.json();
+      const parts1 = geminiImgJson.candidates?.[0]?.content?.parts || [];
+      const img1 = parts1.find(p => p.inlineData);
+      if (img1 && img1.inlineData) {
+        imageBuffer = Buffer.from(img1.inlineData.data, 'base64');
+        imageContentType = img1.inlineData.mimeType || 'image/png';
+        fileExt = imageContentType.includes('jpeg') ? 'jpg' : 'png';
+        console.log('Thumbnail generated with gemini-2.0-flash-exp');
+      } else {
+        console.warn('gemini-2.0-flash-exp image response:', JSON.stringify(geminiImgJson.error || 'no image part'));
       }
-    } catch (imgGenErr) {
-      console.warn("Gemini image generation warning:", imgGenErr);
+    } catch (err1) {
+      console.warn('gemini-2.0-flash-exp image error:', err1.message);
+    }
+
+    // Approach 2: Imagen 3 via generateContent
+    if (!imageBuffer) {
+      try {
+        const imagen3Url = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${process.env.GEMINI_API_KEY}`;
+        const imagen3Res = await fetch(imagen3Url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            instances: [{ prompt: imagePrompt }],
+            parameters: {
+              sampleCount: 1,
+              aspectRatio: '16:9',
+              personGeneration: 'DONT_ALLOW'
+            }
+          })
+        });
+        const imagen3Json = await imagen3Res.json();
+        const predictions = imagen3Json.predictions || [];
+        if (predictions.length > 0 && predictions[0].bytesBase64Encoded) {
+          imageBuffer = Buffer.from(predictions[0].bytesBase64Encoded, 'base64');
+          imageContentType = predictions[0].mimeType || 'image/png';
+          fileExt = imageContentType.includes('jpeg') ? 'jpg' : 'png';
+          console.log('Thumbnail generated with imagen-3.0-generate-002');
+        } else {
+          console.warn('imagen-3 response:', JSON.stringify(imagen3Json.error || 'no predictions'));
+        }
+      } catch (err2) {
+        console.warn('imagen-3 error:', err2.message);
+      }
+    }
+
+    // Approach 3: Gemini 2.0 Flash (standard) with image modality
+    if (!imageBuffer) {
+      try {
+        const flash2Url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${process.env.GEMINI_API_KEY}`;
+        const flash2Res = await fetch(flash2Url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: imagePrompt }] }],
+            generationConfig: {
+              responseModalities: ['IMAGE']
+            }
+          })
+        });
+        const flash2Json = await flash2Res.json();
+        const parts3 = flash2Json.candidates?.[0]?.content?.parts || [];
+        const img3 = parts3.find(p => p.inlineData);
+        if (img3 && img3.inlineData) {
+          imageBuffer = Buffer.from(img3.inlineData.data, 'base64');
+          imageContentType = img3.inlineData.mimeType || 'image/png';
+          fileExt = imageContentType.includes('jpeg') ? 'jpg' : 'png';
+          console.log('Thumbnail generated with gemini-2.0-flash');
+        } else {
+          console.warn('gemini-2.0-flash image response:', JSON.stringify(flash2Json.error || 'no image'));
+        }
+      } catch (err3) {
+        console.warn('gemini-2.0-flash image error:', err3.message);
+      }
     }
 
     // High-end luxury SVG poster fallback if internet fetch fails
